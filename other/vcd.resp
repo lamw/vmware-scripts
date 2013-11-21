@@ -1,0 +1,63 @@
+##################
+## INSTALL FILES #
+##################
+# vCloud Director 1.0
+#ORACLE_EXPRESS_RPM=oracle-xe-10.2.0.1-1.0.i386.rpm
+#ORACLE_VERSION=10.2.0
+#VMWARE_VCD_BIN=vmware-cloud-director-1.0.0-285979.bin
+#VCLOUD_VERSION=1.0
+
+# vCloud Director 1.0.1
+#ORACLE_EXPRESS_RPM=oracle-xe-10.2.0.1-1.0.i386.rpm
+#ORACLE_VERSION=10.2.0
+#VMWARE_VCD_BIN=vmware-cloud-director-1.0.1-356485.bin
+#VCLOUD_VERSION=1.0.1
+
+# vCloud Director 1.5
+ORACLE_EXPRESS_RPM=oracle-xe-11.2.0-1.0.x86_64.rpm
+ORACLE_VERSION=11.2.0
+VMWARE_VCD_BIN=vmware-vcloud-director-1.5.0-464915.bin
+VCLOUD_VERSION=1.5
+
+# vCloud Director 5.1
+ORACLE_EXPRESS_RPM=oracle-xe-11.2.0-1.0.x86_64.rpm
+ORACLE_VERSION=11.2.0
+VMWARE_VCD_BIN=vmware-vcloud-director-5.1.0-802762.bin
+VCLOUD_VERSION=5.1
+
+#####################
+# SECOND IP ADDRESS #
+#####################
+IP_ADDRESS_2=172.30.0.253
+IP_ADDRESS_2_NETMASK=255.255.255.0
+
+#################
+# KEYSTORE INFO #
+#################
+KEYSTORE_PASSWORD=vcloud
+KEYSTORE_ORG_UNIT_NAME=Engineering
+KEYSTORE_ORG="Primp Industries"
+KEYSTORE_CITY="Santa Barbara"
+KEYSTORE_STATE=California
+KEYSTORE_COUNTRY=US
+
+##################
+# ORACLE XE CONF #
+##################
+ORACLE_XE_GUI_PORT=8080
+ORACLE_XE_LISTENER_PORT=1521
+ORACLE_SYS_PASSWORD=vcloud
+ORACLE_VCLOUD_USERNAME=vcloud
+ORACLE_VCLOUD_PASSWORD=vcloud
+
+##########################
+# VCLOUD TABLESPACE CONF #
+##########################
+TABLESPACE_CLOUD_DATA_SIZE=1000M
+TABLESPACE_CLOUD_INDEX_SIZE=10M
+
+###########################
+# **** NOT SUPPORTED **** #
+# ENABLE NESTED ESXVM     #
+###########################
+ENABLE_NESTED_ESX=true

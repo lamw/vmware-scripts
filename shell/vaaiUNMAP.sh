@@ -1,0 +1,25 @@
+#!/bin/bash
+# William Lam
+# 09/30/2011
+# http://www.virtuallyghetto.com/
+
+if [ $# -ne 4 ]; then
+	echo "Usage: $0 [HOST_LIST] [VCENTER_SERVER] [VCENTER_AUTH_CONFIG] [1|0]"
+	exit 1;
+fi
+
+ESXI_LIST=$1
+VCENTER_SERVER=$2
+VCENTER_AUTH=$3
+OP_FLAG=$4
+
+for ESXIHOST in $(cat ${ESXI_LIST});
+do
+	if [ ${OP_FLAG} -eq 1 ]; then
+		OPERATION="enabling"
+	else 
+		OPERATION="disabling"
+	fi
+	echo "${OPERATION} VAAI UNMAP primitve on ${ESXIHOST}"
+	esxcli --server ${VCENTER_SERVER} --config ${VCENTER_AUTH} --vihost ${ESXIHOST} system settings advanced set --int-value ${OP_FLAG} --option /VMFS3/EnableBlockDelete
+done

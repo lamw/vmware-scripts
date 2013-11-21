@@ -1,0 +1,1317 @@
+#!/usr/bin/perl -w
+#
+# Copyright 2006 VMware, Inc.  All rights reserved.
+#
+# vmkfstools - Disk and VMFS Management Tool. 
+#
+
+my @options = (
+    ['createfs', 'blocksize', 'setfsname', '_default_'],
+    ['createfs', 'setfsname', '_default_'],
+    ['queryfs', '_default_'],
+    ['spanfs', '_default_'],
+    ['clonevirtualdisk', 'diskformat', '_default_'],
+    ['createvirtualdisk', 'diskformat', '_default_'],
+    ['createvirtualdisk', 'diskformat', 'adapterType', '_default_'],
+    ['deletevirtualdisk', '_default_'],
+    ['renamevirtualdisk', '_default_'],
+    ['extendvirtualdisk', '_default_'],
+    ['extendvirtualdisk', 'diskformat', '_default_'],
+    ['writezeros', '_default_'],
+    ['inflatedisk', '_default_'],
+    ['geometry', '_default_'],
+    ['createrdm', '_default_'],
+    ['createrdmpassthru', '_default_'],
+    ['queryrdm', '_default_'],
+    ['rescanvmfs', '_default_'],
+    );
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+use VMware::VIRuntime;
+use VMware::VILib;
+use VMware::VIExt;
+
+my %opts = (
+   vihost => {
+      alias => "h",
+      type => "=s",
+      help => qq!    
+          The host to use when connecting via a vCenter Server.
+      !,
+      required => 0,
+   },
+   'createfs' => {
+      alias => "C",
+      type => "=s",
+      help => qq!
+         Creates a VMFS file system, requires -S, and optionally -b
+      !,
+      required => 0,
+   },
+   'blocksize' => {
+      alias => "b",
+      type => "=s",
+      help => qq!
+         The block size of the VMFS file system to create. When omitted, the
+         creation defaults to using 1MB for the blocksize.
+      !,
+      required => 0,
+   },
+   'setfsname' => {
+      alias => "S",
+      type => "=s",
+      help => qq!
+         The name of the VMFS file system to create.
+      !,
+      required => 0,
+   },
+   'spanfs' => {
+      alias => "Z",
+      type => "=s",
+      help => qq!
+         Extends this partition onto the head partition.
+      !,
+      required => 0,
+   },
+   'queryfs' => {
+      alias => "P",
+      type => "",
+      help => qq!
+         Prints information about a vmfs file system.
+         Displays VMFS version number, the partitions constituting the vmfs
+         file system, the capacity and availabe space.
+      !,
+      required => 0,
+   },
+   'adapterType' => {
+      alias => "a",
+      type => "=s",
+      help => qq!
+         The adapter type of a disk to be created. Accepts buslogic, lsilogic
+         or ide.
+      !,
+      required => 0,
+   },
+   'diskformat' => {
+      alias => "d",
+      type => "=s",
+      help => qq!
+         Specify the target disk format. Applies to -c, -i, -X.
+         Accepts zeroedthick|eagerzeroedthick|thin for -c. 
+         Accepts zeroedthick|eagerzeroedthick|thin|rdm:dev|rdmp:dev|2gbsparse for -i.
+         Accepts eagerzeroedthick for -X.
+      !,
+      required => 0,
+   },
+   'clonevirtualdisk' => {
+      alias => "i",
+      type => "=s",
+      help => qq!
+         Create a copy of a virtual disk or raw disk. The copy will be in
+         the specified disk format. Takes source disk as argument.
+      !,
+      required => 0,
+   },
+   'deletevirtualdisk' => {
+      alias => "U",
+      type => "",
+      help => qq!
+         Delete files associated with the specified virtual disk.
+      !,
+      required => 0,
+   },
+   'renamevirtualdisk' => {
+      alias => "E",
+      type => "=s",
+      help => qq!
+         Rename files associated with a specified virtual disk to the
+         specified name. Takes source disk as argument.
+      !,
+      required => 0,
+   },
+   'extendvirtualdisk' => {
+      alias => "X",
+      type => "=s",
+      help => qq!
+         Takes size argument (of the form #gGmMkK)
+         Extend the specified VMFS virtual disk to the specified length. This
+         command is useful for extending the size of a virtual disk
+         allocated to a virtual machine after the virtual machine has been
+         created. However, this command requires that the guest operating
+         system has some capability for recognizing the new size of the
+         virtual disk and taking advantage of this new size (e.g. by
+         updating the file system on the virtual disk to take advantage of
+         the extra space). Since ESX 4.0 and ESXi 4.0, --diskformat can be
+         used to specify grow the disk in eagerzeroedthick format. If the
+         diskformat is not specified, the extended disk region of a zeroedthick
+         disk will be zeroedthick; the extended disk region of a
+         eagerzeroedthick disk will be eagerzeroedthick; a thin-provisioned
+         disk will be extended as a thin-provisioned disk.
+      !,
+      required => 0,
+   },
+   'createrdm' => {
+      alias => "r",
+      type => "=s",
+      help => qq!
+         Creates raw disk mapping, takes the disk device path.
+         Map a raw disk to a file on a VMFS file system. Once the mapping
+         is established, it can be used to access the raw disk like a
+         normal VMFS virtual disk. The 'file length' of the mapping is
+         the same as the size of the raw disk that it points to.
+      !,
+      required => 0,
+   },
+   'createrdmpassthru' => {
+      alias => "z",
+      type => "=s",
+      help => qq!
+         Creates passthrough raw disk mapping, takes the disk device path.
+         Once the mapping is established, it can be used to access the raw disk
+         like a normal VMFS virtual disk. The 'file length' of the mapping is
+         the same as the size of the raw disk that it points to.
+      !,
+      required => 0,
+   },
+   'queryrdm' => {
+      alias => "q",
+      type => "=s",
+      help => qq!
+         List the attributes of a raw disk mapping. When used with a
+         'rdm:' or 'raw:' specification, it prints out the vmhba name of 
+         the raw disk corresponding to the mapping referenced by the 
+         _device_. It also prints out identification information for 
+         the raw disk (if any). This option is currently not yet supported.
+      !,
+      required => 0,
+   },
+   'geometry' => {
+      alias => "g",
+      type => "",
+      help => qq!
+         Get the geometry information (cylinders, heads, sectors) of a
+         virtual disk.
+      !,
+      required => 0,
+   },
+   'writezeros' => {
+      alias => "w",
+      type => "",
+      help => qq!
+         Initialize the virtual disk with zeros. Any existing data on virtual
+         disk is lost.
+      !,
+      required => 0,
+   },
+   'inflatedisk' => {
+      alias => "j",
+      type => "",
+      help => qq!
+         Convert a `thin` virtual disk to `eagerzeroedthick` with the
+         additional guarantee that any data on `thin` disk is preserved and any
+         blocks that were not allocated get allocated and zeroed out.
+      !,
+      required => 0,
+   },
+   'createvirtualdisk' => {
+      alias => "c",
+      type => "=s",
+      help => qq!    
+         Creates a virtual disk takes size argument (of the form #gGmMkK).
+         It can be used with -a|--adapterType, -d|--diskformat. If -a is
+         not specified, 'busLogic' will be used. If -d is not specified,
+         'zeroedthick' will be used.
+      !,
+      required => 0,
+   },
+   'rescanvmfs' => {
+      alias => "V",
+      type => "",
+      help => qq!
+         Rescan Host for new Vmfs added.
+      !,
+      required => 0,
+   },
+   '_default_' => {
+      type => "=s",
+      argval => "diskpath",
+      help => qq!    
+         The path of the target virtual disk of the operation.
+      !,
+      required => 0,
+   },
+);
+
+Opts::add_options(%opts);
+Opts::parse();
+Opts::validate();
+
+
+# for file system ops
+my $createfs = Opts::get_option('createfs');
+my $blocksize = Opts::get_option('blocksize');
+my $setfsname = Opts::get_option('setfsname');
+my $queryfs = Opts::get_option('queryfs');
+my $spanfs = Opts::get_option('spanfs');
+my $partition = Opts::get_option('_default_');
+my $path = Opts::get_option('_default_');
+
+# for disk ops
+my $clonevirtualdisk = Opts::get_option('clonevirtualdisk');
+my $createvirtualdisk = Opts::get_option('createvirtualdisk');
+my $deletevirtualdisk = Opts::get_option('deletevirtualdisk');
+my $renamevirtualdisk = Opts::get_option('renamevirtualdisk');
+my $extendvirtualdisk = Opts::get_option('extendvirtualdisk');
+my $geometry = Opts::get_option('geometry');
+my $writezeros = Opts::get_option('writezeros');
+my $inflatedisk = Opts::get_option('inflatedisk');
+my $createrdm = Opts::get_option('createrdm');
+my $createrdmpassthru = Opts::get_option('createrdmpassthru');
+my $queryrdm = Opts::get_option('queryrdm');
+my $rescanvmfs = Opts::get_option('rescanvmfs');
+my $diskformat = Opts::get_option('diskformat');
+my $adapterType = convert_adapter_string(Opts::get_option('adapterType'));
+
+if (defined $diskformat && $diskformat eq 'thick') {
+   if (defined $clonevirtualdisk) {
+      VIExt::fail("Error: Invalid destination disk format 'thick'");
+   }
+   if (defined $createvirtualdisk || defined $extendvirtualdisk) {
+      VIExt::fail("Error: Incorrect disk option 'thick'");
+   }
+}
+
+Util::connect();
+
+my $COPYDISK_FORCE_FLAG = 1;
+
+my $vdm;
+my $host_view = VIExt::get_host_view(1, ['config.product.version', 'datastore', 'config.fileSystemVolume.mountInfo', 
+                                         'configManager.storageSystem', 'configManager.datastoreSystem', 'config.storageDevice.scsiLun']);
+Opts::assert_usage(defined($host_view), "Invalid host.");
+
+my $datastoreRefs = $host_view->datastore;
+
+if (!defined $createfs && !defined $spanfs && !defined $queryfs) {
+   $vdm = VIExt::get_virtual_disk_manager();
+   Opts::assert_usage(defined($vdm), "Unable to obtain disk manager.");
+}
+
+my $version = get_major_version($host_view);
+$path = convert_path($path);
+
+if (defined $queryfs) {
+   Opts::assert_usage($path, "vmfs path is required.");
+   query_fs($host_view, $path);
+} elsif (defined $createfs) {
+   create_fs($host_view, $partition, $createfs, $setfsname, $blocksize);
+} elsif (defined $spanfs) {
+   # bug 353715
+   extend_fs($host_view, $partition, $spanfs);
+} elsif (defined $clonevirtualdisk) {
+   clone_disk($vdm, convert_path($clonevirtualdisk), $path, $diskformat, 
+               $adapterType);
+} elsif (defined $createvirtualdisk) {
+   create_disk($vdm, $path, $createvirtualdisk, $diskformat, $adapterType, 
+               undef);
+} elsif (defined $deletevirtualdisk) {
+   delete_disk($vdm, $path);
+} elsif (defined $renamevirtualdisk) {
+   move_disk($vdm, convert_path($renamevirtualdisk), $path);
+} elsif (defined $extendvirtualdisk) {
+   extend_disk($vdm, $extendvirtualdisk, $diskformat, $path);
+} elsif (defined $createrdm) {
+   create_disk($vdm, $path, undef, "rdm", $adapterType, $createrdm);
+} elsif (defined $createrdmpassthru) {
+   create_disk($vdm, $path, undef, "rdmp", $adapterType, $createrdmpassthru);
+} elsif (defined $queryrdm) {
+   query_rdm($vdm, $path);
+} elsif (defined $geometry) {
+   query_geometry($vdm, $path);
+} elsif (defined $writezeros) {
+   zerofill_disk($vdm, $path);
+} elsif (defined $inflatedisk) {
+   inflate_disk($vdm, $path);
+} elsif (defined $rescanvmfs) {
+   rescan_vmfs($host_view);
+} else {
+   Opts::usage();
+   exit 1;
+}
+
+Util::disconnect();
+
+sub convert_path {
+   my ($vmfs_path) = @_;
+   # If local path is given, convert to datastore URL 
+   if (defined $vmfs_path && $vmfs_path =~ /^\/vmfs\/volumes\//) {
+      $vmfs_path =~ s/\/$//;  # remove the ending / if given
+      my @arr = split(/\//, $vmfs_path, 5);
+      my $dsName = $arr[3];
+      if (!defined $dsName) {
+         VIExt::fail("Error: datastore is not specified.");
+      }
+      foreach my $dsref (@$datastoreRefs) {
+         my $ds = Vim::get_view(mo_ref => $dsref);
+         if ($ds->info->url =~ /$dsName/) {
+            $dsName = $ds->info->name;
+            last;
+         }
+      }
+      $vmfs_path = (exists($arr[4]))? "[$dsName] $arr[4]" : "[$dsName]";
+   }
+   return $vmfs_path;
+}
+
+sub get_major_version {
+   my ($host_view) = @_;
+   my $host_version = $host_view->{'config.product.version'};
+   $host_version =~ /(['e'|\d+])./;
+   return $1;
+}
+
+sub get_size_kb {
+   my $size = shift;
+   my $size_kb = -1;
+
+   if ($size =~ /^\s*(\d+)([gGmMkK])\s*$/) {
+      my ($num, $unit) = ($1, $2);
+      if ($unit =~ /k/i) {
+         $size_kb = $num;
+      } elsif ($unit =~ /m/i) {
+         $size_kb = $num * 1024;
+      } elsif ($unit =~ /g/i) {
+         $size_kb = $num * 1024 * 1024;
+      }
+   }
+   return $size_kb;
+}
+
+sub get_vmfs_version {
+   my $vmfs_type = shift;
+
+   if (defined($vmfs_type)) {
+      if ($vmfs_type =~ /vmfs(\d+)/) {
+         return $1;
+      }
+   }
+   return 0;
+}
+
+sub convert_adapter_string {
+   my $adapterType = shift;
+   if (defined($adapterType)) {
+      if ($adapterType =~ /^lsilogic$/i) {
+         return "lsiLogic";
+      } elsif ($adapterType =~ /^buslogic$/i) {
+         return "busLogic";
+      } elsif ($adapterType =~ /^ide$/i) {
+         return "ide";
+      } else {
+         # bug 468461
+         return $adapterType;
+      }
+   } else {
+      return undef;
+   }
+}
+
+sub convert_disk_format {
+   my $disk_format = shift;
+   if (defined($disk_format)) {
+      if ($disk_format =~ /^2gbsparse$/i) {
+         return "sparse2Gb";
+      } elsif ($disk_format =~ /^zeroedthick$/i) {
+         return "preallocated";
+      } elsif ($disk_format =~ /^eagerzeroedthick$/i) {
+         return "eagerZeroedThick";
+      } elsif ($disk_format =~ /^sesparse/i) {
+	 return "seSparse";
+      } else {
+         return $disk_format;
+      }
+   } else {
+      return undef;
+   }
+}
+
+sub create_disk {
+   my ($vdm, $path, $size, $disk_type, $adapter_type, $device) = @_;
+
+   # bug 388713, 468488
+   if(defined($adapter_type) && ($adapter_type eq 'ide')) {
+      #bug 560892
+      if ($version ne 'e' && $version < 4) {
+         VIExt::fail("Error: ide adapter type not supported on host.");
+      }
+   }
+
+   $adapter_type = "busLogic" unless defined($adapter_type);
+   $disk_type = "zeroedthick" unless defined($disk_type);
+
+   my $spec;
+   if (defined($device)) {
+      # device-based backing
+      $spec = new DeviceBackedVirtualDiskSpec();
+      if ($device !~ /^\/vmfs\/devices\/disks\//) {
+         $device = "/vmfs/devices/disks/" . $device;
+      }
+      $spec->{device} = $device;
+   } else {
+      my $size_kb = undef;
+      if (defined $size) {
+         if ($size =~ /^(\d+)[gGmMkK]$/) {
+            $size_kb = get_size_kb($size);
+            if ($size_kb < 1024) {
+               VIExt::fail("Error: Size too small, disk must be at least 1 MB.");
+            }
+         } else {
+            VIExt::fail("Error: Invalid file length $size");
+         }
+      }
+      if($disk_type eq "sesparse") {
+	$spec = new SeSparseVirtualDiskSpec();
+	$spec->{capacityKb} = $size_kb;
+      } else {
+      	# file-based backing
+      	$spec = new FileBackedVirtualDiskSpec();
+      	$spec->{capacityKb} = $size_kb;
+      }
+   }
+
+   $spec->{diskType} = convert_disk_format($disk_type);
+   $spec->{adapterType} = $adapter_type;
+
+   eval {
+      printf ("\nAttempting to create virtual disk %s\n", $path);
+      $vdm->CreateVirtualDisk(name => $path, spec => $spec);
+      printf ("\nSuccessfully created virtual disk %s\n", $path);
+   };
+   if ($@) {
+      # bug 378902, 378909
+      if (ref($@) eq 'SoapFault') {
+         if (defined $@->{name}) {
+            if ($@->{name} eq 'InvalidDatastoreFault') {
+               VIExt::fail("Error: Invalid Datastore");
+            }
+            elsif ($@->{name} eq 'InvalidDatastorePathFault') {
+               VIExt::fail("Error: Invalid Datastore Path");
+            }
+            elsif (ref($@->{detail}) eq 'FileAlreadyExists') {
+               VIExt::fail("Error: File Already Exists ");
+            }
+            elsif (ref($@->{detail}) eq 'RestrictedVersion') {
+               VIExt::fail("Error: Unable to create virtual disk - RestrictedVersionFault");
+            } else {
+               VIExt::fail("Unable to create virtual disk with specified parameters.");
+            }
+         }
+      }
+      else {
+         VIExt::fail("Unable to create virtual disk : " . $@);
+      }
+   }
+}
+
+sub query_uuid {
+   my ($vdm, $disk) = @_;
+   my $result;
+   eval {
+      $result = $vdm->QueryVirtualDiskUuid(name => $disk);
+   };
+   if ($@) {
+      VIExt::fail("Unable to query uuid : " . ($@->fault_string));
+   }
+   return $result;
+}
+
+sub set_uuid {
+   my ($vdm, $disk, $uuid) = @_;
+   my $result;
+   eval {
+      $result = $vdm->SetVirtualDiskUuid(name => $disk, uuid => $uuid);
+   };
+   if ($@) {
+      VIExt::fail("Unable to set uuid : " . ($@->fault_string));
+   }
+}
+
+# bug 384085, 407291
+sub get_device_disk_type {
+   my $type = shift;
+   if ($type && $type =~ /(rdm:|rdmp:|raw:)(.*)$/) {
+      my $dtype = substr($1, 0, length($1)-1);
+      return ($dtype , $2);
+   } else {
+      return ($type, undef);
+   }
+}
+
+sub clone_disk {
+   my ($vdm, $src_disk, $target_disk, $disk_type, $adapter_type) = @_;
+   my $device = undef;
+
+   ($disk_type, $device) = get_device_disk_type($disk_type);
+   $disk_type = "zeroedthick" unless defined($disk_type);
+   $adapter_type = "busLogic" unless defined($adapter_type);
+
+   my $spec = undef;
+   if (defined($device)) {
+      # device-based backing
+      $spec = new DeviceBackedVirtualDiskSpec();
+      $spec->{device} = $device;
+   } else {
+      $spec = new FileBackedVirtualDiskSpec();
+      $spec->{capacityKb} = 10000; # dummy 
+   }
+
+   # use source's format if unset
+   $spec->{diskType} = convert_disk_format($disk_type);
+   $spec->{adapterType} = $adapter_type;
+
+   eval {
+      printf ("\nAttempting to clone disk %s\n", $src_disk);
+      $vdm->CopyVirtualDisk(sourceName => $src_disk,  sourceDatacenter => undef,
+                            destName => $target_disk, destDatacenter => undef,
+                            destSpec => $spec, force => $COPYDISK_FORCE_FLAG);
+      printf ("\nSuccessfully cloned disk %s to %s\n", $src_disk, $target_disk);
+   };
+   if ($@) {
+      VIExt::fail("Unable to clone virtual disk : " . ($@->fault_string));
+   }
+}
+
+sub extend_disk {
+   my ($vdm, $size, $disk_type, $disk) = @_;
+   my $eagerZero = 0;
+   if (defined $disk_type) {
+      if ($version ne 'e' && $version < 4) {
+         VIExt::fail("--diskformat is supported since ESX 4.0, or ESXi 4.0\n");
+      } elsif ($disk_type !~ /^eagerzeroedthick$/i) {
+         VIExt::fail("Only eagerzeroedthick diskformat is supported.\n");
+      } else {
+         $eagerZero = 1;
+      } 
+   }
+   my $size_kb = get_size_kb($size);
+   if ($size_kb >= 0) {
+      eval {
+         printf ("\nAttempting to extend disk %s\n", $disk);
+         if ($version ne 'e' && $version < 4) {
+            $vdm->ExtendVirtualDisk(name => $disk, datacenter => undef, 
+                                    newCapacityKb => $size_kb);
+         } else {
+            $vdm->ExtendVirtualDisk(name => $disk, datacenter => undef,
+                                    eagerZero => $eagerZero, 
+                                    newCapacityKb => $size_kb);
+         }
+         printf ("\nSuccessfully extended disk %s\n", $disk);
+      };
+      if ($@) {
+         VIExt::fail("Unable to extend virtual disk : " . ($@->fault_string));
+      }
+   } else {
+      VIExt::fail("$size is an invalid size. Specify <num>[gGmMkK]");
+   }
+}
+
+sub zerofill_disk {
+   my ($vdm, $disk) = @_;
+   # bug 376684
+   eval {
+      my $task_ref = $vdm->ZeroFillVirtualDisk_Task(name => $disk, datacenter => undef);
+      my $task_view = Vim::get_view(mo_ref => $task_ref);
+      print "\nProcess start\n";
+      track_progress($task_view);
+      print "\nEnd process\n";
+   };
+   if ($@) {
+      VIExt::fail("Unable to zero-fill virtual disk : " . ($@->fault_string));
+   }
+}
+
+sub inflate_disk {
+   my ($vdm, $disk) = @_;
+   #bug 376684
+   eval {
+      my $task_ref =  $vdm->InflateVirtualDisk_Task(name => $disk, datacenter => undef);
+      my $task_view = Vim::get_view(mo_ref => $task_ref);
+      print "\nProcess start\n";
+      track_progress($task_view);
+      print "\nEnd process\n";
+   };
+   if ($@) {
+      VIExt::fail("Unable to inflate virtual disk : " . ($@->fault_string));
+   }
+}
+
+sub delete_disk {
+   my ($vdm, $disk) = @_;
+   eval {
+      printf ("\nAttempting to delete disk %s\n", $disk);
+      $vdm->DeleteVirtualDisk(name => $disk, datacenter => undef);
+      printf ("\nSuccessfully deleted disk %s\n", $disk);
+   };
+   if ($@) {
+      VIExt::fail("Unable to delete virtual disk : " . ($@->fault_string));
+   }
+}
+
+sub move_disk {
+   my ($vdm, $src_disk, $target_disk) = @_;
+   my $dcRef = Vim::find_entity_view(view_type => 'Datacenter',
+      filter => {name => 'ha-datacenter'});
+   eval {
+      printf ("\nAttempting to move disk %s\n", $src_disk);
+      $vdm->MoveVirtualDisk(sourceName => $src_disk, sourceDatacenter => $dcRef,
+                            destName => $target_disk, destDatacenter => $dcRef);
+      printf ("\nSuccessfully moved disk %s to %s\n", $src_disk, $target_disk);
+   };
+   if ($@) {
+      VIExt::fail("Unable to move virtual disk : " . ($@->fault_string));
+   }
+}
+
+sub query_geometry {
+   my ($vdm, $disk) = @_;
+
+   my $geom; 
+   eval { $geom = $vdm->QueryVirtualDiskGeometry(name => $disk, 
+                                                 datacenter => undef); };
+   if ($@) {
+      VIExt::fail("Unable to query geometry: " . ($@->fault_string));
+   }
+
+   my $cyl = defined($geom->cylinder) ? $geom->cylinder : "?"; 
+   my $head = defined($geom->head) ? $geom->head : "?"; 
+   my $sector = defined($geom->sector) ? $geom->sector : "?"; 
+
+   printf("Geometry information C/H/S is %s/%s/%s\n", $cyl, $head, $sector);
+}
+
+sub query_rdm {
+   my ($vdm, $disk) = @_;
+   VIExt::fail("This operation is not supported in this release.");
+}
+
+sub query_fs {
+   my ($host, $vmfs_path) = @_;
+   my $mounts = $host->{'config.fileSystemVolume.mountInfo'};
+   my @datastores = ();
+   foreach (@$datastoreRefs) {
+      my $datastore = Vim::get_view(mo_ref => $_);
+      push (@datastores, $datastore);
+   }
+
+   my $found = 0;
+   foreach (@$mounts) {
+      my $type = "";
+      my $name = "";
+      my $UUID = "";
+      my $capacity = "";
+      my $free = "??";
+      my $partition = "";
+      my $partitions = "";
+      my $diskName;
+      my $vol;
+      my $info;
+      my $extents;
+      my $numExtents = 0;
+      $info = $_->mountInfo;
+      $vol = $_->volume;
+      $name = $vol->{name} if $vol->{name};
+
+      # defect 224372
+
+      next unless ($info);
+      next unless ($vmfs_path eq "/vmfs/volumes/$name" ||
+                   $vmfs_path eq $info->path || $vmfs_path eq "[$name]");
+      $found = 1;
+      my $info_path = $info->path;
+      $info_path =~ s/\/vmfs\/volumes\///;
+      $capacity = $vol->capacity;
+      foreach (@datastores) {
+         if ($_->info->url =~ /$info_path/) {
+            $free = $_->info->freeSpace;
+         }
+      }
+
+      if ($vol->isa('HostVmfsVolume')) {
+         $type = $vol->type . "-" . $vol->version;
+         $UUID = $vol->uuid;
+
+         $extents = $vol->extent;
+         foreach (@$extents) {
+            $partition = $_->diskName . ":" . $_->partition;
+            $partitions .= " "x8 . "$partition\n";
+            $numExtents++;
+         }
+      } elsif ($vol->isa('HostNasVolume')) {
+         $type = $vol->type;
+         $numExtents = 1;
+         $partitions = " "x8 . "nas:$name\n";
+      }
+
+      print "$type file system spanning $numExtents partitions.\n";
+      print "Capacity : $capacity, $free avail\n";
+      print "File system label : $name\n";
+      print "UUID : $UUID\n";
+      print "path : " . $info->path ."\n";
+      print "Partitions spanned:\n$partitions";
+      if ($info->mounted) {
+         print "Mounted : Yes\n";
+      } else {
+         print "Mounted : No\n";
+      }
+      my $vaai_supported = "No";
+      # 4 possible values, including <unset> - Supported, Unsupported or Unknown
+      if (defined($_->vStorageSupport) && $_->vStorageSupport  =~ /Supported$/) {
+         $vaai_supported = "Yes";
+      }
+      print "VAAI Supported: " . $vaai_supported . "\n";
+   }
+   if (!$found) {
+      VIExt::fail("Could not open $partition");
+   }
+}
+
+sub extend_fs {
+   my ($host, $head_partition, $extend_partition) = @_;
+
+   # remove the prefix directory if given
+   $head_partition =~ s/\/vmfs\/devices\/disks\///;
+   $extend_partition =~ s/\/vmfs\/devices\/disks\///;
+
+   my $ss = Vim::get_view(mo_ref => $host->{'configManager.storageSystem'});
+   Opts::assert_usage(defined($ss), "Unable to obtain storage system.");
+   my $dss = Vim::get_view(mo_ref => $host->{'configManager.datastoreSystem'});
+   Opts::assert_usage(defined($dss), "Unable to obtain datastore system.");
+
+   # find the datastore to extend
+   my $datastore_to_extend = undef;
+   foreach my $ds_ref (@$datastoreRefs) {
+      last if defined($datastore_to_extend);
+      my $datastore = Vim::get_view(mo_ref => $ds_ref);
+      if ($datastore && $datastore->info && 
+         $datastore->info->isa('VmfsDatastoreInfo')) {
+         my $extents = $datastore->info->vmfs->extent;
+         foreach (@$extents) {
+            my $p = $_->diskName . ":" . $_->partition;
+            if ($p eq $head_partition) {
+               $datastore_to_extend = $datastore;
+            }
+         }
+      }
+   }
+
+   unless (defined $datastore_to_extend) {
+      VIExt::fail("Unable to find datastore with head extent of " . $head_partition);
+      return;
+   }
+
+   my $disk_name;
+   my $partition_number;
+   my $partition_pattern;
+   my $partition_format;
+
+   if ($version ne 'e' && $version < 4) {
+      $partition_pattern = '(vmhba\d:\d:\d):(\d)';
+      $partition_format = 'vmhbaW:X:Y:Z';
+   } else {
+      $partition_pattern = '([\w\W.\d\D]+):(\d+)';
+      $partition_format = '<disk_name>:<partition_number>';
+   }
+
+   if ($extend_partition =~ /$partition_pattern/) {
+      $disk_name = $1;
+      $partition_number = $2;
+   } else {
+      VIExt::fail("Please supply extend partition in the form of '" . $partition_format . "'");
+      return;
+   }
+
+   # obtain the partition spec of the disk, use it unchanged.
+   my $device_path = "/vmfs/devices/disks/" . $disk_name;
+   if ($version ne 'e' && $version < 4) {
+      $device_path = $device_path . ":0";
+   } else {
+      # remove the partition part
+      $device_path =~ s/:(\d)+//; 
+   }
+   my @devicePaths = ($device_path);
+   my $dpis;
+   eval {
+      $dpis = $ss->RetrieveDiskPartitionInfo(devicePath => \@devicePaths);
+   };
+   if ($@) {
+      VIExt::fail("Unable to retrieve disk partition info: " . 
+       ($@->fault_string));
+   }
+ 
+   my $partition_spec = $dpis->[0]->spec;
+
+   my $disk_part = new HostScsiDiskPartition(diskName => $disk_name, 
+                                             partition => $partition_number);
+   my @disk_parts = ();
+   push(@disk_parts, $disk_part);
+
+
+   # get the uuid of the scsi disk to create vmfs on
+   my $disk_uuid;
+   my $luns = $host->{'config.storageDevice.scsiLun'};
+   foreach (@$luns) {
+      if ($_->isa('HostScsiDisk')) {
+         if ($disk_name eq $_->canonicalName) {
+            $disk_uuid = $_->uuid;
+            last;
+         }
+      }
+   }
+
+   unless (defined($disk_uuid)) {
+      VIExt::fail("Unable to retrieve disk id.");
+   }
+
+   my $vmfs_ds_extend_spec = 
+      new VmfsDatastoreExtendSpec( diskUuid => $disk_uuid,
+                                   partition => $partition_spec,
+                                   extent => \@disk_parts);
+
+   # bug 421500 prompt before extend
+   my $prompt = "\nAll Data on " . $head_partition . " will be lost. Continue and format?";
+   my $answer = query_yes_or_no($prompt);
+
+   if ($answer) {
+      my $new_ds;
+      eval {
+         # bug 421500 - messages
+         printf ("\nAttempting to extend Partition %s\n", $head_partition);
+         $new_ds = $dss->ExtendVmfsDatastore(spec => $vmfs_ds_extend_spec,
+                                             datastore => $datastore_to_extend);
+         if (defined $new_ds) {
+            printf ("\nSuccessfully extended Partition %s\n", $head_partition);
+         }
+      };
+      if ($@) {
+         VIExt::fail("\nUnable to extend vmfs datastore: " . ($@->fault_string));
+      }
+   } else {
+      printf ("\nExtending and format volume not done as requested.\n");
+   }
+}
+
+sub create_fs {
+   my ($host, $partition, $vmfs_type, $fs_name, $block_size) = @_;
+
+   my $ss = Vim::get_view(mo_ref => $host->{'configManager.storageSystem'});
+   Opts::assert_usage(defined($ss), "Unable to obtain storage system.");
+   Opts::assert_usage(defined($partition), 
+                       "Please specify on which disk and partition to create vmfs.");
+   if ($partition =~ /(\/vmfs\/devices\/disks\/)(\S+)/) {
+      $partition = $2;   
+   }
+
+   my $disk_name;
+   my $partition_number;
+   my $block_size_mb = 1;
+   my $vmfs_version = get_vmfs_version($vmfs_type);
+   my $partition_pattern;
+   my $partition_format;
+  
+
+   if ($vmfs_version < 2) {
+      VIExt::fail("Invalid vmfs type : $vmfs_type");
+      return;
+   }
+
+   if ($version ne 'e' && $version < 4) {
+      $partition_pattern = '(vmhba\d:\d:\d):(\d)';
+      $partition_format = 'vmhbaW:X:Y:Z';
+   } else {
+      $partition_pattern = '(\S+):(\d+)';
+      $partition_format = '<disk_name>:<partition_number>';
+   }
+
+   if ($partition =~ /$partition_pattern/) {
+         $disk_name = $1;
+         $partition_number = $2;
+   } else {
+      VIExt::fail("Please supply partition in the form of '" . $partition_format . "'");
+      return;
+   }
+
+   my $disk_part = new HostScsiDiskPartition(diskName => $disk_name, 
+                                             partition => $partition_number);
+
+   if ($block_size) {
+      $block_size_mb = get_size_kb($block_size) / 1024;
+      if ($block_size_mb <= 0) {
+         $block_size_mb = 1,
+      }
+   }
+
+   my $host_vmfs_spec = new HostVmfsSpec( extent => $disk_part,
+                                          majorVersion => $vmfs_version,
+                                          blockSizeMb => $block_size_mb,
+                                          volumeName => $fs_name);
+
+   my $vol;
+   eval {
+      # bug 378875
+      print "\nCreating " . $vmfs_type . " file system on " . $partition . 
+            " with blockSize " . ($block_size_mb * 1024 * 1024) . " and volume label " . $fs_name . "\n";
+      $vol = $ss->FormatVmfs(createSpec => $host_vmfs_spec);
+      if (defined $vol) {
+         print "\nSuccessfully created new volume:" . $vol->uuid . "\n";
+      }
+   };
+   if ($@) {
+      VIExt::fail("Unable to create vmfs: " . ($@->fault_string));
+   }
+}
+
+sub rescan_vmfs {
+   my ($host) = @_;
+
+   my $ss = Vim::get_view(mo_ref => $host->{'configManager.storageSystem'});
+   Opts::assert_usage(defined($ss), "Unable to obtain storage system.");
+
+   eval {
+      print "\nRescanning for new Vmfs on host" . "\n";
+      $ss->RescanVmfs();
+      print "\nSuccessfuly Rescanned for new Vmfs on host" . "\n";
+   };
+   if ($@) {
+      VIExt::fail("Unable to rescan vmfs: " . ($@->fault_string));
+   }
+}
+
+#bug 376684
+sub track_progress{
+   my ($task_view)= @_;
+
+   print "0% |";
+   print "-" x 100;
+   print "| 100%\n";
+   print " " x 4;
+
+   my $progress = 0;
+
+   # Keep checking the task's status until either error
+   # or success.  If the task is in progress print out
+   # the progress.
+   while (1) {
+      my $info = $task_view->info;
+      if ($info->state->val eq 'success') {
+         # bug 274300
+         print "#" x (100 - $progress);
+         print "\n";
+         return $info->result;
+      } elsif ($info->state->val eq 'error') {
+         print "\n";
+         my $soap_fault = SoapFault->new;
+         $soap_fault->detail($info->error->fault);
+         $soap_fault->fault_string($info->error->localizedMessage);
+         die $soap_fault;
+      } 
+      else {
+         # Don't buffer output right here.  Doing so 
+         # causes the progress bar to not display correctly.
+         my $old_flush_value = $|;
+         $| = 1;
+         my $new_progress = $info->progress;
+         if ($new_progress and $new_progress > $progress) {
+            # Print one # for each percentage done.
+            print "#" x ($new_progress - $progress);
+            $progress = $new_progress;
+         }
+         $| = $old_flush_value;
+         # 2 seconds between updates is fine
+         sleep 2;
+         $task_view->update_view_data();
+      }
+   }
+}
+
+###
+# Asks the user to choose between yes and no, and returns true or
+# false accordingly.  Anything other than yes or no is an error.
+###
+sub query_yes_or_no {
+   my ($prompt_str)= @_;
+   my $not_a_yes_or_no_str = "Choice must be yes or no.";
+   my $prompt_yes_or_no_str = "(yes/no)? ";
+   print "$prompt_str $prompt_yes_or_no_str";
+   chomp (my $input = <STDIN>);
+   $input = trim(str => $input);
+   if ($input =~ /^yes$/i) {
+      return 1;
+   } elsif ($input =~ /^no$/i) {
+      return 0;
+   } else {
+      die "\n$not_a_yes_or_no_str\n";
+   }
+}
+
+###
+# Removes trailing and leading whitespace.
+###
+sub trim {
+   my %args = @_;
+   my $str = $args{str};
+
+   Util::trace(2, "Trimming string '$str'.\n");
+   $str =~ s/^\s+//;
+   $str =~ s/\s+$//;
+   Util::trace(2, "The trimmed string is '$str'.\n");
+
+   return $str;
+}
+
+
+__END__
+
+=head1 NAME
+
+vmkfstools - vSphere CLI for managing VMFS volumes. 
+
+=head1 SYNOPSIS
+
+ vmkfstools <conn_options> <options> <target>
+
+If <target> is a file system, <options> can be one of the following: 
+
+ --createfs [blocksize]kK|mM --setfsname <fsname>
+ --queryfs
+ --extendfs <span_partition> <head_partition>
+
+If <target is a virtual disk, <options> can be one of the following:
+
+ --clonevirtualdisk
+ --createdrm
+ --createdrmpassthru
+ --createvirtualdisk 
+     <size>kK|mM|gG 
+     --adaptertype <type>
+     --diskformat <format> <location> 
+ --deletevirtualdisk
+ --diskformat
+ --extendvirtualdisk
+ --geometry
+ --inflatedisk
+ --querydrm
+ --renamevirtualdisk <oldName> <newName> 
+ --writezeros
+ --rescanvmfs
+
+=head1 DESCRIPTION
+
+You use the vmkfstools vSphere CLI to create and manipulate virtual disks, file systems, logical volumes, and
+physical storage devices on an ESX/ESXi host. You can use vmkfstools to create and manage a virtual machine 
+file system (VMFS) on a physical partition of a disk and to manipulate files, such as virtual disks, stored on
+VMFS-3 and NFS. You can also use vmkfstools to set up and manage raw device mappings (RDMs). 
+
+=head1 OPTIONS
+
+=head2 GENERAL OPTIONS
+
+=over
+
+=item B<connection_options>
+
+Specifies the target server and authentication information if required. Run C<vmkfstools --help>
+for a list of all connection options.
+
+=item B<--help>
+
+Prints a help message for each command-specific and each connection option. 
+Calling the script with no arguments or with --help has the same effect.
+
+=item B<--vihost | -h E<lt>esx_hostE<gt>>
+
+When you execute a vCLI with the C<--server> option pointing 
+to a vCenter Server system, use C<--vihost> to specify the ESX/ESXi host to run the command against.
+
+=back
+
+=head2 FILE SYSTEM OPTIONS
+
+=over
+
+=item B<--createfs | -C vmfs3 -b | --blocksize -S | --setfsname E<lt>fsNameE<gt> E<lt>partitionE<gt>>
+
+Creates a VMFS3 file system on a specified partition, such as naa.<naa_ID>:1. The specified partition
+becomes the file system's head partition. 
+
+=item B<--blocksize | -b>
+
+Specifies the block size of the VMFS file system to create. When omitted, defaults to using 1MB.
+
+=item B<--setfsname | -S>
+
+Name of the VMFS file system to create. 
+
+=item B<--spanfs | -Z E<lt>span_partitionE<gt> E<lt>head_partitionE<gt>>
+
+Extends the VMFS file system with the specified head partition by spanning it across the partition specified 
+by <span_partition>.
+
+=item B<--queryfs | -P E<lt>directoryE<gt>>
+
+Lists attributes of a file or directory on a VMFS volume. Displays
+VMFS version number, the VMFS file system partitions, the
+capacity and the available space.
+
+=back
+
+=head2 VIRTUAL DISK OPTIONS
+
+=over
+
+=item B<--createvirtualdisk | -c E<lt>sizeE<gt>
+-a | --adaptertype E<lt>srcfileE<gt> 
+-d | --diskformat 
+E<lt>locationE<gt>>
+
+Creates a virtual disk at the specified location on a VMFS volume. With <size> you can specify
+specify k|K, m|M, or g|G. Default size is 1MB, default adapter type is 'busLogic', and default
+disk format is 'zeroedthick'. 
+
+=item B<--adapterType | -a [buslogic|lsilogic|ide]>
+
+Adapter type of a disk to be created. Accepts buslogic, lsilogic or ide.
+
+=item B<--diskformat | -d>
+
+Specifies the target disk format when used with -c, -i, or -X. 
+
+For c, accepts C<zeroedthick>, C<eagerzeroedthick>, or C<thin>.
+
+For i, accepts C<zeroedthick>, C<eagerzeroedthick>, C<thin>, C<rdm:dev>, C<rdmp:dev>, or C<2gbsparse>. 
+
+For -X, accepts C<eagerzeroedthick>.
+
+=item B<--clonevirtualdisk | -i E<lt>src_fileE<gt> E<lt>dest_fileE<gt> 
+--diskformat | -d E<lt>formatE<gt> --adaptertype | -a E<lt>typeE<gt>>
+
+Creates a copy of a virtual disk or raw disk. The copy
+will be in the specified disk format. Takes source disk and destination disk as arguments.
+
+=item B<--deletevirtualdisk | -U E<lt>diskE<gt> >
+
+Deletes files associated with the specified virtual disk.
+
+=item B<--renamevirtualdisk | -E E<lt>old_nameE<gt> E<lt>new_nameE<gt>>
+
+Renames a specified virtual disk.  
+
+=item B<--extendvirtualdisk | -X [-d eagerzeroedthick]>
+
+Extends the specified VMFS virtual disk to the specified
+length. This command is useful for extending the size of a virtual disk 
+allocated to a virtual machine after the virtual machine has been 
+created. However, this command requires that the guest operating 
+system has some capability for recognizing the new size of the 
+virtual disk and taking advantage of this new size (e.g. by 
+updating the file system on the virtual disk to take advantage of 
+the extra space). 
+
+On ESX/ESXi 4.0 and later, you can use C<-d | --diskformat> to
+specify that the disk should grow in eagerzeroedthick format. You can use 
+C<-d> only with eagerzeroedthick. By default, any disk, regardless of format, is 
+extended as zeroedthick. Extending disks to eagerzeroedthick makes sense only 
+when these virtual disks are used for 
+fault tolerance or clustering and have to be preallocated and zeroed out up front.
+
+=item B<--createrdm | -r E<lt>rdm_fileE<gt> >
+
+Creates a raw disk mapping, that is, maps a raw disk to a file on a VMFS file system. 
+Once the mapping is established, the mapping file can be used to access the raw disk like a 
+normal VMFS virtual disk. The 'file length' of the mapping is 
+the same as the size of the raw disk that it points to.
+
+=item B<--createrdmpassthru | -z E<lt>deviceE<gt> E<lt>map_fileE<gt>>
+
+Creates a passthrough raw disk mapping. Once the mapping is established, 
+it can be used to access the raw
+disk like a normal VMFS virtual disk. The 'file length' of the mapping is 
+the same as the size of the raw disk that it points to.
+
+=item B<--querydm | -q>
+
+This option is not currently supported.
+
+=item B<--geometry | -g>
+
+Returns the geometry information (cylinders, heads, sectors)
+of a virtual disk.
+
+=item B<--writezeros | -w>
+
+Initializes the virtual disk with zeros. Any existing data on the virtual disk is lost.
+
+=item B<--inflatedisk | -j>
+
+Converts a 'thin' virtual disk to 'eagerzeroedthick'.
+Any data on the 'thin' disk is preserved. Any blocks that were not allocated are allocated and zeroed out.
+
+=item B<--rescanvmfs | -V>
+
+Rescans the Host for any new Vmfs.
+
+=back
+
+=head1 EXAMPLES
+
+The following examples assume you are specifying connection options, either 
+explicitly or, for example, by specifying the server, user name, and password. 
+Run C<vmkfstools --help> for a list of common options including connection options.
+The examples use single quotes around some names; use double quotes on Windows. 
+
+Create the specified file system:
+
+For ESX/ESXi version earlier than 4.0, specify the VMHBA name:
+
+  vmkfstools <conn_options> -C vmfs3 -b 1m -S Test vmhba0:0:0:3
+
+For ESX/ESXi version 4.0 or later, specify the device name, for example naa.xxx:
+
+  vmkfstools <conn_options> -C vmfs3 -b 1m -S Test naa.600601604d521c002732ff0dc122dd11:3
+
+Create a virtual disk:
+
+  vmkfstools <conn_options> -c 2048m '[storage1] rh6.2.vmdk'
+
+Rename files associated with a specified virtual disk to the specified name:
+
+  vmkfstools <conn_options> -E '[storage1] rh6.2.vmdk' '[storage1] testing2.vmdk'
+
+Get the geometry information (cylinders, heads, and sectors) of a virtual disk:
+
+  vmkfstools <conn_options> -g '[storage1] testing2.vmdk'
+
+Delete an existing virtual disk:
+
+  vmkfstools <conn_options> -U '[storage1] testing2.vmdk'
+
+Shrink the size of the virtual disk:
+
+ vmkfstools <conn_options> -s '[storage1] rh6.2.vmdk'
+
+Extend the virtual disk to specified size, the extended region of the disk
+grows in eagerzeroedthick format:
+
+ vmkfstools <conn_options> -X 1g -d eagerzeroedthick '[storage1] rh6.2.vmdk'
+
+Initialize the virtual disk with zeros:
+
+ vmkfstools <conn_options> -w '[storage1] rh6.2.vmdk'
+
+Rescan Host for new Vmfs:
+
+ vmkfstools <conn_options> -V
+
+=cut
