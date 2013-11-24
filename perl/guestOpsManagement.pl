@@ -133,7 +133,7 @@ my $working_dir = Opts::get_option('working_dir');
 my $minimize_app = Opts::get_option('minimize_app');
 
 my $productSupport = "both";
-my @supportedVersion = qw(5.0.0 5.1.0);
+my @supportedVersion = qw(5.0.0 5.1.0 5.5.0);
 my ($authMgr,$fileMgr,$procMgr);
 
 &validateSystem(Vim::get_service_content()->about->version,Vim::get_service_content()->about->productLineId);
