@@ -49,10 +49,10 @@ use Net::SMTP;
 ################################
 # VERSION
 ################################
-my $version = "5.1.0";
+my $version = "5.5.0";
 $Util::script_version = $version;
 
-my @supportedVersion = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+my @supportedVersion = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
 
 my %opts = (
 	cluster => {
@@ -601,7 +601,7 @@ sub getDatastoreCluster {
 
 	my $datastore_cluster_count = 0;
 
-	if($type eq 'cluster' && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if($type eq 'cluster' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 		print REPORT_OUTPUT "<div id=\"tab7\" class=\"content\">";
 		#please do not touch this, else the jump tags will break
 		print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
@@ -610,14 +610,14 @@ sub getDatastoreCluster {
 		$datastore_cluster_count++;
 		&printDatacenterSummary($cluster_parent,$datastore_cluster_count,$atype,$aversion);
 		print REPORT_OUTPUT "</div>\n";
-	} elsif($type eq 'datacenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	} elsif($type eq 'datacenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 		print REPORT_OUTPUT "<div id=\"tab7\" class=\"content\">";
                 #please do not touch this, else the jump tags will break
                 print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
 		$datastore_cluster_count++;
                 &printDatacenterSummary($datacenter_view,$datastore_cluster_count,$atype,$aversion);
 		print REPORT_OUTPUT "</div>\n";
-	} elsif($type eq 'vcenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	} elsif($type eq 'vcenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 		print REPORT_OUTPUT "<div id=\"tab7\" class=\"content\">";
 		#please do not touch this, else the jump tags will break
 		print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
@@ -852,14 +852,14 @@ sub printVMSummary {
                                         elsif ($vm_health eq 'yellow') { $vmstateString .= "<td bgcolor=\"$yellow\">VM<might have a problem</td>"; }
                                         else { $vmstateString .="<td bgcolor=\"gray\">UNKNOWN</td>"; }
 
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 						## HA PROTECTION ##
 						if($vm->runtime->dasVmProtection) {
 						$vmstateString .= "<td>".($vm->runtime->dasVmProtection->dasProtected ? "YES" : "NO")."</td>";
 						} else { $vmstateString .= "<td>N/A</td>"; }
 					} else { $vmstateString .= "<td>N/A</td>"; }
 
-                                        if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+                                        if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                                                 ## APP HEARTBEAT ##
                                                 $vmstateString .= "<td>".($vm->guest->appHeartbeatStatus ? $vm->guest->appHeartbeatStatus : "N/A")."</td>";
                                         }
@@ -871,7 +871,7 @@ sub printVMSummary {
                                         $vmstateString .= "<td>".$vm->runtime->powerState->val."</td>";
 
 					## CONSOLIDATION ##
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 						$vmstateString .= "<td>".($vm->runtime->consolidationNeeded ? "YES" : "NO")."</td>";
 					} else { $vmstateString .= "<td>N/A</td>"; }
 
@@ -899,7 +899,7 @@ sub printVMSummary {
 					$vmconfigString .= "<td>".($vm->summary->config->uuid ? $vm->summary->config->uuid : "N/A")."</td>";
 
 					## FIRMWARE ##
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 						$vmconfigString .= "<td>".($vm->config->firmware ? $vm->config->firmware : "N/A")."</td>";
 					} else { $vmconfigString .= "<td>N/A</td>"; }
 
@@ -975,7 +975,7 @@ sub printVMSummary {
 						$vmstatString .= "<td>".($vm->summary->quickStats->hostMemoryUsage ? &prettyPrintData($vm->summary->quickStats->hostMemoryUsage,'M') : "N/A")."</td>";
 
 						## INITIAL MEM RESV OVERHEAD + INITIAL MEM SWAP RESV OVERHEAD ##
-						if(($aversion eq '5.0.0' || $aversion eq '5.1.0') && $vm->config->initialOverhead) {
+						if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0') && $vm->config->initialOverhead) {
 							$vmstatString .= "<td>".($vm->config->initialOverhead->initialMemoryReservation ? &prettyPrintData($vm->config->initialOverhead->initialMemoryReservation,'B') : "N/A")."</td>";
 							$vmstatString .= "<td>".($vm->config->initialOverhead->initialSwapReservation ? &prettyPrintData($vm->config->initialOverhead->initialSwapReservation,'B') : "N/A")."</td>";
 						} else { $vmstatString .= "<td>N/A</td><td>N/A</td>"; }
@@ -986,7 +986,7 @@ sub printVMSummary {
 						## MEM BALLON ##
 						$vmstatString .= "<td>".($vm->summary->quickStats->balloonedMemory ? &prettyPrintData($vm->summary->quickStats->balloonedMemory,'M') : "N/A")."</td>";
 
-						if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+						if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 							## COMPRESSED MEM ##
 							if(defined($vm->summary->quickStats->compressedMemory)) {
 								if($debug) { print "---DEBUG compressedMemory for " . $vm->name . ": \"" . $vm->summary->quickStats->compressedMemory . "\" ---DEBUG\n"; }
@@ -1118,7 +1118,7 @@ sub printVMSummary {
 				######################
                                 # EZT
                                 ######################
-                                if($VM_EZT eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+                                if($VM_EZT eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                                         if(!$vm->config->template) {
                                                 my $devices = $vm->config->hardware->device;
                                                 my ($ezt_disk_string,$ezt_size_string,$ezt_label_string) = ("","","");
@@ -1443,7 +1443,7 @@ sub printVMSummary {
 						my $vnics = $vm->guest->net;
 						foreach(@$vnics) {
 							## IP ADDRESS ##
-							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 								if($_->ipConfig) {
 									my $ips = $_->ipConfig->ipAddress;
 									foreach(@$ips) {
@@ -1601,7 +1601,7 @@ sub printVMSummary {
 							## TOOLS RUNNING STATUS ##
 							$vmtoolString .= "<td>".($vm->guest->toolsRunningStatus ? $vm->guest->toolsRunningStatus : "N/A")."</td>";							
 							## TOOLS VERSION STATUS ##
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 								$vmtoolString .= "<td>".($vm->guest->toolsVersionStatus2 ? $vm->guest->toolsVersionStatus2 : "N/A")."</td>";
 							} else {
 								$vmtoolString .= "<td>".($vm->guest->toolsVersionStatus ? $vm->guest->toolsVersionStatus : "N/A")."</td>";
@@ -1789,7 +1789,7 @@ sub printHostSummary {
 				$hardwareConfigurationString .= "<td>".$additional_vendor_info."</td>";
 				$hardwareConfigurationString .= "<td>".$local_host->summary->hardware->model."</td>";
 				$hardwareConfigurationString .= "<td>".$local_host->summary->hardware->cpuModel."</td>";
-				if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 					$hardwareConfigurationString .= "<td>".(($local_host->hardware->smcPresent) ? "YES" : "NO")."</td>";
 				} else { $hardwareConfigurationString .= "<td>N/A</td>"; }
 				$hardwareConfigurationString .= "<td>".(($local_host->config->hyperThread->available) ? "YES" : "NO")."</td>";
@@ -1845,8 +1845,8 @@ sub printHostSummary {
 					$mgmtString .= "<td>UNKNOWN</td>";
 				}
 
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
+					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						my $systemFile = "";
 						if($local_host->config->systemFile) {
 							my $systemfile = $local_host->config->systemFile;
@@ -1886,8 +1886,8 @@ sub printHostSummary {
 				if($local_host->runtime->bootTime) { $stateString .= "<td>".$local_host->runtime->bootTime."</td>"; } 
 				else { $stateString .= "<td>UNKNOWN</td>"; }
 			
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
+                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						if($local_host->summary->quickStats->uptime) {
 							my $uptime = $local_host->summary->quickStats->uptime;
 							$stateString .= "<td>".&getUptime($uptime)."</td>"; 
@@ -1898,7 +1898,7 @@ sub printHostSummary {
 					}
 				}
 
-				if(($aversion eq '5.0.0' || $aversion eq '5.1.0') && $atype eq "VirtualCenter") {
+				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0') && $atype eq "VirtualCenter") {
 					if($local_host->runtime->dasHostState) {
 						$stateString .= "<td>".$local_host->runtime->dasHostState->state."</td>";
 					} else {
@@ -1911,8 +1911,8 @@ sub printHostSummary {
 				$stateString .= "<td>".$local_host->runtime->connectionState->val."</td>";
 				$stateString .= "<td>".(($local_host->summary->runtime->inMaintenanceMode) ? "YES" : "NO")."</td>";
 				
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
+                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						$stateString .= "<td>".(($local_host->runtime->standbyMode) ? $local_host->runtime->standbyMode : "N/A")."</td>";
 					} else {
 						$stateString .= "<td>N/A</td>";
@@ -2030,7 +2030,7 @@ sub printHostSummary {
 						if($hba->isa("HostFibreChannelHba")) {
 							my $hbaType = "FC";
 							my ($fcfMac,$vnportMac) = ("","");
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 								if($hba->isa("HostFibreChannelOverEthernetHba")) {
 									$hbaType = "FCoE";
 									$fcfMac = $hba->linkInfo->fcfMac;
@@ -2051,7 +2051,7 @@ sub printHostSummary {
                                                                 $vnportMac = "XX:XX:XX:XX:XX:XX";
 							}
 							$hbaString .= "<td>".$hbaType."</td><td>".$hba->device."</td><td>".$hba->pci."</td><td>".$hba->model."</td><td>".$hba->driver."</td><td>".$hba->status."</td><td><b>NWWN</b> ".$nwwn."</td><td><b>PWWN</b> ".$pwwn."</td>";
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0') && $hbaType eq "FCoE") {
+							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0') && $hbaType eq "FCoE") {
 								$hbaString .= "<td><b><FCFMAC</b> ".$fcfMac."</td><td><b>VNPORTMAC</b> ".$vnportMac."</td>";
 							}
 							$hbaString .= "<td><b>PORT TYPE</b> ".$hba->portType->val."</td><td><b>SPEED</b> ".$hba->speed."</td></td>";
@@ -2069,7 +2069,7 @@ sub printHostSummary {
 			######################
 			# iSCSI
 			######################
-			if($HOST_ISCSI eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+			if($HOST_ISCSI eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 				my $hbas;
 				eval { $hbas = $local_host->config->storageDevice->hostBusAdapter; };
 				if(!$@) {
@@ -2128,7 +2128,7 @@ sub printHostSummary {
 					$capString .= "<tr>";
 	                                $capString .= "<td>".$host_name."</td>";
 
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 						## MAX VMS ##
 						if($local_host->capability->maxHostRunningVms) {
 							$capString .= "<td>".$local_host->capability->maxHostRunningVms."</td>";
@@ -2161,8 +2161,8 @@ sub printHostSummary {
 					## HV ##
 					$capString .= "<td>".($local_host->capability->virtualExecUsageSupported ? "YES" : "NO")."</td>";
 	
-					if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-	                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+					if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
+	                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 							## STORAGE IORM ##
 							$capString .= "<td>".($local_host->capability->storageIORMSupported ? "YES" : "NO")."</td>";
 				
@@ -2320,7 +2320,7 @@ sub printHostSummary {
 				###################
 				## AUTH SERVICES ##
 				###################
-				if($HOST_AUTH_SERVICE eq "yes" && $hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+				if($HOST_AUTH_SERVICE eq "yes" && $hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 					my $authMgr = Vim::get_view(mo_ref => $local_host->configManager->authenticationManager);
 					if($authMgr->info) {
 						my $authConfigs = $authMgr->info->authConfig;
@@ -2366,14 +2366,14 @@ sub printHostSummary {
 						my $serviceString = "";
 						foreach(@$services) {
 							$serviceString .= "<tr><td>".$_->label."</td>";
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 								if($_->sourcePackage) {
 									$serviceString .= "<td>".$_->sourcePackage->sourcePackageName."</td>";
 								} else { $serviceString .= "<td>N/A</td>"; }
 							}
 							$serviceString .= "<td>".$_->policy."</td><td>".(($_->running) ? "YES" : "NO")."</td></tr>";
 						}
-						if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+						if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 							$configString .= "<tr><th>SERVICE(s)</th><td><table border=\"1\" width=100%><tr><th>NAME</th><th>SOURCE PACKAGE</ah><th>POLICY TYPE</th><th>RUNNING</th></tr>".$serviceString."</table></td></tr>\n";
 						} else {
 							$configString .= "<tr><th>SERVICE(s)</th><td><table border=\"1\" width=100%><tr><th>NAME</th><th>POLICY TYPE</th><th>RUNNING</th></tr>".$serviceString."</table></td></tr>\n";
@@ -2539,7 +2539,7 @@ sub printHostSummary {
 		                        	foreach my $rule ( sort{$a->label cmp $b->label}@$fw_rules) {
                 	        	        	if($rule->enabled) {
 								my ($allowedIPs) = ("");
-								if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+								if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 									if(defined($rule->allowedHosts)) {
 										if($rule->allowedHosts->allIp) {
 											$allowedIPs = "all";
@@ -2559,7 +2559,7 @@ sub printHostSummary {
 									if($_->endPort) {
 										$fwPort .= "-" . $_->endPort;
 									}
-									if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+									if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 										$fwPortType = $_->portType ? uc($_->portType->val) : "N/A"; 
 									}
 									$fwProto = $_->protocol;
@@ -2588,7 +2588,7 @@ sub printHostSummary {
 				######################
 	                        # FEATURE VERSION
         	                ######################
-                	        if($HOST_FEATURE_VERSION eq "yes" && $hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+                	        if($HOST_FEATURE_VERSION eq "yes" && $hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 					if($local_host->summary->config->featureVersion) {
 						my $featurever = $local_host->summary->config->featureVersion;
 						my $featureString = "";
@@ -2652,7 +2652,7 @@ sub printHostSummary {
 			######################
 			# HOST AGENT SETTING
 			######################
-			if($HOST_AGENT eq "yes" && $atype eq "VirtualCenter" && $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+			if($HOST_AGENT eq "yes" && $atype eq "VirtualCenter" && $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 				if(defined($local_host->configManager->esxAgentHostManager)) {
 					my $hostAgentMgr = Vim::get_view(mo_ref => $local_host->configManager->esxAgentHostManager);
 					my ($agentDSName,$agentNetName) = ("N/A","N/A");
@@ -2810,8 +2810,8 @@ sub printHostSummary {
 									$vendor = $lun->vendor;
 									$model = $lun->model;
 									$queuedepth = $lun->queueDepth;
-									if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-                                                                                if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+									if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
+                                                                                if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
                                                                                         $vStorageSupport = ($lun->vStorageSupport ? $lun->vStorageSupport : "N/A");
                                                                                 } else {
                                                                                         $vStorageSupport = "N/A"
@@ -2831,8 +2831,8 @@ sub printHostSummary {
 							foreach (@$states) {
 								$state_string .= $_." ";
 							}
-							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-		                                                if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
+		                                                if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 									$lun_row .= "<td>".$vStorageSupport."</td>";
 								} else {
 									$lun_row .= "<td>N/A</td>";
@@ -2873,12 +2873,12 @@ sub printHostSummary {
 
 							my $vmsInDS = Vim::get_views(mo_ref_array => $ds->vm,properties => ['name']);
 
-							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 								my ($iormEnable,$iormThres,$dsMaintMode,$iormAggDisable,$iormStatsCollEnable) = ("N/A","N/A","N/A","N/A","N/A");
-                                                                if(($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') && $ds->summary->type eq 'VMFS') {
+                                                                if(($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') && $ds->summary->type eq 'VMFS') {
 									$iormEnable = ($ds->iormConfiguration->enabled ? "YES" : "NO");
 									$iormThres = ($ds->iormConfiguration->congestionThreshold ? $ds->iormConfiguration->congestionThreshold . " ms" : "N/A");
-									if($hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0') {
+									if($hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 										$dsMaintMode = ($ds->summary->maintenanceMode ? "YES" : "NO");
 										$iormAggDisable = ($ds->iormConfiguration->statsAggregationDisabled ? "YES" : "NO");
 										$iormStatsCollEnable = ($ds->iormConfiguration->statsCollectionEnabled ? "YES" : "NO");
@@ -2933,7 +2933,7 @@ sub printHostSummary {
 			######################
 			# CACHE
 			######################
-			if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+			if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 				my $cacheMgr;
 				eval { $cacheMgr = Vim::get_view (mo_ref => $local_host->configManager->cacheConfigurationManager); };
 				if(!$@) {
@@ -3182,7 +3182,7 @@ sub buildHostReport {
                 $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_host_conf .= "<table border=\"1\">\n";
 
-                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                         $table_host_conf .= "<tr><th>HOSTNAME</th><th>OVERALL STATUS</th><th>POWER STATE</th><th>BOOT TIME</th><th>UPTIME</th><th>HA STATE</th><th>CONNECTION STATE</th><th>MAINTENANCE MODE</th><th>STANDBY MODE</th><th>VMOTION ENABLED</th><th>VERSION</th></tr>\n";
                 } else {
                         $table_host_conf .= "<tr><th>HOSTNAME</th><th>OVERALL STATUS</th><th>POWER STATE</th><th>BOOT TIME</th><th>CONNECTION STATE</th><th>MAINTENANCE MODE</th><th>VMOTION ENABLED</th><th>VERSION</th></tr>\n";
@@ -3202,7 +3202,7 @@ sub buildHostReport {
                 $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
                 $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_host_conf .= "<table border=\"1\">\n";
-                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                         $table_host_conf .= "<tr><th>HOSTNAME</th><th>vCenter</th><th>LOCKDOWN MODE ENABLED</th><th>COS VMDK</th><th>UUID</th><th>SERVICE CONSOLE MEM</th></tr>\n";
                 } else {
                         $table_host_conf .= "<tr><th>HOSTNAME</th><th>vCenter</th><th>LOCKDOWN MODE ENABLED</th><th>UUID</th><th>SERVICE CONSOLE MEM</th></tr>\n";
@@ -3222,7 +3222,7 @@ sub buildHostReport {
                 $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
         	$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
 	        $table_host_conf .= "<table border=\"1\">\n";
-		if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+		if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 			$table_host_conf .= "<tr><th>HOSTNAME</th><th>VENDOR</th><th>ADDITIONAL VENDOR INFO</th><th>MODEL</th><th>CPU INFO</th><th>SMC PRESENT</th><th>HT AVAILABLE</th><th>CPU SPEED</th><th>CPU USAGE</th><th>PROCESSOR SOCKETS</th><th>CORES PER SOCKET</th><th>LOGICAL CORES</th><th>MEMORY</th><th>MEMORY USAGE</th><th>NIC(s)</th><th>HBA(s)</th></tr>\n";
 		} else {
         		$table_host_conf .= "<tr><th>HOSTNAME</th><th>VENDOR</th><th>ADDITIONAL VENDOR INFO</th><th>MODEL</th><th>CPU INFO</th><th>HT AVAILABLE</th><th>CPU SPEED</th><th>CPU USAGE</th><th>PROCESSOR SOCKETS</th><th>CORES PER SOCKET</th><th>LOGICAL CORES</th><th>MEMORY</th><th>MEMORY USAGE</th><th>NIC(s)</th><th>HBA(s)</th></tr>\n";
@@ -3316,7 +3316,7 @@ sub buildHostReport {
                 $hostString .= "<br/>".$table_host_conf;
                 ($table_host_conf,$hbaString) = ("","");
         }
-	if($HOST_ISCSI eq "yes" && $iscsiString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if($HOST_ISCSI eq "yes" && $iscsiString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                 $hostTag = "ESX/ESXi iSCSI-$cluster_count";
                 $hostTagShort = "ESX/ESXi iSCSI";
 
@@ -3342,7 +3342,7 @@ sub buildHostReport {
                 $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
 		$table_host_conf .= "<table border=\"1\">\n";
 
-		if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+		if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 			$table_host_conf .= "<tr><th>HOST</th><th>MAX RUNNING VMS SUPPORT</th><th>MAX VCPUS SUPPORT</th><th>VMFS VERSIONS SUPPORT</th><th>FT SUPPORT</th><th>IPMI SUPPORT</th><th>TPM SUPPORT</th><th>HV SUPPORT</th><th>IORM SUPPORT</th><th>DIRECTPATH G2 SUPPORT</th><th>STORAGE HW ACCELERATION SUPPORT</th><th>SSL THUMBPRINT AUTH SUPPORT</th></tr>\n";
 		} elsif($aversion eq '4.1.0') {
 			$table_host_conf .= "<tr><th>HOST</th><th>FT SUPPORT</th><th>IPMI SUPPORT</th><th>TPM SUPPORT</th><th>HV SUPPORT</th><th>IORM SUPPORT</th><th>DIRECTPATH G2 SUPPORT</th><th>STORAGE HW ACCELERATION SUPPORT</th><th>SSL THUMBPRINT AUTH SUPPORT</th></tr>\n";
@@ -3379,7 +3379,7 @@ sub buildHostReport {
                 $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_host_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0') ) {
+		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0') ) {
                         $table_host_conf .= "<tr><th>HOST</th><th>Disk.UseDeviceReset</th><th>Disk.UseLunReset</th><th>Disk.SchedNumReqOutstanding</th><th>Sc
 si.ConflictRetries</th><th>NFS.MaxVolumes</th><th>SendBufferSize</th><th>ReceiveBufferSize</th><th>Net.TcpipHeapSize</th><th>NFS.HeartbeatFrequency</th><th>N
 FS.HeartbeatTimeout</th><th>NFS.HeartbeatMaxFailures</th><th>VMkernel.Boot.techSupportMode</th><th>VMFS3.HardwareAcceleratedLocking</th><th>DataMover.Hardwar
@@ -3395,7 +3395,7 @@ FS.HeartbeatTimeout</th><th>NFS.HeartbeatMaxFailures</th><th>VMkernel.Boot.techS
                 $hostString .= "<br/>".$table_host_conf;
                 ($table_host_conf,$advString) = ("","");
 	}
-	if($HOST_ADVOPT eq "yes" && $agentString ne "" && $atype eq "VirtualCenter"  && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if($HOST_ADVOPT eq "yes" && $agentString ne "" && $atype eq "VirtualCenter"  && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                 $hostTag = "ESX/ESXi Host Agent Settings-$cluster_count";
                 $hostTagShort = "ESX/ESXi Host Agent Settings";
 
@@ -3469,7 +3469,7 @@ BUNDLE ID</th><th>BUNDLE BUILD</th><th>BUNDLE URL</th><th>FORWARDING CLASS</th><
                 $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_host_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 			$table_host_conf .= "<tr><th>VOLUME UUID</th><th>DATASTORE</th><th>DISK_NAME</th><th>DEVICE_NAME</th><th>QUEUE DEPTH</th><th>vSTORAGE SUPPORT</th><th>STATUS</th><th>VENDOR</th><th>MODEL</th><th>HOST(s) NOT ACCESSIBLE TO LUN</tr>\n";
 		} else {
                 	$table_host_conf .= "<tr><th>VOLUME UUID</th><th>DATASTORE</th><th>DISK_NAME</th><th>DEVICE_NAME</th><th>QUEUE DEPTH</th><th>STATUS</th><th>VENDOR</th><th>MODEL</th><th>HOST(s) NOT ACCESSIBLE TO LUN</tr>\n";
@@ -3491,7 +3491,7 @@ BUNDLE ID</th><th>BUNDLE BUILD</th><th>BUNDLE URL</th><th>FORWARDING CLASS</th><
                 $table_host_conf .= "<table border=\"1\"><tr><td bgcolor=\"#CCCCCC\"><b>COLOR LEGEND</b></td><td bgcolor=\"$yellow\"><b>YELLOW < $YELLOW_WARN %</b></td><td bgcolor=\"$orange\"><b>ORANGE < $ORANGE_WARN %</b></td><td bgcolor=\"$red\"><b>RED < $RED_WARN %</b></td></tr></table>\n";
                 $table_host_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 			$table_host_conf .= "<tr><th>DATASTORE</th><th># OF VMS</th><th>CAPACITY</th><th>CONSUMED</th><th>FREE</th><th>% FREE</th><th>BLOCK SIZE</th><th>VERSION</th><th>DS TYPE</th><th>MAINTENANCE MODE</th><th>IORM ENABLED</th><th>CONGESTION THRESHOLD</th><th>STATS AGGREGATION DIABLED</th><th>STATS COLLECTION ENABLED</th><th>HOST(s) NOT ACCESSIBLE TO DATASTORE</tr>\n";
 		} else {
 	                $table_host_conf .= "<tr><th>DATASTORE</th><th># OF VMS</th><th>CAPACITY</th><th>CONSUMED</th><th>FREE</th><th>% FREE</th><th>BLOCK SIZE</th><th>VERSION</th><th>DS TYPE</th><th>HOST(s) NOT ACCESSIBLE TO DATASTORE</tr>\n";
@@ -3502,7 +3502,7 @@ BUNDLE ID</th><th>BUNDLE BUILD</th><th>BUNDLE URL</th><th>FORWARDING CLASS</th><
                 $hostString .= "<br/>".$table_host_conf;
                 ($table_host_conf,$datastoreString) = ("","");
         }
-	if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                 $hostTag = "ESX/ESXi Cache Configuration-$cluster_count";
                 $hostTagShort = "ESX/ESXi Cache Configuration";
 
@@ -3600,7 +3600,7 @@ sub buildVMReport {
                 $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_vm_conf .= "<table border=\"1\">\n";
 
-                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                         $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>BOOTTIME</th><th>UPTIME</th><th>NOTES</th><th>OVERALL STATUS</th><th>HA PROTECTED</th><th>APP HEARTBEAT</th><th>CONNECTION STATE</th><th>POWER STATE</th><th>CONSOLIDATION NEEDED</th></tr>\n";
                 } else {
                     $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>NOTES</th><th>BOOTTIME</th><th>OVERALL STATUS</th><th>CONNECTION STATE</th><th>POWER STATE</th></tr>\n";
@@ -3621,7 +3621,7 @@ sub buildVMReport {
                 $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_vm_conf .= "<table border=\"1\">\n";
             
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>vHW</th><th>HOSTNAME</th><th>UUID</th><th>FIRMWARE</th><th>OS</th><th># of vCPU</th><th>vMEM</th><th># of vDISK</th><th>vDISK</th><th># of vNIC</th><th>CPU RESERV</th><th>MEM RESERV</th><th>IS TEMPLATE</th></tr>\n";
 		} else {
 		    $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>vHW</th><th>HOSTNAME</th><th>UUID</th><th>OS</th><th># of vCPU</th><th>vMEM</th><th># of vDISK</th><th>vDISK</th><th># of vNIC</th><th>CPU RESERV</th><th>MEM RESERV</th><th>IS TEMPLATE</th></tr>\n";
@@ -3642,7 +3642,7 @@ sub buildVMReport {
                 $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
                 $table_vm_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>CPU USAGE</th><th>MEM USAGE</th><th>MAX CPU USAGE</th><th>MAX MEM USAGE</th><th>ACTIVE MEM</th><th>HOST CONSUMED MEM</th><th>INITIAL MEM RESV OVERHEAD</th><th>INITIAL MEM SWAP RESV OVERHEAD</th><th>MEM OVERHEAD</th><th>MEM BALLON</th><th>COMPRESSED MEM</th></tr>\n";
 		} else {
 			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>CPU USAGE</th><th>MEM USAGE</th><th>MAX CPU USAGE</th><th>MAX MEM USAGE</th><th>ACTIVE MEM</th><th>HOST CONSUMED MEM</th><th>MEM OVERHEAD</th><th>MEM BALLON</th></tr>\n";
@@ -3701,7 +3701,7 @@ sub buildVMReport {
                 $vmString .= "<br/>".$table_vm_conf;
                 ($table_vm_conf,$vmftString) = ("","");
 	}
-	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                 $hostTag = "VM Eagerzeroed Thick (EZT) Provisioned-$cluster_count";
                 $hostTagShort = "VM Eagerzeroed Thick (EZT) Provisioned";
 
@@ -3925,7 +3925,7 @@ sub printClusterSummary {
 		$evc = $local_cluster->summary->currentEVCModeKey;
 	}
 
-	if(($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 		if(defined($local_cluster->configurationEx->spbmEnabled)) {
 			$spbm = $local_cluster->configurationEx->spbmEnabled ? "YES" : "NO";
 		}
@@ -4079,7 +4079,7 @@ sub printClusterSummary {
                                 $cluster_start .= "</table>\n";			
 
 				## HA HEARTBEAT DATASTORE ##
-				if(($aversion eq '5.0.0' || $aversion eq '5.1.0') && $haAdvInfo->heartbeatDatastoreInfo) {
+				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0') && $haAdvInfo->heartbeatDatastoreInfo) {
 					my $hahbInfo = $haAdvInfo->heartbeatDatastoreInfo;
 
 					$hostTag = "Heartbeat Datastores-$cluster_name";
@@ -4266,7 +4266,7 @@ sub printClusterSummary {
                 	$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 			$cluster_start .= "<h3>Affinity Rules:</h3>\n";
 			$cluster_start .= "<table border=\"1\">\n";
-			if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+			if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 				$cluster_start .= "<tr><th>RULE NAME</th><th>RULE TYPE</th><th>ENABLED</th><th>VM(s)</th><th>COMPLIANT</th><th>MANDATORY</th><th>USER CREATED</th></tr>\n";
 			} else {
 				$cluster_start .= "<tr><th>RULE NAME</th><th>RULE TYPE</th><th>ENABLED</th><th>VM(s)</th></tr>\n";
@@ -4279,7 +4279,7 @@ sub printClusterSummary {
         	                my $rule_type = "CLUSTER-RULE";
 				my $compliant;
 
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 					if($rule->inCompliance) {
 						$compliant = "<td bgcolor=\"$green\">YES</td>";
 					} else {
@@ -4298,7 +4298,7 @@ sub printClusterSummary {
 				foreach(@$listOfVMs) {
 					$listOfVmsString .= $_->{'name'}."<br/>";
 				}
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 					$cluster_start .= "<tr><td>".$rule_name."</td><td>".$rule_type."</td><td>".(($is_enabled) ? "YES" : "NO")."</td><td>".$listOfVmsString."</td>".$compliant."<td>".($rule->mandatory ? "YES" : "NO")."</td><td>".($rule->userCreated ? "YES" : "NO")."</td></tr>\n";
 				} else {
 					$cluster_start .= "<tr><td>".$rule_name."</td><td>".$rule_type."</td><td>".(($is_enabled) ? "YES" : "NO")."</td><td>".$listOfVmsString."</td></tr>\n";
@@ -4311,7 +4311,7 @@ sub printClusterSummary {
 	###########################
         # AFFINITY GROUP RULES
         ###########################
-	if($CLUSTER_GROUP eq "yes" && $aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+	if($CLUSTER_GROUP eq "yes" && $aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
 		if($local_cluster->configurationEx->group) {
                         my $groups = $local_cluster->configurationEx->group;
 
@@ -5621,7 +5621,7 @@ BODY_START
                 <li><a href="#tab6">VMware/3rd Party Applications</a></li>
 BODY_START
                 }
-                if($type eq 'VirtualCenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+                if($type eq 'VirtualCenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0')) {
                         $body_start .= <<BODY_START;
                 <li><a href="#tab7">Datacenter</a></li>
 BODY_START
