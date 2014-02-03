@@ -417,8 +417,8 @@ sub check_missing_value {
       Util::trace(0,"\nERROR in '$filename':\n fullname value missing ");
       $valid = 0;
    }
-   if (!$cust_spec[0]->findvalue('Orgnization-Name')) {
-      Util::trace(0,"\nERROR in '$filename':\n Orgnization name value missing ");
+   if (!$cust_spec[0]->findvalue('Organization-Name')) {
+      Util::trace(0,"\nERROR in '$filename':\n Organization name value missing ");
       $valid = 0;
    }
    return $valid;
