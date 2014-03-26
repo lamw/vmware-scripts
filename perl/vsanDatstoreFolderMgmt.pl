@@ -41,16 +41,16 @@ my %opts = (
       help => "Name of root folder to create",
       required => 1,
    },
-	 'sub-folder' => {
-			type => "=s",
-			help => "Name of sub-folder to create",
-			required => 1,
-		},
-		'vsan-datastore' => {
-			type => "=s",
-			help => "Name of VSAN Datastore",
-			required => 1,
-		},
+   'sub-folder' => {
+      type => "=s",
+      help => "Name of sub-folder to create",
+      required => 1,
+   },
+   'vsan-datastore' => {
+      type => "=s",
+      help => "Name of VSAN Datastore",
+      required => 1,
+   },
 );
 
 $SIG{__DIE__} = sub{Util::disconnect()};
