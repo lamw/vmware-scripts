@@ -192,11 +192,13 @@ sub find_datastore {
    my $vm = $args{vm};
    my $dsname = $args{datastore};
    my $host = Vim::get_view(mo_ref => $vm->runtime->host);
-   my $datastores = Vim::get_views(mo_ref_array => $host->datastore);
-   foreach my $datastore (@$datastores) {
-      return $datastore if ($datastore->summary->name eq $dsname);
-   }
-   return undef;
+   my $datastore = Vim::find_entity_view(
+      view_type        => 'Datastore',
+      filter   => {
+          'summary.name' => qr/$dsname/
+       }
+   );
+   return $datastore;
 }
 
 sub find_disk {
