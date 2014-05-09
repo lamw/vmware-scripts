@@ -51,7 +51,7 @@ try:
         page_content= page.read()
 except IOError, e:
         opener.close()
-        syslog.syslog(syslogGhetto + ' Failed to retrieve MOB data')
+        syslog.syslog(syslogGhetto + ' Failed to retrieve MOB data -> ' + str(e.args))
         sys.exit(1)
 else:
         syslog.syslog(syslogGhetto + ' Succesfully requested MOB data')
