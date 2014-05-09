@@ -42,7 +42,7 @@ use VMware::VILib;
 my %opts = (
    'operation' => {
       type => "=s",
-      help => "Operation to perform on ESX(i) host [start|stop|restart|query]",
+      help => "Operation to perform on ESX(i) host [start|stop|restart|enable|disable|query]",
       required => 1,
    },
    'service' => {
@@ -114,7 +114,8 @@ sub performOperation {
 	if($operation eq 'query') {
 		my $services = $serviceSystem->serviceInfo->service;
 		foreach(@$services) {
-			print color("yellow") . $_->key . "\t" . ($_->running ? "RUNNING" : "NOT RUNNING") . color("reset") . "\n";
+			printf(color("yellow")."%-16.16s  %-11.11s  Startup: %3.3s".color("reset")."\n",
+			       $_->key, ($_->running ? "RUNNING" : "NOT RUNNING"), $_->policy);
 		}
 	}elsif($operation eq 'start') {
 		unless($service) {	
@@ -168,6 +169,48 @@ sub performOperation {
                 if($@) {
                         print "\t" . color("red") . "Error: Unable to restart service \"$service\" due to: " . $@ . color("reset") . "\n";
                 }
+	}elsif($operation eq 'enable') {
+		unless($service) {
+			Util::disconnect();
+			print "Error: \"enable\" operation requires --service param!\n";
+			exit 1;
+		}
+
+		my $policy = &checkServiceEnabled($serviceSystem,$service);
+		if($policy eq "off") {
+			eval {
+				$serviceSystem->UpdateServicePolicy(id => $service, policy => "on");
+				print "\t" . color("cyan") . "Successfully enabled $service\n" . color("reset");
+			};
+			if($@) {
+				print "\t" . color("red") . "Error: Unable to change startup policy on service \"$service\" due to: " . $@ . color("reset") . "\n";			}
+
+		}elsif($policy eq "on") {
+			print "\t" . color("yellow") . "$service is already enabled" . color("reset") . "\n";
+		} else {
+			print "\t" . color("red") . "Error: Unknown startup policy \"$policy\"" . color("reset") . "\n";
+		}
+	}elsif($operation eq 'disable') {
+		unless($service) {
+			Util::disconnect();
+			print "Error: \"disable\" operation requires --service param!\n";
+			exit 1;
+		}
+
+		my $policy = &checkServiceEnabled($serviceSystem,$service);
+		if($policy eq "on") {
+			eval {
+				$serviceSystem->UpdateServicePolicy(id => $service, policy => "off");
+				print "\t" . color("cyan") . "Successfully disabled $service\n" . color("reset");
+			};
+			if($@) {
+				print "\t" . color("red") . "Error: Unable to change startup policy on service \"$service\" due to: " . $@ . color("reset") . "\n";
+			}
+		}elsif($policy eq "off") {
+			print "\t" . color("yellow") . "$service is already disabled" . color("reset") . "\n";
+		} else {
+			print "\t" . color("red") . "Error: Unknown startup policy \"$policy\"" . color("reset") . "\n";
+		}
 	} else {
 		Util::disconnect();
 		print "Error: Invalid operation selection!\n";
@@ -186,8 +229,21 @@ sub checkService {
 				return "yes";			
 			}	
 		}
-        }
+	}
 	return "no";
+}
+
+sub checkServiceEnabled {
+	my ($serviceSystem,$service) = @_;
+
+	my $services = $serviceSystem->serviceInfo->service;
+
+	foreach(@$services) {
+		if($_->key eq $service) {
+			return $_->policy;
+		}
+	}
+	return 0;
 }
 
 # Subroutine to process the input file
