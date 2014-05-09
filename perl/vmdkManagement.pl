@@ -85,22 +85,23 @@ if($operation eq 'add') {
 	}
 	&addExistingVMDK($vm,$datastore,$vmdkname);
 } elsif($operation eq 'remove') {
-	&removeVMDK($vm,$vmdkname,0);
+	&removeVMDK($vm,$vmdkname,$datastore,0);
 } elsif($operation eq 'destroy') {
-	&removeVMDK($vm,$vmdkname,1);
+	&removeVMDK($vm,$vmdkname,$datastore,1);
 }
 
 Util::disconnect();
 
 sub removeVMDK {
-	my ($vm,$file,$des) = @_;
+	my ($vm,$file,$dsname,$des) = @_;
 
 	my ($disk,$config_spec_operation, $config_file_operation);
         $config_spec_operation = VirtualDeviceConfigSpecOperation->new('remove');
         $config_file_operation = VirtualDeviceConfigSpecFileOperation->new('destroy');
 
         $disk = &find_disk(vm => $vm,
-                fileName => $file
+                fileName => $file,
+                datastore => $dsname
         );
 
         if($disk) {
@@ -192,25 +193,30 @@ sub find_datastore {
    my $vm = $args{vm};
    my $dsname = $args{datastore};
    my $host = Vim::get_view(mo_ref => $vm->runtime->host);
-   my $datastores = Vim::get_views(mo_ref_array => $host->datastore);
-   foreach my $datastore (@$datastores) {
-      return $datastore if ($datastore->summary->name eq $dsname);
-   }
-   return undef;
+   my $datastore = Vim::find_entity_view(
+      view_type        => 'Datastore',
+      filter   => {
+          'summary.name' => qr/$dsname/
+       }
+   );
+   return $datastore;
 }
 
 sub find_disk {
    my %args = @_;
    my $vm = $args{vm};
    my $name = $args{fileName};
+   my $dsname = $args{datastore};
 
    my $devices = $vm->config->hardware->device;
    foreach my $device (@$devices) {
         if($device->isa('VirtualDisk')) {
                 if($device->backing->isa('VirtualDiskFlatVer2BackingInfo')) {
-                        my ($vm_ds,$vmdk_path) = split(' ',$device->backing->fileName,2);
+                        my ($vm_ds,$vmdk_path) = split(']',$device->backing->fileName,2);
+                        $vm_ds =~ s/^.//;
+                        $vmdk_path =~ s/^.//;
                         my ($vm_dir,$vm_vmdk) = split('/',$vmdk_path,2);
-                        return $device if ($vm_vmdk eq $name);
+                        return $device if ($vm_vmdk eq $name) && ($vm_ds =~ qr/$dsname/);
                 }
         }
    }
