@@ -1,4 +1,4 @@
-#1/bin/bash
+#!/bin/bash
 # William Lam
 # www.virtuallyghetto.com
 
@@ -8,7 +8,7 @@ ALREADY_CONFIGURE_STRING="This host has already been configured before, please t
 
 usage() {
 	echo -e "\nvCloud Suite Syslog Configuration Script by William Lam (www.virtuallyghetto.com)"
-	echo -e "\n\t$0 [VMWARE-SOLUTION] [VCENTER-LOG-INSIGHT]\n"
+	echo -e "\n\t$0 [VMWARE-SOLUTION] [REMOTE-SYSLOG]\n"
 	echo -e "\tVMware Solutions"
 	echo -e "\t\tvin"
 	echo -e "\t\tvcops-ui"
@@ -42,7 +42,7 @@ source vin {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -79,7 +79,7 @@ source vcops-ui {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -110,7 +110,7 @@ source vcops-ana {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -142,7 +142,7 @@ source vco {
 	
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -170,15 +170,55 @@ source vcsa {
        file("/var/log/vmware/vpx/vws.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
        file("/var/log/vmware/vpx/vmware-vpxd.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
        file("/var/log/vmware/vpx/inventoryservice/ds.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+       file("/var/log/ldapmessages" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vpx/ls.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vpx/jointool.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vpx/vsm.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vpx/sps/sps.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vpx/cim-diag.log" log_prefix("vcsa: ") follow_freq(1) flags(no-parse));
+};       
+
+source vmware-sso {
+       file("/var/log/vmware/sso/ssoAdminServer.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/sso/lookupServer.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vmdird/vdcpromo.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vmdird/vdcsetupIdu.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vmkdcd/vmkdcd.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/sso/vmware-sts-idmd.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/sso/vmware-identity-sts.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/sso/utils/sso_servicecfg.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/sso/utils/vi-regtool.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/sso/utils/vmware-stsd.log" log_prefix("sso: ") follow_freq(1) flags(no-parse));
+};
+
+source vsphere-client {
+       file("/var/log/vmware/vsphere-client/logs/vsphere_client_virgo.log" log_prefix("vsphere-client: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vsphere-client/logs/byUser/Administrator@VSPHERE.LOCAL.log" log_prefix("vsphere-client: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vsphere-client/logs/byUser/noUser.log" log_prefix("vsphere-client: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vsphere-client/logs/byUser/_unknown_user_.log" log_prefix("vsphere-client: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vsphere-client/eventlogs/eventlog.log" log_prefix("vsphere-client: ") follow_freq(1) flags(no-parse));
+       
+};
+
+source vami {
+       file("/opt/vmware/var/log/vami/vami.log" log_prefix("vami: ") follow_freq(1) flags(no-parse));
+       file("/opt/vmware/var/log/vami/vami-ovf.log" log_prefix("vami: ") follow_freq(1) flags(no-parse));
+       file("/opt/vmware/var/log/vami/vami-sfcb.log" log_prefix("vami: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vami/vcva-web-ui.log" log_prefix("vami: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vami/storage-page.out.log" log_prefix("vami: ") follow_freq(1) flags(no-parse));
+       file("/var/log/vmware/vami/cmdpool-web-ui.log" log_prefix("vami: ") follow_freq(1) flags(no-parse));
 };
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
         source(vcsa);
+        source(vmware-sso);
+        source(vsphere-client);
+        source(vami);
         destination(remote_syslog);
 };
 __VCSA__
@@ -202,7 +242,7 @@ source vcc-server {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -230,7 +270,7 @@ source vcc-node {
  
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
  
 log {
@@ -258,7 +298,7 @@ source vma {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -302,7 +342,7 @@ source vdp {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -317,7 +357,6 @@ echo "Restarting syslog client ..."
         fi
 }
 
-
 configureVR() {
         grep "${UNIQUE_CONFIGURE_STRING}" ${SYSLOG_NG_CONF} > /dev/null 2>&1
         if [ $? -eq 1 ]; then
@@ -331,7 +370,7 @@ source vr {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -361,7 +400,7 @@ source vcd {
 
 # Remote Syslog Host
 destination remote_syslog {
-       udp("${LOG_INSIGHT}" port (514));
+       udp("${REMOTE-SYSLOG}" port (514));
 };
 
 log {
@@ -377,8 +416,7 @@ echo "Restarting syslog client ..."
 }
 
 VMW_SOLUTION=$1
-LOG_INSIGHT=$2
-
+REMOTE-SYSLOG=$2
 
 if [ $# -ne 2 ]; then 
 	usage
