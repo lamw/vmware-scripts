@@ -74,6 +74,11 @@ my %opts = (
       help => "Name of Snapshot from pristine base image",
       required => 1,
    },
+   folder => {
+      type => "=s",
+      help => "Folder to place the clone in",
+      required => 0,
+   },
    convert => {
       type => "=s",
       help => "Convert destination disk type [source|sesparse]",
@@ -286,12 +291,53 @@ sub clone_vm {
                   Util::trace (0, "Fault" . $@ . ""   );
                }
             }
+            else {
+               # Move to a folder if specified
+               my $vm_folder = Opts::get_option('folder');
+               if ($vm_folder ne "") {
+                  move_vm_to_folder($clone_name, $vm_folder);
+               }      
+            }
          }
       }
    }
    else {
       Util::trace (0, "\nNo virtual machine found with name '$vm_name'\n");
    }
+}
+
+sub move_vm_to_folder {
+   my ($vmname, $folder) = @_;
+   my @subdirs;
+   
+   #Get the VM object
+   my $current_views = Vim::find_entity_views((view_type => 'VirtualMachine'), filter => { name => $vmname } );
+   my $vm_moref = shift @$current_views;
+   
+   # Separate the folder into its parts
+   @subdirs = split(/\//,$folder);
+   
+   # Grab the root folder 'vm'
+   my $folder_views = Vim::find_entity_views(view_type => 'Folder', filter => { name => 'vm' });
+   my $vm_folder_ref = shift (@$folder_views);
+   
+   my $current_ref = $vm_folder_ref;
+   
+   foreach my $dir(@subdirs) {
+      #Find the child with the name of $dir and change the current_ref to it
+      my $children = $current_ref->{childEntity};
+      foreach my $child(@$children) {
+         my $child_ref = Vim::get_view(mo_ref => $child);
+         if ($child_ref->{mo_ref}->{type} eq "Folder") {
+            if ($child_ref->{name} eq $dir) {
+               $current_ref = $child_ref;
+               last;
+            }
+         }
+      }
+   }
+   
+   $current_ref->MoveIntoFolder_Task(list => $vm_moref);  
 }
 
 sub find_snapshot_name {
