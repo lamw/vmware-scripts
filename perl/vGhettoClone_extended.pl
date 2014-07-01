@@ -11,7 +11,7 @@ use warnings;
 
 use FindBin;
 use lib "$FindBin::Bin/../";
-use lib "/usr/lib/vmware-vcli/apps";
+#use lib "/etc/puppetmaster/global/bin/autodeploy/tools/vghetto-scripts/perl";
 
 use VMware::VIRuntime;
 use XML::LibXML;
@@ -45,6 +45,46 @@ my %opts = (
       required => 0,
       default => "../sampledata/vmclone.xml",
    },
+   datastore => {
+      type => "=s",
+      help => "Name of the Datastore",
+      required => 0,
+   },
+   snapname => {
+      type => "=s",
+      help => "Name of Snapshot from pristine base image",
+      required => 1,
+   },
+   folder => {
+      type => "=s",
+      help => "Folder to place the clone in",
+      required => 0,
+   },
+   clone_type => {
+      type => "=s",
+      help => "Specify the clone type to perform [linked|copy]",
+      required => 0,
+      default => 'linked',
+   },
+   convert => {
+      type => "=s",
+      help => "Convert destination disk type [source|sesparse]",
+      required => 0,
+      default => 'source',
+   },
+   grainsize => {
+      type => "=s",
+      help => "Grainsize for SE Sparse disk [default 1024k]",
+      required => 0,
+      default => 1024,
+   },
+   power_vm => {
+      type => "=s",
+      help => "Flag to specify whether or not to power on virtual machine after cloning"
+           . "yes,no",
+      required => 0,
+      default => 'no',
+   },
    customize_guest => {
       type => "=s",
       help => "Flag to specify whether or not to customize guest: yes,no",
@@ -64,31 +104,11 @@ my %opts = (
       required => 0,
       default => "../schema/vmclone.xsd",
    },
-   datastore => {
+   net_device_type => {
       type => "=s",
-      help => "Name of the Datastore",
+      help => "The network device type used in the device customization.",
       required => 0,
-   },
-   snapname => {
-      type => "=s",
-      help => "Name of Snapshot from pristine base image",
-      required => 1,
-   },
-   folder => {
-      type => "=s",
-      help => "Folder to place the clone in",
-      required => 0,
-   },
-   convert => {
-      type => "=s",
-      help => "Convert destination disk type [source|sesparse]",
-      required => 1,
-   },
-   grainsize => {
-      type => "=s",
-      help => "Grainsize for SE Sparse disk [default 1024k]",
-      required => 0,
-      default => 1024,
+      default => 'VirtualVmxnet3',
    },
 );
 
@@ -112,6 +132,7 @@ Util::disconnect();
 sub clone_vm {
    my $vm_name = Opts::get_option('vmname');
    my $clone_name = Opts::get_option('vmname_destination');
+   my $clone_type = Opts::get_option('clone_type');
    my $vm_snapshot_name = Opts::get_option('snapname');
    my $convert = Opts::get_option('convert');
    my $grainsize = Opts::get_option('grainsize');
@@ -147,15 +168,7 @@ sub clone_vm {
                   return;
                }
             }
-            
-            my $network_dev_key;
-            my $devices = $_->config->hardware->device;
-            foreach my $device (@$devices) {
-               if (ref $device eq "VirtualVmxnet3") {
-                  $network_dev_key = $device->key;
-                  last;
-               }
-            }
+
 
 	    my ($vm_snapshot,$ref,$nRefs);
 	    if(defined $_->snapshot) {
@@ -165,6 +178,10 @@ sub clone_vm {
       	    if (defined $ref && $nRefs == 1) {
             	$vm_snapshot = Vim::get_view (mo_ref =>$ref->snapshot);
 	    }
+            else {
+                Util::trace(0, "\nSnapshot $vm_snapshot_name not found. \n");
+                return;
+            }
 
 	    my ($diskLocator,$relocate_spec,$diskType,$diskId);
 	
@@ -175,12 +192,22 @@ sub clone_vm {
 			last;
 		}
   	    }
-
-            if($convert eq "sesparse" && Vim::get_service_content()->about->version eq "5.1.0") {
+            
+            
+            if ($clone_type eq "copy") {
+               $convert = "source";
+               $relocate_spec = VirtualMachineRelocateSpec->new(datastore => $ds_info{mor},
+                        host => $host_view,
+                        pool => $comp_res_view->resourcePool);
+            }
+            elsif ($convert eq "sesparse" && Vim::get_service_content()->about->version eq "5.1.0") {
 		my $newdiskName = "[" . $ds_name . "] " . $clone_name . "/" . $clone_name . ".vmdk";
 
 	    	$diskLocator = VirtualMachineRelocateSpecDiskLocator->new(datastore => $ds_info{mor},
-			diskBackingInfo => VirtualDiskFlatVer2BackingInfo->new(fileName => $newdiskName, diskMode => 'persistent', deltaDiskFormat => 'seSparseFormat', deltaGrainSize => $grainsize),
+			diskBackingInfo => VirtualDiskFlatVer2BackingInfo->new(fileName => $newdiskName,
+                                                                               diskMode => 'persistent',
+                                                                               deltaDiskFormat => 'seSparseFormat',
+                                                                               deltaGrainSize => $grainsize),
 			diskId => $diskId);
 
 		$relocate_spec = VirtualMachineRelocateSpec->new(datastore => $ds_info{mor},
@@ -198,10 +225,20 @@ sub clone_vm {
             my $clone_spec ;
             my $config_spec;
             my $customization_spec;
-
+            my $poweron;
+            
+            
+            if (Opts::get_option('power_vm') eq "yes") {
+               $poweron = 1
+            }
+            else {
+               $poweron = 0
+            }
+            
+            
             if ((Opts::get_option('customize_vm') eq "yes")
                 && (Opts::get_option('customize_guest') ne "yes")) {
-               $config_spec = get_config_spec('network_dev_key' => $network_dev_key);
+               $config_spec = get_config_spec();
                $clone_spec = VirtualMachineCloneSpec->new(powerOn => 0,template => 0,
 						       snapshot => $vm_snapshot,
                                                        location => $relocate_spec,
@@ -210,10 +247,10 @@ sub clone_vm {
             }
             elsif ((Opts::get_option('customize_guest') eq "yes")
                 && (Opts::get_option('customize_vm') ne "yes")) {
-               $customization_spec = get_customization_linux_spec
+               $customization_spec = VMUtils::get_customization_spec
                                               (Opts::get_option('filename'));
                $clone_spec = VirtualMachineCloneSpec->new(
-                                                   powerOn => 1,
+                                                   powerOn => $poweron,
                                                    template => 0,
 						   snapshot => $vm_snapshot,
                                                    location => $relocate_spec,
@@ -222,11 +259,11 @@ sub clone_vm {
             }
             elsif ((Opts::get_option('customize_guest') eq "yes")
                 && (Opts::get_option('customize_vm') eq "yes")) {
-               $customization_spec = get_customization_linux_spec
+               $customization_spec = VMUtils::get_customization_spec
                                               (Opts::get_option('filename'));
-               $config_spec = get_config_spec('network_dev_key' => $network_dev_key);
+               $config_spec = get_config_spec();
                $clone_spec = VirtualMachineCloneSpec->new(
-                                                   powerOn => 1,
+                                                   powerOn => $poweron,
                                                    template => 0,
 						   snapshot => $vm_snapshot,
                                                    location => $relocate_spec,
@@ -236,12 +273,18 @@ sub clone_vm {
             }
             else {
                $clone_spec = VirtualMachineCloneSpec->new(
-                                                   powerOn => 0,
+                                                   powerOn => $poweron,
                                                    template => 0,
 						   snapshot => $vm_snapshot,
                                                    location => $relocate_spec,
                                                    );
             }
+            
+            $Data::Dumper::Sortkeys = 1; #Sort the keys in the output
+            $Data::Dumper::Deepcopy = 1; #Enable deep copies of structures
+            $Data::Dumper::Indent = 1;   #Enable enough indentation to read the output
+            print Dumper ($customization_spec) . "\n";
+            
             Util::trace (0, "\nLink Cloning virtual machine '" . $clone_name . "' from '" . $vm_name . "' ...\n");
 
             eval {
@@ -369,16 +412,13 @@ sub find_snapshot_name {
 # and returns the spec
 sub get_config_spec() {
 
-   my %args = @_;
-   my $network_dev_key = $args{'network_dev_key'};
    my $parser = XML::LibXML->new();
    my $tree = $parser->parse_file(Opts::get_option('filename'));
    my $root = $tree->getDocumentElement;
    my @cspec = $root->findnodes('Virtual-Machine-Spec');
    my $vmname ;
    my $vmhost  ;
-   my $network;
-   my $nic_allow_guest_control = 0;
+   my $guestid;
    my $datastore;
    my $disksize = 4096;  # in KB;
    my $memory = 256;  # in MB;
@@ -388,8 +428,8 @@ sub get_config_spec() {
 
    foreach (@cspec) {
    
-      if ($_->findvalue('Network')) {
-         $network = $_->findvalue('Network');
+      if ($_->findvalue('Guest-Id')) {
+         $guestid = $_->findvalue('Guest-Id');
       }
       if ($_->findvalue('Memory')) {
          $memory = $_->findvalue('Memory');
@@ -400,39 +440,11 @@ sub get_config_spec() {
       $vmname = Opts::get_option('vmname_destination');
    }
 
-   # Retrieve network object
-   my $network_view = Vim::find_entity_view(
-         view_type => 'Network',
-         filter => { 'name' => $network },
-         );
-
-   # New object which defines network backing for a virtual Ethernet card
-   my $virtual_device_backing_info = VirtualEthernetCardNetworkBackingInfo->new(
-                                                                            network => $network_view,
-                                                                            deviceName => $network);
-
-   # New object which contains information about connectable virtual devices
-   my $vdev_connect_info = VirtualDeviceConnectInfo->new(
-                                                        startConnected => $nic_poweron,
-                                                        allowGuestControl => $nic_allow_guest_control,
-                                                        connected => '1');
-   # New object which define virtual device
-   my $network_device = VirtualVmxnet3->new(
-                                       key => $network_dev_key,
-                                       backing => $virtual_device_backing_info,
-                                       connectable => $vdev_connect_info);
-
-   # New object which encapsulates change specifications for an individual virtual device
-   my @device_config_spec = VirtualDeviceConfigSpec->new(
-                                                     operation => VirtualDeviceConfigSpecOperation->new('edit'),
-                                                     device => $network_device);
-
-   # New object which encapsulates configuration settings when creating or reconfiguring a virtual machine
    my $vm_config_spec = VirtualMachineConfigSpec->new(
                                                   name => $vmname,
                                                   memoryMB => $memory,
                                                   numCPUs => $num_cpus,
-                                                  deviceChange => \@device_config_spec);
+                                                  guestId => $guestid );
    return $vm_config_spec;
 }
 
@@ -475,20 +487,36 @@ sub check_missing_value {
    my $root = $tree->getDocumentElement;
    my @cust_spec = $root->findnodes('Customization-Spec');
    my $total = @cust_spec;
-   if (!$cust_spec[0]->findvalue('IP')) {
-      Util::trace(0,"\nERROR in '$filename':\n IP address value missing ");
+   if (!$cust_spec[0]->findvalue('Auto-Logon')) {
+      Util::trace(0,"\nERROR in '$filename':\n autologon value missing ");
       $valid = 0;
    }
-   if (!$cust_spec[0]->findvalue('Netmask')) {
-      Util::trace(0,"\nERROR in '$filename':\n Netmask value missing ");
+   if (!$cust_spec[0]->findvalue('Virtual-Machine-Name')) {
+      Util::trace(0,"\nERROR in '$filename':\n computername value missing ");
       $valid = 0;
    }
-   if (!$cust_spec[0]->findvalue('Gateway')) {
-      Util::trace(0,"\nERROR in '$filename':\n Gateway value missing ");
+   if (!$cust_spec[0]->findvalue('Timezone')) {
+      Util::trace(0,"\nERROR in '$filename':\n timezone value missing ");
       $valid = 0;
    }
    if (!$cust_spec[0]->findvalue('Domain')) {
       Util::trace(0,"\nERROR in '$filename':\n domain value missing ");
+      $valid = 0;
+   }
+   if (!$cust_spec[0]->findvalue('Domain-User-Name')) {
+      Util::trace(0,"\nERROR in '$filename':\n domain_user_name value missing ");
+      $valid = 0;
+   }
+   if (!$cust_spec[0]->findvalue('Domain-User-Password')) {
+      Util::trace(0,"\nERROR in '$filename':\n domain_user_password value missing ");
+      $valid = 0;
+   }
+   if (!$cust_spec[0]->findvalue('Full-Name')) {
+      Util::trace(0,"\nERROR in '$filename':\n fullname value missing ");
+      $valid = 0;
+   }
+   if (!$cust_spec[0]->findvalue('Orgnization-Name')) {
+      Util::trace(0,"\nERROR in '$filename':\n Orgnization name value missing ");
       $valid = 0;
    }
    return $valid;
@@ -524,86 +552,33 @@ sub validate {
           $valid = 0;
        }
     }
+    if (Opts::option_is_set('clone_type')) {
+       if ((Opts::get_option('clone_type') ne "linked")
+             && (Opts::get_option('clone_type') ne "copy")) {
+          Util::trace(0,"\nMust specify 'linked' or 'copy' for clone_type option");
+          $valid = 0;
+       }
+    }
+    if (Opts::option_is_set('convert')) {
+       if ((Opts::get_option('convert') ne "source")
+             && (Opts::get_option('convert') ne "sesparse")) {
+          Util::trace(0,"\nMust specify 'source' or 'sesparse' for convert option");
+          $valid = 0;
+       }
+    }
+    if (Opts::option_is_set('power_vm')) {
+       if ((Opts::get_option('power_vm') ne "yes")
+             && (Opts::get_option('power_vm') ne "no")) {
+          Util::trace(0,"\nMust specify 'yes' or 'no' for power_vm option");
+          $valid = 0;
+       }
+    }
+    
+    
    return $valid;
 }
 
-# This subroutine constructs the customization spec for virtual machines.
-# Input Parameters:
-# ----------------
-# filename      : The location of the input XML file. This file contains the 
-#                 various properties for customization spec 
-#
-# Output:
-# ------
-# It returns the customization spec as per the input XML file
 
-sub get_customization_linux_spec {
-   my ($filename) = @_;
-   my $parser = XML::LibXML->new();
-   my $tree = $parser->parse_file($filename);
-   my $root = $tree->getDocumentElement;
-   my @cspec = $root->findnodes('Customization-Spec');
-
-   # Default Values
-   my $ipaddr;
-   my $netmask;
-   my @gateway;
-   my $domain;
-
-   foreach (@cspec) {
-      if ($_->findvalue('IP')) {
-         $ipaddr = $_->findvalue('IP');
-      }
-      if ($_->findvalue('Netmask')) {
-         $netmask = $_->findvalue('Netmask');
-      }
-      if ($_->findvalue('Gateway')) {
-         $gateway[0] = $_->findvalue('Gateway');
-      }
-      if ($_->findvalue('Domain')) {
-         $domain = $_->findvalue('Domain');
-      }
-   }
-
-  
-   # New object which is a collection of global IP settings for a virtual network adapter. In Linux, DNS server settings are global
-   my $customization_global_settings = CustomizationGlobalIPSettings->new();
-
-   # New object which define hostname with name of the virtual machine
-   my $cust_name =
-      CustomizationVirtualMachineName->new();
-
-   # New object which contains machine-wide settings that identify a Linux machine
-   my $cust_linprep =
-      CustomizationLinuxPrep->new(
-                              domain => $domain,
-                              hostName => $cust_name);
-
-   # New object which define a static IP Address for the virtual network adapter
-   my $customization_fixed_ip = CustomizationFixedIp->new(ipAddress => $ipaddr);
-
-   # New object which define IP settings for a virtual network adapter
-   my $cust_ip_settings =
-      CustomizationIPSettings->new(
-                               gateway => \@gateway,
-                               subnetMask => $netmask,
-                               ip => $customization_fixed_ip);
-
-   # New object which associate a virtual network adapter with its IP settings
-   my $cust_adapter_mapping =
-      CustomizationAdapterMapping->new(adapter => $cust_ip_settings);
-
-   # New object, list of CustomizationAdapterMapping
-   my @cust_adapter_mapping_list = [$cust_adapter_mapping];
-
-   # New object which contains information required to customize a virtual machine guest OS
-   my $customization_spec =
-      CustomizationSpec->new(
-                         identity=>$cust_linprep,
-                         globalIPSettings=>$customization_global_settings,
-                         nicSettingMap=>@cust_adapter_mapping_list);
-   return $customization_spec;
-}
 
 __END__
 
