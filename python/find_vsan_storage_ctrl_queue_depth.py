@@ -48,10 +48,10 @@ for allscsiadapters in root.findall('all-scsi-iface'):
 					if custom_pci_id in json_data:
 						print "VSAN HCL: Yes"
 						print "Adapter: " + json_data[custom_pci_id]
-						print "Identifer: " + custom_pci_id 
+						print "Identifier: " + custom_pci_id 
 						print "QueueDepth: " + queue_depth + "\n"
 					if show_non_vsan_hcl_ctr:
 						print "VSAN HCL: No"
 						print "Adapter: " + adapter
-						print "Identifer: " + custom_pci_id 
+						print "Identifier: " + custom_pci_id 
 						print "QueueDepth: " + queue_depth + "\n"
