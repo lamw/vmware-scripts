@@ -4,7 +4,7 @@
 # Simple script to pull down CoreOS image & run on ESXi
 
 # CoreOS ZIP URL
-CORE_OS_DOWNLOAD_URL=http://alpha.release.core-os.net/amd64-usr/current/coreos_production_vmware_insecure.zip
+CORE_OS_DOWNLOAD_URL=http://stable.release.core-os.net/amd64-usr/current/coreos_production_vmware_insecure.zip
 
 # Path of Datastore to store CoreOS
 DATASTORE_PATH=/vmfs/volumes/mini-local-datastore-2
