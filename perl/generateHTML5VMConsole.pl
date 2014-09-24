@@ -40,6 +40,12 @@ my %opts = (
         help => "The name of virtual machine",
         required => 1,
         },
+        isvSphere55u2 => {
+        type => "=s",
+        help => "Whether vCenter Server is 5.5 Update 2 for Secure HTML5 Console",
+        required => 0,
+        default => "false"
+        },
 );
 
 # validate options, and connect to the server
@@ -49,8 +55,10 @@ Opts::validate();
 Util::connect();
 
 my $vmname = Opts::get_option('vm');
+my $isvSphere55u2 = Opts::get_option('isvSphere55u2');
 my $server = Opts::get_option('server');
 my $htmlPort = 7331;
+my $secureHtmlPort = 7343;
 my $port = 443;
 my $vcenter_fqdn;
 
@@ -77,7 +85,11 @@ my $vm_mo_ref_id = $vm->{'mo_ref'}->value;
 my $vcenterSSLThumbprint = `openssl s_client -connect $server:$port < /dev/null 2>/dev/null | openssl x509 -fingerprint -noout -in /dev/stdin | awk -F = '{print \$2}'`;
 
 # VM console URL
-print "http://" . $server . ":" . $htmlPort . "/console/?vmId=" . $vm_mo_ref_id . "&vmName=" . $vmname . "&host=" . $vcenter_fqdn . "&sessionTicket=" . $session . "&thumbprint=" . $vcenterSSLThumbprint . "\n";
+if ($isvSphere55u2 eq "true") {
+	print "https://" . $server . ":" . $secureHtmlPort . "/console/?vmId=" . $vm_mo_ref_id . "&vmName=" . $vmname . "&host=" . $vcenter_fqdn . "&sessionTicket=" . $session . "&thumbprint=" . $vcenterSSLThumbprint . "\n";
+} else {
+	print "http://" . $server . ":" . $htmlPort . "/console/?vmId=" . $vm_mo_ref_id . "&vmName=" . $vmname . "&host=" . $vcenter_fqdn . "&sessionTicket=" . $session . "&thumbprint=" . $vcenterSSLThumbprint . "\n";
+}
 print "Sleeping for 60 seconds and then exiting ...\n";
 sleep(60);
 
