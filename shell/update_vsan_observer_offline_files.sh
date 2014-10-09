@@ -73,4 +73,3 @@ cp ${VSAN_OBSERVER_LOGIN_FILE}.bak ${VSAN_OBSERVER_LOGIN_FILE}
 echo -e "\nUpdating ${VSAN_RB_FILE} file ..."
 cp ${VSAN_RB_FILE} ${VSAN_RB_FILE}.bak
 sed -i "s#File.basename)#File.basename(f))#" ${VSAN_RB_FILE}
-cp ${VSAN_RB_FILE}.bak ${VSAN_RB_FILE}
