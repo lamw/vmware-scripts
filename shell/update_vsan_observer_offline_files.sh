@@ -46,7 +46,6 @@ sed -i "s#https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js#$
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js#${EXTERNAL_LIB_DIR}/js/d3.min.js#g" ${VSAN_OBSERVER_GRAPH_FILE}
 sed -i "s#https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css#${EXTERNAL_LIB_DIR}/css/bootstrap-combined.no-icons.min.css#g" ${VSAN_OBSERVER_GRAPH_FILE}
 sed -i "s#https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css#${EXTERNAL_LIB_DIR}/css/font-awesome.css#g" ${VSAN_OBSERVER_GRAPH_FILE}
-cp ${VSAN_OBSERVER_GRAPH_FILE}.bak ${VSAN_OBSERVER_GRAPH_FILE}
 
 cp ${VSAN_OBSERVER_HISTORY_FILE} ${VSAN_OBSERVER_HISTORY_FILE}.bak
 echo -e "\nUpdating ${VSAN_OBSERVER_HISTORY_FILE} file ..."
@@ -57,7 +56,6 @@ sed -i "s#https://code.jquery.com/ui/1.9.1/jquery-ui.min.js#${EXTERNAL_LIB_DIR}/
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js#${EXTERNAL_LIB_DIR}/js/d3.min.js#g" ${VSAN_OBSERVER_HISTORY_FILE}
 sed -i "s#https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js#${EXTERNAL_LIB_DIR}/js/angular.min.js#g" ${VSAN_OBSERVER_HISTORY_FILE}
 sed -i "s#https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css#${EXTERNAL_LIB_DIR}/css/font-awesome.css#g" ${VSAN_OBSERVER_HISTORY_FILE}
-cp ${VSAN_OBSERVER_HISTORY_FILE}.bak ${VSAN_OBSERVER_HISTORY_FILE}
 
 cp ${VSAN_OBSERVER_LOGIN_FILE} ${VSAN_OBSERVER_LOGIN_FILE}.bak
 echo -e "\nUpdating ${VSAN_OBSERVER_LOGIN_FILE} file ..."
@@ -68,7 +66,6 @@ sed -i "s#https://code.jquery.com/ui/1.9.1/jquery-ui.min.js#${EXTERNAL_LIB_DIR}/
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js#${EXTERNAL_LIB_DIR}/js/d3.min.js#g" ${VSAN_OBSERVER_LOGIN_FILE}
 sed -i "s#https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js#${EXTERNAL_LIB_DIR}/js/angular.min.js#g" ${VSAN_OBSERVER_LOGIN_FILE}
 sed -i "s#https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css#${EXTERNAL_LIB_DIR}/css/font-awesome.css#g" ${VSAN_OBSERVER_LOGIN_FILE}
-cp ${VSAN_OBSERVER_LOGIN_FILE}.bak ${VSAN_OBSERVER_LOGIN_FILE}
 
 echo -e "\nUpdating ${VSAN_RB_FILE} file ..."
 cp ${VSAN_RB_FILE} ${VSAN_RB_FILE}.bak
