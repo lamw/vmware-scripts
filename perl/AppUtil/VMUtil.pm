@@ -325,6 +325,230 @@ sub get_customization_spec {
    return $customization_spec;
 }
 
+# This subroutine constructs the customization spec for virtual machines.
+# Input Parameters:
+# ----------------
+# filename      : The location of the input XML file. This file contains the 
+#                 various properties for customization spec 
+#
+# Output:
+# ------
+# It returns the customization spec as per the input XML file
+
+# TODO: 
+# This is an attempt to use customization spec to configure more than one NIC.
+# The current configuration is failing in VICommon.pm with:
+
+# FaultCannot serialize nicSettingMap as
+# CustomizationAdapterMapping at
+# /usr/share/perl5/VMware/VIcommon.pm line 4030
+
+# It will work with only one NIC since the resulting hash is the same.
+
+sub get_customization_spec_ext {
+   my ($filename) = @_;
+   my $parser = XML::LibXML->new();
+   my $tree = $parser->parse_file($filename);
+   my $root = $tree->getDocumentElement;
+   my @cspec = $root->findnodes('Customization-Spec');
+   my @cust_adapter_mapping_list;
+
+   # Default Values
+   my $custType = "Win";
+   my $autologon = 1;
+   my $computername = "compname";
+   my $timezone = 190;
+   my $linuxTimezone = "America/Chicago";
+   my $utcClock = 1;
+   my $username;
+   my $userpassword;
+   my $domain;
+   my $fullname;
+   my $autoMode = "perServer";
+   my $autoUsers = 5;
+   my $organization_name;
+   my $productId = "XXXX-XXXX-XXXX-XXXX-XXXX";
+   my $customization_fixed_ip;
+   my $ip = -1;
+   my @ip;
+   my @ipaddr;
+   my @gateway;
+   my @dnsServers;
+   my @dnsSearch;
+   
+   my @subnet;
+   my @primaryWINS;
+   my @secondaryWINS;
+   
+  
+   foreach (@cspec) {
+      if ($_->findvalue('Cust-Type')) {
+         $custType = $_->findvalue('Cust-Type');
+      }
+      if ($_->findvalue('Auto-Logon')) {
+         $autologon = $_->findvalue('Auto-Logon');
+      }
+      if ($_->findvalue('Virtual-Machine-Name')) {
+         $computername = $_->findvalue('Virtual-Machine-Name');
+      }
+      if ($_->findvalue('Timezone')) {
+         $timezone = $_->findvalue('Timezone');
+      }
+      if ($_->findvalue('Linux-Timezone')) {
+         $linuxTimezone = $_->findvalue('Linux-Timezone');
+      }
+      if ($_->findvalue('UTC-Clock')) {
+         $utcClock = $_->findvalue('UTC-Clock');
+      }
+      if ($_->findvalue('Domain')) {
+         $domain = $_->findvalue('Domain');
+      }
+      if ($_->findvalue('Domain-User-Name')) {
+         $username = $_->findvalue('Domain-User-Name');
+      }
+      if ($_->findvalue('Domain-User-Password')) {
+         $userpassword = $_->findvalue('Domain-User-Password');
+      }
+      if ($_->findvalue('Full-Name')) {
+         $fullname = $_->findvalue('Full-Name');
+      }
+      if ($_->findvalue('AutoMode')) {
+         $autoMode = $_->findvalue('AutoMode');
+      }
+      if ($_->findvalue('AutoUsers')) {
+         $autoUsers = $_->findvalue('AutoUsers');
+      }
+   # bug 299843 fix start
+      if ($_->findvalue('Orgnization-Name')) {
+         $organization_name = $_->findvalue('Orgnization-Name');
+      }
+   # bug 299843 fix end
+      if ($_->findvalue('ProductId')) {
+         $productId = $_->findvalue('ProductId');
+      }
+      if ($_->findvalue('IP')) {
+         @ip = $_->findnodes('IP');
+      }
+      
+      if ($_->findvalue('dnsServers')) {
+         @dnsServers = split (':', $_->findvalue('dnsServers'));
+      }
+      if ($_->findvalue('dnsSearch')) {
+         @dnsSearch = split (':', $_->findvalue('dnsSearch'));
+      }
+            
+      foreach (@ip) {
+         $ip = $ip + 1;
+         if ($_->findvalue('IPaddr')) {
+            push(@ipaddr, $_->findvalue('IPaddr'));
+         } else {
+            push(@ipaddr, "dhcp")
+         }
+         if ($_->findvalue('IPgateway')) {
+            push(@gateway, split (':', $_->findvalue('IPgateway')));
+         } else {
+            push(@gateway, "")
+         }
+         if ($_->findvalue('IPsubnet')) {
+            push(@subnet, $_->findvalue('IPsubnet'));
+         } else {
+            push(@subnet, "")
+         }
+         if ($_->findvalue('IPprimaryWINS')) {
+            push(@primaryWINS, $_->findvalue('IPprimaryWINS'));
+         } else {
+            push(@primaryWINS, "")
+         }
+         if ($_->findvalue('IPsecondaryWINS')) {
+            push(@secondaryWINS, $_->findvalue('IPsecondaryWINS'));
+         } else {
+            push(@secondaryWINS, "")
+         }
+         
+         #Build adapter array
+         
+         if ( $ipaddr[$ip] ne "dhcp" ) {
+            $customization_fixed_ip = CustomizationFixedIp->new(ipAddress=>$ipaddr[$ip]);
+         } else {
+            $customization_fixed_ip = CustomizationDhcpIpGenerator->new();
+         }
+   
+   
+         my $cust_ip_settings =
+            CustomizationIPSettings->new(ip => $customization_fixed_ip,
+                                         subnetMask => $subnet[$ip],
+                                         gateway => \@gateway,
+                                         dnsServerList => \@dnsServers,
+                                         dnsDomain => $domain,
+                                         primaryWINS => $primaryWINS[$ip],
+                                         secondaryWINS => $secondaryWINS[$ip]);
+
+         my $cust_adapter_mapping =
+            CustomizationAdapterMapping->new(adapter => $cust_ip_settings);
+
+         $cust_adapter_mapping_list[0][$ip] = [ $cust_adapter_mapping ]; 
+         
+      }
+      
+      
+      
+   }
+  
+   my $customization_global_settings = CustomizationGlobalIPSettings->new();
+   $customization_global_settings->{'dnsServerList'} = \@dnsServers;
+   $customization_global_settings->{'dnsSuffixList'} = \@dnsSearch;
+   
+   my $customization_identity_settings = CustomizationIdentitySettings->new();
+
+   my $password =
+      CustomizationPassword->new(plainText=>"true", value=> $userpassword );
+
+   my $cust_identification =
+      CustomizationIdentification->new(domainAdmin => $username,
+                                       domainAdminPassword => $password,
+                                       joinDomain => $domain);
+
+   my $cust_gui_unattended =
+      CustomizationGuiUnattended->new(autoLogon => $autologon,
+                                      autoLogonCount => 0,
+                                      timeZone => $timezone);
+
+   my $cust_name = CustomizationFixedName->new (name => $computername);
+   my $cust_user_data =
+      CustomizationUserData->new(computerName => $cust_name,
+                                 fullName => $fullname,
+                                 orgName => $organization_name,
+                                 productId => $productId);
+   
+   my $customLicenseDataMode = new CustomizationLicenseDataMode($autoMode);
+   my $licenseFilePrintData = 
+      CustomizationLicenseFilePrintData->new(autoMode => $customLicenseDataMode,
+                                             autoUsers => $autoUsers);
+   my $cust_prep;
+
+   # test for Linux or Windows customization
+   if ( $custType eq "Win" ) {
+     $cust_prep = 
+      CustomizationSysprep->new(guiUnattended => $cust_gui_unattended,
+                                identification => $cust_identification,
+                                licenseFilePrintData => $licenseFilePrintData,
+                                userData => $cust_user_data);
+   } else {
+     $cust_prep =
+      CustomizationLinuxPrep->new(domain => $domain,
+                                hostName => $cust_name,
+                                hwClockUTC => $utcClock,
+                                timeZone => $linuxTimezone);
+   }
+
+   my $customization_spec =
+      CustomizationSpec->new (identity=>$cust_prep,
+                              globalIPSettings=>$customization_global_settings,
+                              nicSettingMap=>@cust_adapter_mapping_list);
+   return $customization_spec;
+}
+
+
 
 # This subroutine migrate the virtual machine to same datastore.
 # Input Parameters:

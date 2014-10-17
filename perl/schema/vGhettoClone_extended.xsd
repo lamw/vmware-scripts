@@ -34,6 +34,8 @@
 <xs:element name="Disksize" type="xs:integer"/>
 <xs:element name="Memory" type="xs:integer"/>
 <xs:element name="Number-of-CPUS" type="xs:integer"/>
+<xs:element name="Network" type="xs:string"/>
+<xs:element name="Adapter" type="xs:string"/>
 <xs:element name="IP0" type="xs:string"/>
 <xs:element name="IP0Gateway" type="xs:string"/>
 <xs:element name="IP0Subnet" type="xs:string"/>
@@ -78,8 +80,18 @@
    <xs:element ref="Memory"/>
    <xs:element ref="Disksize"/>
    <xs:element ref="Number-of-CPUS"/>
+   <xs:element ref="NIC" minOccurs="0" maxOccurs="4"/>
   </xs:sequence>
  </xs:complexType>
+</xs:element>
+
+<xs:element name="NIC">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Network"/>
+      <xs:element ref="Adapter" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
 </xs:element>
 
 <xs:element name="Specification">
