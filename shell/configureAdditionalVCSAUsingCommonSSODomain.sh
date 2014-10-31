@@ -44,9 +44,15 @@ echo "Configuring SSO..."
 echo "Starting VCSA ..."
 /usr/sbin/vpxd_servicecfg service start
 
-echo "Starting VMware Directory Services ..."
+echo "Starting VMware SSO Services ..."
 /etc/init.d/vmdird start
 /sbin/chkconfig vmdird on
+/etc/init.d/vmware-sts-idmd start
+/sbin/chkconfig vmware-sts-idmd on
+/etc/init.d/vmkdcd start
+/sbin/chkconfig vmkdcd on
+/etc/init.d/vmcad start
+/sbin/chkconfig vmcad on
 
 echo "Joining ${PRIMARY_VC} ..."
 /usr/lib/vmware-vmdir/bin/vdcpromo -u "${VC_USERNAME}" -w "${VC_PASSWORD}" -s "${SSO_SITE_NAME}" -H ${PRIMARY_VC}
