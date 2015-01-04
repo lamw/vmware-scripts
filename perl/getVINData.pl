@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-# William Lam
-# www.virtuallyghetto.com
-# Script to extract data from VIN (vSphere Infrastructure Navigator)
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2012/11/extracting-information-from-vin-vsphere_8.html
 
 use strict;
 use JSON;

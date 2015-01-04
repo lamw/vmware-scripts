@@ -1,12 +1,7 @@
 #!/usr/bin/perl -w
-#
-# Copyright (c) 2009 VMware, Inc.  All rights reserved subject to the terms of the
-# vSphere Management Assistant (vMA) End User License Agreement.
-#
-# This script prints a list of all the targets added to vMA.
-# William Lam
-# Modified version of VMware's /opt/vmware/vma/bin/vitargetenumerate.pl using new vi-fastpass Perl library
-
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2010/08/why-you-should-upgrade-from-vma-40-to.html
 
 use strict;
 use VMware::VIRuntime;

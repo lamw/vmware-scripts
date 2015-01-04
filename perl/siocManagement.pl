@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam
-# 03/03/2010
-# http://engineering.ucsb.edu/~duonglt/vmware/
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2010/07/script-automate-storage-io-control-in.html
 
 use strict;
 use warnings;

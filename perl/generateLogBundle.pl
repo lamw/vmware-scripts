@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2014/07/how-to-generate-specific-support-log-bundles-for-vcenter-esxi-using-vsphere-api.html
 
 use strict;
 use warnings;

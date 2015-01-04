@@ -1,10 +1,7 @@
 #!/usr/bin/perl -w
-##################################################################
 # Author: William Lam
-# Email: william2003[at]gmail[dot]com
-# Created on: 02/21/2009
-# http://www.engineering.ucsb.edu/~duonglt/vmware/
-##################################################################
+# Website: www.virtuallyghetto.com
+# Reference: https://communities.vmware.com/docs/DOC-9843
 
 use strict;
 use warnings;

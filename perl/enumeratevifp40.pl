@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam
-# Simple script that uses the vi-fastpass Perl library
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2010/08/why-you-should-upgrade-from-vma-40-to.html
 
 use strict;
 use VMware::VIFPLib;

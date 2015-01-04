@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-# William Lam
-# www.virtuallyghetto.com
-# Script to proxy an upload through vCenter Server directly to an ESXi host
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2014/06/how-to-efficiently-transfer-files-to-datastore-in-vcenter-using-the-vsphere-api.html
 
 use strict;
 use warnings;

@@ -1,10 +1,6 @@
 #!/usr/bin/perl -w
-#
-# Copyright (c) 2007 VMware, Inc.  All rights reserved.
-#
-# Modified 'vmclone.pl' from VMware's VI Perl Toolkit Utilites by William Lam
-# http://engineering.ucsb.edu/~duonglt/vmware/vGhettoLinkedClone.html
-
+# Author: William Lam
+# Website: www.virtuallyghetto.com
 
 use strict;
 use warnings;

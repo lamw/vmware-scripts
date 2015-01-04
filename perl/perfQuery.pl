@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam
-# http://www.virtuallyghetto.com/
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2010/10/where-are-power-perf-metrics-in-vsphere.html
 
 use strict;
 use warnings;

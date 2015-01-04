@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam
-# http://www.virtuallyghetto.com/
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2013/09/quick-tip-new-hyper-v-guestos.html
 
 use strict;
 use warnings;

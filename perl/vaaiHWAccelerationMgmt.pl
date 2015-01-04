@@ -1,8 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam 
-# 01/15/09
-# http://engineering.ucsb.edu/~duonglt/vmware
-# http://communities.vmware.com/docs/DOC-9852
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2010/07/script-automate-vaai-configurations-in.html
 
 use strict;
 use warnings;

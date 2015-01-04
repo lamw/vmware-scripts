@@ -1,9 +1,7 @@
 #!/usr/bin/perl -w
-##################################################################
 # Author: William Lam
-# 09/30/11
-# http://www.virtuallyghetto.com/
-##################################################################
+# Website: www.virtuallyghetto.com
+
 use strict;
 use warnings;
 use VMware::VIRuntime;

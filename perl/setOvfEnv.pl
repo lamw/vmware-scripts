@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2014/06/an-alternate-way-to-inject-ovf-properties-when-deploying-virtual-appliances-directly-onto-esxi.html
 
 use strict;
 use warnings;

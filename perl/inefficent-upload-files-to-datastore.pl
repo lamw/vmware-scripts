@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-# William Lam
-# www.virtuallyghetto.com
-# Script to upload files directly through vCenter Server
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Reference: http://www.virtuallyghetto.com/2014/06/how-to-efficiently-transfer-files-to-datastore-in-vcenter-using-the-vsphere-api.html
 
 use strict;
 use warnings;
