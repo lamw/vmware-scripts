@@ -30,7 +30,7 @@ my $operation = Opts::get_option('operation');
 my $datastore = Opts::get_option('datastore');
 my $datastores = "";
 
-if(Vim::get_service_content()->about->version ne "5.0.0") {
+if(Vim::get_service_content()->about->version =~ /^[1234]\./) {
 	print color("red") . "\nThis script is only supported on vSphere 5.0 or greater\n\n" . color("reset");
 	Util::disconnect();
 	exit 1;
