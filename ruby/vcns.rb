@@ -1,6 +1,9 @@
 # William Lam
-# www.virtuallyghetto.com
-# Exploring the vCNS API using Ruby
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Networking & Security
+# Description: Exploring the vCNS API using Ruby
+# Reference: http://www.virtuallyghetto.com/2013/02/exploring-vcloud-networking-security.html
 
 require 'httparty'
 require 'yaml'

@@ -1,5 +1,8 @@
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto
+# Product: VMware vCenter Server Apppliance
+# Description: PowerCLI script to deploy VCSA directly to ESXi host
+# Reference: http://www.virtuallyghetto.com/2014/06/an-alternate-way-to-inject-ovf-properties-when-deploying-virtual-appliances-directly-onto-esxi.html
 
 $esxname = "mini.primp-industries.com"
 $esx = Connect-VIServer -Server $esxname

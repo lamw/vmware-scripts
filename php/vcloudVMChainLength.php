@@ -3,6 +3,8 @@
  * William Lam
  * http://www.virtuallyghetto.com/
  * Modified query.php sample code
+ * Product: VMware vCloud Director 1.5/5.x
+ * Reference: http://www.virtuallyghetto.com/2012/04/scripts-to-extract-vcloud-director.html
  */
 require_once dirname(__FILE__) . '/config.php';
 require_once 'Console/Table.php';

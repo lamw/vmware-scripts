@@ -1,7 +1,9 @@
 #!/bin/bash
-# William lam
-# www.virtuallyghetto.com
-# Script to automate the configuration of VCAC VA
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Automation Center
+# Description: Script to automate the configuration of VCAC VA
+# Reference: http://www.virtuallyghetto.com/2013/12/automating-vcac-vcloud-automation.html
 
 VCAC_SSO_SERVER=vcac-id.primp-industries.com
 VCAC_SSO_PASSWORD=VMware123!

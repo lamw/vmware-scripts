@@ -1,7 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto
-# Script to generate VCAC IaaS configuration files + installation bat script that includes SQL Server installation
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Automation Center
+# Description: Script to generate VCAC IaaS configuration files + installation bat script that includes SQL Server installation
+# Reference: http://www.virtuallyghetto.com/2013/12/automating-vcac-vcloud-automation_23.html
 
 VCAC_HOME_DIRECTORY=C:\\Users\\Administrator\\Desktop\\VCAC
 VCAC_IAAS_SHORT_HOSTNAME=vcac-iaas

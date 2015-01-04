@@ -1,6 +1,8 @@
-# William Lam
-# www.virtuallyghetto.com
-# Python script that calls vSphere MOB to add Virtual Flash Resource 
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vSphere + vSphere Flash Read Cache (vFRC)
+# Description: Python script that calls vSphere MOB to add Virtual Flash Resource
+# Reference: http://www.virtuallyghetto.com/2013/11/how-to-automate-configuration-of-vfrc.html
 
 import sys,re,os,urllib,urllib2,base64
 

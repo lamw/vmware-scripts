@@ -1,8 +1,9 @@
 #!/bin/bash
-# William Lam
-# http://www.virtuallyghetto.com/
-# Wrapper script to deploy vRealize Operations Manager 6.0 (vROps)
-##############################################################
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vRealize Operations Manager 6.0
+# Description: Wrapper script to deploy vRealize Operations Manager 6.0 (vROps)
+# Reference: http://www.virtuallyghetto.com/2014/12/automate-deployment-configuration-of-vrealize-operations-manager-6-0-part-1.html
 
 # Configurations 
 

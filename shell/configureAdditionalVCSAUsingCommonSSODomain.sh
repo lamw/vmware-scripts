@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCenter Server for Windows + VCSA
+# Description: MMR (Multi-Master Replication) setup between Windows VC + VCSA
+# Reference: http://www.virtuallyghetto.com/2013/12/hybrid-environment-leveraging-sso-multi.html
 
 # Primary vCenter Server Configurations 
 PRIMARY_VC=vcenter55-3.primp-industries.com

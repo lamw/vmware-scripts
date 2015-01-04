@@ -1,9 +1,9 @@
 #!/bin/bash
-
-# William Lam
-# http://www.virtuallyghetto.com/
-# Wrapper script to deploy VMware vCO Virtual Apppliance
-##############################################################
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCenter Orchestrator
+# Description: Wrapper script to deploy VMware vCO Virtual Apppliance
+# Reference: http://www.virtuallyghetto.com/2011/11/unattended-deployment-of-vcenter.html
 
 # Configurations 
 

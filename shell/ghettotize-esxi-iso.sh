@@ -1,7 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
-# Script to build cusotm ESXi ISO to handle Mac Mini 6,2 Known Issues
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware ESXi
+# Description: Script to build cusotm ESXi ISO to handle Mac Mini 6,2 Known Issues
+# Reference: http://www.virtuallyghetto.com/2014/09/how-to-build-custom-esxi-iso-for-apple-mac-mini.html
 
 if [ $# -eq 0 ]; then
 	echo -e "\n\tUsage: [ESXi-ISO]\n"

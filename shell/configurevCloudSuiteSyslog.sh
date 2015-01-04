@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Suite
+# Description: Forwarding logs from vCloud Suite
+# Reference: http://www.virtuallyghetto.com/2013/06/forwarding-logs-from-vcloud-suite-to.html
 
 UNIQUE_CONFIGURE_STRING="# Configured using vCloud Suite Syslog Configuration Script by William Lam"
 SYSLOG_NG_CONF=/etc/syslog-ng/syslog-ng.conf

@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# http://www.virtuallyghetto.com/
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Director
+# Description: Sample script to access VCD VMRC 
+# Reference: http://www.virtuallyghetto.com/2012/02/how-to-access-vcloud-director-remote.html
 
 if [ $# -ne 3 ]; then
 	echo "Usage: $0 USERNAME@ORGANIZATION PASSWORD VCD-FQDN"

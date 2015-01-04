@@ -1,3 +1,8 @@
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Networking & Security
+# Description: Puppet Config for VCNS
+# Reference: http://www.virtuallyghetto.com/2013/03/how-to-quickly-getting-started-with-new.html
 transport { 'vshield':
   username => 'admin',
   password => 'default',

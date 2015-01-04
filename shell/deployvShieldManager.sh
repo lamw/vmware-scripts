@@ -1,10 +1,9 @@
 #!/bin/bash
-
-# William Lam
-# http://www.virtuallyghetto.com/
-# Wrapper script to deploy VMware vShield Manager 
-# and automatically configure static IP Address
-##############################################################
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vShield Manager
+# Description: Wrapper script to deploy VMware vShield Manager and automatically configure static IP Address
+# Reference: http://www.virtuallyghetto.com/2011/09/how-to-automate-deployment.html
 
 # Configurations 
 

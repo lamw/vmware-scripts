@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware VSAN
+# Description: Download files for offline VSAN observer mode
+# Reference: http://www.virtuallyghetto.com/2014/10/automate-vsan-observer-offline-mode-configurations.html
 
 VSAN_OBSERVER_HOME=/opt/vmware/rvc/lib/rvc/observer
 EXTERNAL_LIB_DIR=externallibs

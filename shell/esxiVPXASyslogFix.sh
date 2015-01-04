@@ -1,6 +1,9 @@
 #!/bin/ash
-# William Lam
-# http://www.virtuallyghetto.com/
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware ESXi
+# Description: Update syslog tweak for ESXi
+# Reference: http://www.virtuallyghetto.com/2010/06/esxi-syslog-caveat.html
 
 VPXA_CONFIG=/etc/opt/vmware/vpxa/vpxa.cfg
 

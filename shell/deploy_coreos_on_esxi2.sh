@@ -1,7 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
-# New version of script to automate the deployment of CoreOS image w/VMware Tools onto ESXi
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware ESXi
+# Description: New version of script to automate the deployment of CoreOS image w/VMware Tools onto ESXi
+# Reference: http://www.virtuallyghetto.com/2014/11/how-to-quickly-deploy-new-coreos-image-wvmware-tools-on-esxi.html
 
 # CoreOS VMX URL
 CORE_OS_VMX_URL=http://alpha.release.core-os.net/amd64-usr/current/coreos_production_vmware.vmx

@@ -29,6 +29,8 @@
 
 # William Lam
 # http://www.virtuallyghetto.com/
+# Product: VMware vCloud Director
+# Reference  http://www.virtuallyghetto.com/2012/01/vcloud-director-report-100.html
 */
 require_once dirname(__FILE__) . '/config.php';
 

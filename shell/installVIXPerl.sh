@@ -1,7 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# http://www.virtuallyghetto.com/
-# Script to install VIX-PERL which requires GCC to be installed
+# Website: www.virtuallyghetto.com
+# Product: VMware vSphere
+# Description: Script to install VIX-PERL which requires GCC to be installed
+# Reference: http://www.virtuallyghetto.com/2010/07/automate-update-manager-operations.html
 
 VIX_PERL=/usr/lib/vmware-vix/vix-perl.tar.gz
 CENTOS_REPO=/etc/yum.repos.d/centos-base.repo

@@ -1,7 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyhgetto.com
-# Script to build VMware VA offline repo
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware Virtual Appliance
+# Description: Script to build VMware VA offline repo
+# Reference: http://www.virtuallyghetto.com/2013/05/how-to-create-offline-update-repository.html
 
 REPO_URL=$1
 REPO_NAME=$2

@@ -1,8 +1,9 @@
 #!/bin/bash
-
-# vCloud Director Installation Script
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Director
+# Description: vCloud Director Installation Script
+# Reference: http://www.virtuallyghetto.com/2011/09/automating-vcloud-director-15-oracle-db.html
 
 cyan='\E[36;40m'
 green='\E[32;40m'

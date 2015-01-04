@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware Infrastructure Navigator
+# Description: Extracting info from VIN
+# Reference: http://www.virtuallyghetto.com/2012/11/extracting-information-from-vin-vsphere_6.html
 
 VC_URL=https://vcsa.primp-industries.com/vsm/extensionService
 VC_TOKEN=f21aa9f61d3d3604ded8b5c8872eb4d581a07e32

@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware Horizon View
+# Description: Automating Horizon View deployment
+# Reference: http://www.virtuallyghetto.com/2014/03/automating-horizon-view-deployments-using-vct-curl.html
 
 VCT_IP=172.30.0.160
 

@@ -1,6 +1,8 @@
-# William Lam
-# www.virtuallyghetto
-# Script to issue UNMAP command on specified VMFS datastore
+# Author: William Lam
+# Website: www.virtuallyghetto
+# Product: VMware vSphere
+# Description: Script to issue UNMAP command on specified VMFS datastore
+# Reference: http://www.virtuallyghetto.com/2014/09/want-to-issue-a-vaai-unmap-operation-using-the-vsphere-web-client.html
 
 param
 (

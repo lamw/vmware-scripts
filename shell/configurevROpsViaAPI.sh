@@ -1,7 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
-# Initial Configuration of vRealize Operations Manager 6.0 using vROps CaSA REST API
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vRealize Operations Manager 6.0
+# Description: Initial Configuration of vRealize Operations Manager 6.0 using vROps CaSA REST API
+# Reference: http://www.virtuallyghetto.com/2014/12/automating-deployment-configuration-of-vrealize-operations-manager-6-0-part-3.html
 
 VROPS_IP_ADDRESS=192.168.1.150
 VROPS_USERNAME=admin

@@ -1,9 +1,8 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
-#
+# Author: William Lam
+# Website: www.virtuallyghetto.com
 # Product: vRealize Operations Manager 6.0
-# Usage: CLI via SSH
+# Description: Setup syslog for vROps 6.0
 # Reference: http://www.virtuallyghetto.com/2015/01/automate-forwarding-of-vrealize-operations-manager-logs-to-syslog-server.html
 
 SYSLOG_SERVER=syslog.primp-industries.com

@@ -1,6 +1,9 @@
 #!/bin/bash
-# William Lam
-# www.virtuallyghetto.com
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware VSAN
+# Description: Script to download flies for offline VSAN Observer mode
+# Reference: http://www.virtuallyghetto.com/2014/10/automate-vsan-observer-offline-mode-configurations.html
 
 EXTERNAL_JS_LIB_URLS=(
 https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js

@@ -1,7 +1,9 @@
 #!/bin/bash
-# William Lam
-# 09/30/2011
-# http://www.virtuallyghetto.com/
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware ESXi
+# Description: Automate disabling of VAAI UMAP on ESXi
+# Reference: http://www.virtuallyghetto.com/2011/10/how-to-automate-disabling-of-vaai-unmap.html
 
 if [ $# -ne 4 ]; then
 	echo "Usage: $0 [HOST_LIST] [VCENTER_SERVER] [VCENTER_AUTH_CONFIG] [1|0]"

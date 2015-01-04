@@ -12,6 +12,9 @@
  * @author     Kimberly Wang (kwang@vmware.com)
  * @copyright  Copyright VMware, Inc. 2009-2011.  All Rights Reserved.
  * @version    1.5.0
+ * @modified   William Lam (www.virtuallyghetto.com)
+ * @product    VMware vCloud Director
+ * @reference  http://www.virtuallyghetto.com/2012/01/vcloud-director-report-100.html
  */
 
 // add library to the include_path

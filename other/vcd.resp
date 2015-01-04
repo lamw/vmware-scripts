@@ -1,3 +1,9 @@
+# Author: William Lam
+# Website: www.virtuallyghetto
+# Product: VMware vCloud Director
+# Description: Script to perform unattended install of VCD
+# Reference: http://www.virtuallyghetto.com/2010/09/automating-vcloud-director-and-oracle.html
+
 ##################
 ## INSTALL FILES #
 ##################

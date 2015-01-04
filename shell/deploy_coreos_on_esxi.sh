@@ -1,7 +1,9 @@
 #!/bin/sh
-# William Lam
-# www.virtuallyghetto.com
-# Simple script to pull down CoreOS image & run on ESXi
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware ESXi
+# Description: Simple script to pull down CoreOS image & run on ESXi
+# Reference: http://www.virtuallyghetto.com/2014/07/how-to-quickly-deploy-coreos-on-esxi.html
 
 # CoreOS ZIP URL
 CORE_OS_DOWNLOAD_URL=http://stable.release.core-os.net/amd64-usr/current/coreos_production_vmware_insecure.zip

@@ -1,9 +1,9 @@
 #!/bin/bash
-
-# William Lam
-# http://www.virtuallyghetto.com/
-# Wrapper script to deploy VMware vCloud Connector Server/Node Virtual Apppliance
-###################################################################################
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vCloud Connector
+# Description: Wrapper script to deploy VMware vCloud Connector Server/Node Virtual Apppliance
+# Reference: http://www.virtuallyghetto.com/2011/11/unattended-deployment-of-vcloud.html
 
 # Configurations 
 

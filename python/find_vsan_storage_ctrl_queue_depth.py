@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-# William Lam
-# www.virtuallyghetto.com
-# This script extracts the queue depth of a VSAN Storage Controller if found in the VSAN HCL (offline list)
+# Author: William Lam
+# Website: www.virtuallyghetto.com
+# Product: VMware vSphere + VSAN
+# Description: This script extracts the queue depth of a VSAN Storage Controller if found in the VSAN HCL (offline list)
+# Reference: http://www.virtuallyghetto.com/2014/06/community-vsan-storage-controller-queue-depth-list.html
 
 import json
 import os
