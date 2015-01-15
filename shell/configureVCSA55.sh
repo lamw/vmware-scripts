@@ -76,6 +76,9 @@ setActiveDirectory() {
 
                 echo "Adding DNS Search Domain ..."
                 echo "search ${AD_DOMAIN}" >> /etc/resolv.conf
+
+                echo "Enabling SSL Certificate re-generation, please ensure you REBOOT once the script completes ..."
+                touch /etc/vmware-vpx/ssl/allow_regeneration
         fi
 }
 
