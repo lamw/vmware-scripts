@@ -28,5 +28,14 @@ do
 	echo "log4j.appender.SYSLOG_SERVER = org.apache.log4j.net.SyslogAppender" >> $i
 done
 
+echo "Configuring Audit Logging ${COLLECTOR_SYSLOG_CONF} ..."
+cat >> ${COLLECTOR_SYSLOG_CONF} << __AUDIT_LOG__
+log4j.appender.SYSLOG_AUDIT.layout.conversionPattern = %d{ISO8601} - %m%n
+log4j.appender.SYSLOG_AUDIT = org.apache.log4j.net.SyslogAppender
+log4j.appender.SYSLOG_AUDIT.layout = org.apache.log4j.PatternLayout
+log4j.appender.SYSLOG_AUDIT.syslogHost = ${SYSLOG_SERVER}:${SYSLOG_SERVER_PORT}
+log4j.appender.SYSLOG_AUDIT.Facility = LOCAL1
+__AUDIT_LOG__
+
 echo "Restart vRealize Operations Manager Service ..."
 /etc/init.d/vmware-vcops restart
