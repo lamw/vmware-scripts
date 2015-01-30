@@ -93,7 +93,7 @@ mkdir -p ${TMP_CLOUD_CONFIG_DIR}/openstack/latest
 cat > ${TMP_CLOUD_CONFIG_DIR}/openstack/latest/user_data << __CLOUD_CONFIG__
 #cloud-config
 
-hostname: ${COREOS_HOSTNAME}
+hostname: ${CORE_OS_HOSTNAME}
 
 coreos:
   update:
