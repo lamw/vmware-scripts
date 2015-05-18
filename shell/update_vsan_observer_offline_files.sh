@@ -34,7 +34,7 @@ sed -i "s#https://code.jquery.com/jquery-1.9.1.min.js#${EXTERNAL_LIB_DIR}/js/jqu
 sed -i "s#https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js#${EXTERNAL_LIB_DIR}/js/bootstrap.min.js#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js#${EXTERNAL_LIB_DIR}/js/d3.min.js#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js#${EXTERNAL_LIB_DIR}/js/angular.min.js#g" ${VSAN_OBSERVER_STAT_FILE}
-sed -i "s#https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css#${EXTERNAL_LIB_DIR}/js/font-awesome.css#g" ${VSAN_OBSERVER_STAT_FILE}
+sed -i "s#https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css#${EXTERNAL_LIB_DIR}/css/font-awesome.css#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://code.jquery.com/ui/1.9.1/jquery-ui.min.js#${EXTERNAL_LIB_DIR}/js/jquery-ui.min.js#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js#${EXTERNAL_LIB_DIR}/js/bootstrap-datepicker.min.js#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css#${EXTERNAL_LIB_DIR}/css/bootstrap-combined.no-icons.min.css#g" ${VSAN_OBSERVER_STAT_FILE}
