@@ -33,6 +33,7 @@ $spec.deviceChange[0].operation = 'edit'
 $spec.deviceChange[0].device = New-Object VMware.Vim.VirtualDisk
 $spec.deviceChange[0].device = $diskDevice
 $spec.deviceChange[0].device.storageIOAllocation.reservation = $iopsReservation
+Write-Host "Configuring IOPS Reservation:" $iopsReservation "on VMDK:" $diskName "for VM:" $vmname
 $vm.ReconfigVM($spec)
 
 # Uncomment the following snippet if you wish to verify as part of the reconfiguration operation 
