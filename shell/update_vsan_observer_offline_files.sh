@@ -39,7 +39,6 @@ sed -i "s#https://code.jquery.com/ui/1.9.1/jquery-ui.min.js#${EXTERNAL_LIB_DIR}/
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js#${EXTERNAL_LIB_DIR}/js/bootstrap-datepicker.min.js#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css#${EXTERNAL_LIB_DIR}/css/bootstrap-combined.no-icons.min.css#g" ${VSAN_OBSERVER_STAT_FILE}
 sed -i "s#https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css#${EXTERNAL_LIB_DIR}/css/datepicker.min.css#g" ${VSAN_OBSERVER_STAT_FILE}
-cp ${VSAN_OBSERVER_STAT_FILE}.bak ${VSAN_OBSERVER_STAT_FILE}
 
 cp ${VSAN_OBSERVER_GRAPH_FILE} ${VSAN_OBSERVER_GRAPH_FILE}.bak
 echo -e "\nUpdating ${VSAN_OBSERVER_GRAPH_FILE} file ..."
