@@ -1,0 +1,79 @@
+# William Lam
+# www.virtuallyghetto.com
+# Ansible playbook to setup Kubernetes Cluster running on a 2-Node VMware Photon OS
+# http://www.virtuallyghetto.com/2015/11/using-ansible-to-provision-a-kubernetes-cluster-on-vmware-photon.html
+
+# Tasks for both Master & Minon nodes
+- hosts: all
+  tasks:
+    - name: Installing Kubernetes
+      shell: /usr/bin/tdnf -y install kubernetes
+
+    - name: Adding Master/Minions hostname to /etc/hosts
+      shell: |
+        /usr/bin/echo "{{master_ip}} {{master_hostname}}" >> /etc/hosts
+        /usr/bin/echo "{{minion_ip}} {{minion_hostname}}" >> /etc/hosts
+
+    - name: Configuring /etc/kubernetes/config
+      lineinfile: |
+        dest=/etc/kubernetes/config backup=yes
+        regexp='^KUBE_MASTER' line=KUBE_MASTER=\""--master=http://{{master_hostname}}:8080"\"
+
+# Tasks for Master node only
+- hosts: masters
+  tasks:
+    - name: Configuring /etc/kubernetes/apiserver
+      lineinfile: |
+        dest=/etc/kubernetes/apiserver backup=yes
+        regexp='^KUBE_API_ADDRESS' line=KUBE_API_ADDRESS=\""--address=0.0.0.0"\"
+
+    - name: Enabling Services (etcd,kube-apiserver,kube-controller-manager,kube-scheduler)
+      shell: |
+        /usr/bin/systemctl enable etcd
+        /usr/bin/systemctl restart etcd
+        /usr/bin/systemctl enable kube-apiserver
+        /usr/bin/systemctl restart kube-apiserver
+        /usr/bin/systemctl enable kube-controller-manager
+        /usr/bin/systemctl restart kube-controller-manager
+        /usr/bin/systemctl enable kube-scheduler
+        /usr/bin/systemctl restart kube-scheduler
+
+    - name: Creating /tmp/nodes.json file
+      shell: |
+        cat > /tmp/nodes.json << EOF
+          {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+              "name": "{{minion_hostname}}",
+              "labels":{ "name": "{{minion_hostname}}-label"}
+            },
+            "spec": {
+              "externalID": "{{minion_hostname}}"
+            }
+          }
+
+    - name: Creating Node Object using /tmp/nodes.json
+      shell: /usr/bin/kubectl create -f /tmp/nodes.json
+
+# Tasks for Minon node only
+- hosts: minions
+  tasks:
+    - name: Configuring /etc/kubernetes/kubelet
+      lineinfile:
+        dest=/etc/kubernetes/kubelet backup=yes
+        regexp="{{ item.key }}"
+        line="{{ item.value }}"
+      with_items:
+        - { key: "KUBELET_API_SERVER", value: "KUBELET_API_SERVER=\\\"--api_servers=http://{{master_hostname}}:8080\\\"" }
+        - { key: "KUBELET_ADDRESS", value: "KUBELET_ADDRESS=\\\"--address=0.0.0.0\\\"" }
+        - { key: "KUBELET_HOSTNAME", value: "KUBELET_HOSTNAME=\\\"--hostname_override={{minion_hostname}}\\\"" }
+
+    - name: Enabling Services (kube-proxy,kublet,docker)
+      shell: |
+        /usr/bin/systemctl enable kube-proxy
+        /usr/bin/systemctl restart kube-proxy
+        /usr/bin/systemctl enable kubelet
+        /usr/bin/systemctl restart kubelet
+        /usr/bin/systemctl enable docker
+        /usr/bin/systemctl restart docker
