@@ -20,7 +20,7 @@ $ovfvalue = "<?xml version=`"1.0`" encoding=`"UTF-8`"?>
      xmlns:xsi=`"http://www.w3.org/2001/XMLSchema-instance`" 
      xmlns:oe=`"http://schemas.dmtf.org/ovf/environment/1`" 
      xmlns:ve=`"http://www.vmware.com/schema/ovfenv`" 
-     oe:id=`"`" 
+     oe:id=`"`">
    <PlatformSection> 
       <Kind>VMware ESXi</Kind> 
       <Version>5.5.0</Version> 
