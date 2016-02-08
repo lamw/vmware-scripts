@@ -31,7 +31,7 @@ Write-Host "Downloading " $VRA_APPLIANCE_AGENT_URL "to" $VRA_APPLIANCE_AGENT_DOW
 $webclient.DownloadFile($VRA_APPLIANCE_AGENT_URL,$VRA_APPLIANCE_AGENT_DOWNLOAD_PATH)
 
 # Extracting SSL Thumbprint frmo vRA Appliance
-# Thanks to Brian Grap for this snippet!
+# Thanks to Brian Graf for this snippet!
 # I originally used this longer snippet from Alan Renouf (https://communities.vmware.com/thread/501913?start=0&tstart=0)
 # Brian 1, Alan 0 ;)
 # It's still easier in Linux :D
