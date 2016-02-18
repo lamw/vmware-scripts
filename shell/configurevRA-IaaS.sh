@@ -88,11 +88,6 @@ VPOSTGRES_DB_HOSTNAME=localhost
 VPOSTGRES_DB_USERNAME=vcac
 VPOSTGRES_DB=vcac
 
-begin_pub_cert="-----BEGIN CERTIFICATE----- "
-end_pub_cert=" -----END CERTIFICATE-----"
-begin_priv_cert="-----BEGIN RSA PRIVATE KEY----- "
-end_priv_cert=" -----END RSA PRIVATE KEY-----"
-
 generate_ssl_cert() {
 	[[ -z $1 ]] && echo "vRA component required for certificate generation. Exiting." && exit 1  ||
 	{
@@ -210,25 +205,6 @@ function getWebCert()
    web_cert_store_names="My;TrustedPeople"
    web_cert_store_location="LocalMachine"
 
-   #get the begin and end markers
-   cert_begin_marker=$((cat $CERTS_FOLDER/${CERT_SIGNATURE_ALG}_web.pem) | grep 'BEGIN')
-   cert_end_marker=$((cat $CERTS_FOLDER/${CERT_SIGNATURE_ALG}_web.pem) | grep 'END')
-   #remove begin and end system information
-   web_public_key=$(echo $web_public_key | grep 'CERTIFICATE-----' | cut -d"-" -f11)
-   #remove whitespaces from the public key data
-   web_public_key=$(echo $web_public_key | tr -d '\040\011\012\015')
-   #add the BEGIN and END markers
-   web_public_key=$cert_begin_marker$web_public_key$cert_end_marker
-
-   #get the BEGIN and END markers
-   key_begin_marker=$((cat $CERTS_FOLDER/web.key) | grep 'BEGIN')
-   key_end_marker=$((cat $CERTS_FOLDER/web.key) | grep 'END')
-   #remove begin and end system information
-   web_private_key=$(echo $web_private_key | grep 'KEY-----' | cut -d"-" -f11)
-   #remove whitespaces from the private key
-   web_private_key=$(echo $web_private_key | tr -d '\040\011\012\015')
-   #add the BEGIN and END markers
-   web_private_key=$key_begin_marker$web_private_key$key_end_marker
    #get web certificate thumbprint
    VRA_IAAS_WEB_THUMBPRINT=`openssl x509 -in $CERTS_FOLDER/${CERT_SIGNATURE_ALG}_web.pem -fingerprint -noout | sed -e 's/://g' -e 's/^.*=//'`
 }
@@ -242,25 +218,6 @@ function getMSCert()
    ms_cert_store_names="My;TrustedPeople"
    ms_cert_store_location="LocalMachine"
 
-   #get the begin and end markers
-   cert_begin_marker=$((cat $CERTS_FOLDER/${CERT_SIGNATURE_ALG}_ms.pem) | grep 'BEGIN')
-   cert_end_marker=$((cat $CERTS_FOLDER/${CERT_SIGNATURE_ALG}_ms.pem) | grep 'END')
-   #remove begin and end system information
-   ms_public_key=$(echo $ms_public_key | grep 'CERTIFICATE-----' | cut -d"-" -f11)
-   #remove whitespaces from the public key data
-   ms_public_key=$(echo $ms_public_key | tr -d '\040\011\012\015')
-   #add the BEGIN and END markers
-   ms_public_key=$cert_begin_marker$ms_public_key$cert_end_marker
-
-   #get the BEGIN and END markers
-   key_begin_marker=$((cat $CERTS_FOLDER/ms.key) | grep 'BEGIN')
-   key_end_marker=$((cat $CERTS_FOLDER/ms.key) | grep 'END')
-   #remove begin and end system information
-   ms_private_key=$(echo $ms_private_key | grep 'KEY-----' | cut -d"-" -f11)
-   #remove whitespaces from the private key
-   ms_private_key=$(echo $ms_private_key | tr -d '\040\011\012\015')
-   #add the BEGIN and END markers
-   ms_private_key=$key_begin_marker$ms_private_key$key_end_marker
    #get ms certificate thumbprint
    VRA_IAAS_MS_THUMBPRINT=`echo | openssl x509 -in $CERTS_FOLDER/${CERT_SIGNATURE_ALG}_ms.pem -fingerprint -noout | sed -e 's/://g' -e 's/^.*=//'`
 }
