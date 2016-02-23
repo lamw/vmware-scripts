@@ -17,7 +17,7 @@ fi
 echo "Creating ${REPO_NAME}/{manifest,package-pool}"
 mkdir -p ${REPO_NAME}/{manifest,package-pool}
 
-MANIFEST_FILES=(manifest-latest.xml  manifest-latest.xml.sha256  manifest-latest.xml.sig  manifest-repo.xml)
+MANIFEST_FILES=(manifest-latest.xml  manifest-latest.xml.sha256  manifest-latest.xml.sig manifest-latest.xml.sign manifest-repo.xml)
 
 for i in ${MANIFEST_FILES[@]};
 do
@@ -25,8 +25,11 @@ do
 	wget ${REPO_URL}/manifest/$i -O ${REPO_NAME}/manifest/$i > /dev/null 2>&1
 done
 
-for i in $(grep package-pool ${REPO_NAME}/manifest/manifest-latest.xml); 
-do 
+for i in $(grep ^package-pool ${REPO_NAME}/manifest/manifest-latest.xml);
+do
 	echo "Downloading $i ..."
 	wget ${REPO_URL}/${i} -O ${REPO_NAME}/$i > /dev/null 2>&1
 done
+
+echo "Download patch-metadata-scripts.zip ..."
+wget ${REPO_URL}/package-pool/patch-metadata-scripts.zip -O ${REPO_NAME}/package-pool/patch-metadata-scripts.zip > /dev/null 2>&1
