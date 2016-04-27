@@ -43,9 +43,9 @@ if mkdir ${WORKDIR}; then
           logger "Sending email notification to ${EMAIL_ADDRESS}"
           VC_HOSTNAME=$(/usr/lib/vmware-vmafd/bin/vmafd-cli get-pnid --server-name localhost)
           cat > /tmp/psc-email << __PSC_EMAIL__
-          Subject: PSC Failover Notification
+Subject: PSC Failover Notification
 
-          VC ${VC_HOSTNAME} failed over to passive PSC ${SECONDARY_PSC} at $(date)
+VC ${VC_HOSTNAME} failed over to passive PSC ${SECONDARY_PSC} at $(date)
 __PSC_EMAIL__
           /usr/sbin/sendmail ${EMAIL_ADDRESS} < /tmp/psc-email
         fi
