@@ -29,7 +29,7 @@ foreach ($device in $vmDevices) {
 	}
 }
 
-# Create VM Config Spec
+# Create VM Config Spec to Edit existing VMDK & Enable Multi-Writer Flag
 $spec = New-Object VMware.Vim.VirtualMachineConfigSpec
 $spec.deviceChange = New-Object VMware.Vim.VirtualDeviceConfigSpec
 $spec.deviceChange[0].operation = 'edit'
