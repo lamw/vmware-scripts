@@ -118,18 +118,22 @@ def main():
          vcTask = vsanapiutils.ConvertVsanTaskToVcTask(vsanTask,si._stub)
          vsanapiutils.WaitForTasks([vcTask],si)
 
-      print ("Enabling Compression/Dedupe capability on VSAN Cluster: %s" % args.clusterName)
-      # Create new VSAN Reconfig Spec, both Compression/Dedupe must be enabled together
-      vsanSpec = vim.VimVsanReconfigSpec(
-         dataEfficiencyConfig=vim.VsanDataEfficiencyConfig(
-            compressionEnabled=True,
-            dedupEnabled=True
-         ),
-         modify=True
-      )
-      vsanTask = vccs.VsanClusterReconfig(cluster=cluster,vsanReconfigSpec=vsanSpec)
-      vcTask = vsanapiutils.ConvertVsanTaskToVcTask(vsanTask,si._stub)
-      vsanapiutils.WaitForTasks([vcTask],si)
+      # Check to see if Dedupe & Compression is already enabled, if not, then we'll enable it
+      if(vsanCluster.dataEfficiencyConfig.compressionEnabled == False or vsanCluster.dataEfficiencyConfig.dedupEnabled == False):
+          print ("Enabling Compression/Dedupe capability on VSAN Cluster: %s" % args.clusterName)
+          # Create new VSAN Reconfig Spec, both Compression/Dedupe must be enabled together
+          vsanSpec = vim.VimVsanReconfigSpec(
+             dataEfficiencyConfig=vim.VsanDataEfficiencyConfig(
+                compressionEnabled=True,
+                dedupEnabled=True
+             ),
+             modify=True
+          )
+          vsanTask = vccs.VsanClusterReconfig(cluster=cluster,vsanReconfigSpec=vsanSpec)
+          vcTask = vsanapiutils.ConvertVsanTaskToVcTask(vsanTask,si._stub)
+          vsanapiutils.WaitForTasks([vcTask],si)
+      else:
+        print ("Compression/Dedupe is already enabled on VSAN Cluster: %s" % args.clusterName)
 
 # Start program
 if __name__ == "__main__":
