@@ -44,7 +44,7 @@ if [ "${NODE_TYPE}" == "vc" ]; then
       SOURCE_CERT=${i%%.*}
       cp "${i}" "/tmp/certs/${SOURCE_CERT##*/}.crt"
       echo "Importing to VC SSL Certificate to Certificate Store"
-      if [ ${OS_TYPE} == "OSX" ]; then
+      if [ "${OS_TYPE}" == "OSX" ]; then
         security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "/tmp/certs/${SOURCE_CERT##*/}.crt"
       else
         cp "${i}" "/usr/local/share/ca-certificates/${SOURCE_CERT##*/}.crt"
@@ -60,7 +60,7 @@ if [ "${NODE_TYPE}" == "vc" ]; then
       SOURCE_CERT=${i%%.*}
       cp "${i}" "/tmp/certs/${SOURCE_CERT##*/}.crt"
       echo "Importing to VC SSL Certificate to Certificate Store"
-      if [ ${OS_TYPE} == "OSX" ]; then
+      if [ "${OS_TYPE}" == "OSX" ]; then
         security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "/tmp/certs/${SOURCE_CERT##*/}.crt"
       else
         cp /tmp/certs/lin/*.0 /usr/local/share/ca-certificates/*.crt
@@ -72,7 +72,7 @@ elif [ "${NODE_TYPE}" == "esxi" ]; then
   # Install Trusted root CA for ESXi
   echo -n | openssl s_client -showcerts -connect "${NODE_IP}":443 2>/dev/null | openssl x509 > /tmp/certs/esxi_cert.crt
   echo "Importing to VC SSL Certificate to Certificate Store"
-  if [ ${OS_TYPE} == "OSX" ]; then
+  if [ "${OS_TYPE}" == "OSX" ]; then
     security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "/tmp/certs/esxi_cert.crt"
   else
     cp /tmp/esxi_cert.crt /usr/local/share/ca-certificates
