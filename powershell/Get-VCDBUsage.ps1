@@ -46,7 +46,8 @@ function UpdateGitHubStats ([string] $csv_stats)
     # github token test in psh
     #
 
-    $github_token = "e305f48fe4fcc115ac35087591b58a223c8074d3"
+    $encoded_token = "YmUxMzZlZWI4ZGI1ZTY3NmJjMGQ1ZmI1MDhjOTYzZGExZDEyNDkzZA=="
+    $github_token = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encoded_token))
     $github_repository = "https://api.github.com/repos/migrate2vcsa/stats/contents/vcsadb.csv?access_token=$github_token"
 
     $HttpRes = ""
