@@ -19,7 +19,7 @@ my %opts = (
    },
    operation => {
       type => "=s",
-      help => "[query_vms|poweron|poweroff|shutdown|query_snaps|create_snap|commit_snap|commit_all_snap|goto_snap|link_clone]",
+      help => "[query_vms|poweron|poweroff|shutdown|query_snaps|create_snap|commit_snap|commit_all_snap|goto_snap|link_clone|migrate]",
       required => 1,
    },
    snapshotname => {
@@ -37,6 +37,11 @@ my %opts = (
       help => "Name of the datastore to store new cloned vApp",
       required => 0,
    },
+   cluster => {
+      type => "=s",
+      help => "Name of cluster to migrate vApp to",
+      required => 0,
+   }
 );
 
 Opts::add_options(%opts);
@@ -51,6 +56,7 @@ my $operation = Opts::get_option('operation');
 my $snapshotname = Opts::get_option('snapshotname');
 my $vapp_clone_name = Opts::get_option('vapp_clone_name');
 my $vapp_datastore = Opts::get_option('vapp_datastore');
+my $cluster_name = Opts::get_option('cluster');
 
 if($operation eq 'query_vms') {
 	&queryVMs($vapp);
@@ -87,29 +93,45 @@ if($operation eq 'query_vms') {
         }
         &gotoSnapshot($vapp,$snapshotname);
 }elsif($operation eq 'poweron') {
-	&powerOnvApp($vapp);
+		&powerOnvApp($vapp);
 }elsif($operation eq 'poweroff') {
-        &powerOffvApp($vapp);
+		&powerOffvApp($vapp);
 }elsif($operation eq 'shutdown') {
-        &shutdownvApp($vapp);
+		&shutdownvApp($vapp);
+}elsif($operation eq 'migrate'){
+		unless($cluster_name) {
+			Util::disconnect();
+			print color("red") . "Operation \"migrate\" requires command line param --cluster!\n\n" . color("reset");
+			exit 1
+		}
+		&migrateVApp( srcvappname  => $vapp,
+				dstvappname => $vapp_clone_name,
+				dstclustername => $cluster_name,
+				dstdatastorename => $vapp_datastore);
 } else {
-	print color("red") . "Invalid operation!\n" . color("reset");
+		print color("red") . "Invalid operation!\n" . color("reset");
 }
 
 Util::disconnect();
 
 sub getvApp {
-	my ($vappname) = @_;
-
-	my $vapp_view = Vim::find_entity_view(view_type => 'VirtualApp', filter => {"name" => $vappname});
+	my ($vappname, $properties) = @_;
 	
+	my $vapp_view;
+	if ( $properties ){
+		$vapp_view = Vim::find_entity_view(view_type => 'VirtualApp', filter => {"name" => $vappname}, properties => $properties);
+	} else {
+		$vapp_view = Vim::find_entity_view(view_type => 'VirtualApp', filter => {"name" => $vappname});
+	}
 	return $vapp_view;
 }
 
 sub getvAppVMs {
 	my ($vappname) = @_;
 
-	my $vapp_view = &getvApp($vappname);
+	my $vapp_view = Vim::find_entity_view(view_type => 'VirtualApp',
+                                          filter => {"name" => $vappname},
+                                          properties => ["vAppConfig"]);
         unless($vapp_view) {
                 Util::disconnect();
                 print color("red") . "Unable to find vApp: \"$vappname\"!\n\n" . color("reset");
@@ -125,6 +147,128 @@ sub getvAppVMs {
 
 	return $vapp_entities;
 }
+
+sub migrateVApp {
+	my %args = @_;
+	my $srcvappname = $args{srcvappname};
+	my $dstvappname = $args{dstvappname};
+	my $dstclustername = $args{dstclustername};
+	my $dstdatastorename = $args{dstdatastorename};
+
+	my $srcvappview = &getvApp($srcvappname, ['name', 'datastore', 'parentFolder', 'config', 'vm' ]);
+	unless($srcvappview) {
+		Util::disconnect();
+		print color("red") . "Unable to find vApp: \"$srcvappname\"!\n\n" . color("reset");
+		exit 1;
+	}
+
+	my $dstclusterview = Vim::find_entity_view(view_type => 'ClusterComputeResource',
+										filter => {"name" => $dstclustername},
+										properties => ['resourcePool', 'host', 'datastore']);
+	unless($dstclusterview) {
+		Util::disconnect();
+		print color("red") . "Unable to find Cluster '". $dstclustername."'!\n\n" . color("reset");
+		exit 1;
+	}
+	my $dsthostview = undef;
+	foreach my $hostref (@{$dstclusterview->{host}}){
+		my $host = Vim::get_view( mo_ref => $hostref, properties => ['name', 'runtime'] );
+		if ( $host->{runtime}->{connectionState}->{val} eq "connected" && $host->{runtime}->{inMaintenanceMode} == 0) {
+			$dsthostview = $host;
+			last
+		}
+	}
+	unless($dsthostview){
+		Util::disconnect();
+		print color("red") . "Unable to find a suitable Host in Cluster '". $dstclustername."'!\n\n" . color("reset");
+		exit 1;
+	}
+
+	my $dstdatastoreview = undef;
+	my $sameds = undef;
+	if ($srcvappview->{datastore}) {
+		my $msg;
+		print color("yellow")."Checking datastore availability on destination cluster '${dstclustername}' ... ".color("reset");
+		if ($dstdatastorename) {
+			$dstdatastoreview = Vim::find_entity_view( view_type => 'Datastore',
+																	filter => { 'name' => $dstdatastorename},
+																	properties => ['name']);
+
+			foreach my $dsref ($dstclusterview->{datastore}){
+
+			}
+
+			$msg = color("red"). "Failed: Unable to find datastore destination '${dstdatastorename}' in cluster '${dstclustername}'!\n\n".color("reset");
+		}else{
+			$dstdatastoreview = Vim::get_view(mo_ref => $srcvappview->{datastore}[0],
+														 properties => ['name']);
+			$msg = color("red"). "Failed: Unable to find datastore of vApp '${srcvappname}'!\n\n".color("reset")
+		}
+		unless($dstdatastoreview){
+			Util::disconnect();
+			print $msg
+			exit 1;
+		}
+		$dstdatastorename = $dstdatastoreview->name;
+		print color("green")."ok\n".color("reset");
+	}
+
+	my $dstrpview = Vim::get_view(mo_ref => $dstclusterview->resourcePool);
+	unless($dstrpview) {
+		Util::disconnect();
+		print color("red") . "Unable to find Cluster's '".$dstclustername."' Resource Pool!\n\n" . color("reset");
+		exit 1;
+	}
+
+	my $folderview = Vim::get_view(mo_ref => $srcvappview->parentFolder);
+	unless($folderview) {
+		Util::disconnect();
+		print color("red") . "Unable to find vApp's parent Folder!\n\n" . color("reset");
+		exit 1;
+	}
+
+	my $resSpec = $srcvappview->config;
+	my $ret;
+	my $datestr =  &giveMeDate('MDYHMS');
+	$dstvappname = $dstvappname||$srcvappname.'-clone-'.$datestr;
+	eval {
+		my $annotation = "Clone from vApp " . $srcvappname . " on " . $datestr;
+		my $configSpec = VAppConfigSpec->new(annotation => $annotation);
+
+		print color("yellow") . "Creating new vApp Container: '${dstvappname}' in cluster '${dstclustername}'...\n";
+		$ret = $dstrpview->CreateVApp(name => $dstvappname, resSpec => $resSpec, configSpec => $configSpec, vmFolder => $folderview);
+	};
+	if($@) {
+		print color("red") . "Failed: Error in creating vApp container! - " . $@ . "\n\n" . color("reset");
+	} else {
+		my $dstvappview = Vim::get_view(mo_ref => $ret);
+		if($dstvappview) {
+			print color("green") . "\tSuccessfully created new vApp container!\n\n" . color("reset");
+		} else {
+			print color("red") . "\tError in creating vApp container! - " . $@ . "\n\n" . color("reset");
+		}
+		
+		my @movedvmsrefs = ();
+		foreach my $vmref (@{$srcvappview->{vm}}){
+			my $relocate_spec = VirtualMachineRelocateSpec->new (datastore => $dstdatastoreview->{mo_ref},
+																				  host => $dsthostview->{mo_ref},
+																				  pool => $dstrpview->{mo_ref});
+			my $vmview = Vim::get_view(mo_ref => $vmref, properties=> ['name']);
+			print color('yellow') . "Relocating virtual machine '".$vmview->{name}."' to host '".$dsthostview->{name}."' and datastore '$dstdatastorename'\n".color('reset');
+			my $task = $vmview->RelocateVM(spec => $relocate_spec);
+			push @movedvmsrefs, $vmref;
+		}
+
+		if (scalar @movedvmsrefs) {
+			print color('yellow'). "Moving vms to new vApp.\n".color('reset');
+			$dstvappview->MoveIntoResourcePool(list => [@movedvmsrefs]);
+		}
+
+		&updatevAppContainer($srcvappname,$dstvappname);
+		print color("magenta") . "New vApp '${dstvappname}' is ready! - Remember to remove source vApp '${srcvappname}'!\n\n" . color("reset");
+	}
+} # migrate VApp
+
 
 sub linkClonevApp {
 	my ($vappname,$linkclonename,$ds,$snapshotname) = @_;
@@ -160,10 +304,10 @@ sub linkClonevApp {
 	my $ret;
 
 	eval {
-		my $annotation = "Linked Clone from vApp " . $ vappname . " on " . &giveMeDate('MDYHMS');
+		my $annotation = "Linked Clone from vApp " . $vappname . " on " . &giveMeDate('MDYHMS');
 		my $configSpec = VAppConfigSpec->new(annotation => $annotation);
 
-		print color("yellow") . "Creating new vApp Linked Clone Container: " . $linkclonename . " ...\n" . color("reset");
+		print color("yellow") . "Creating new vApp Linked Clone Container: '" . $linkclonename . "' ...\n" . color("reset");
 		$ret = $vAppRP->CreateVApp(name => $linkclonename, resSpec => $resSpec, configSpec => $configSpec, vmFolder => $vAppFolder);
 	};
 	if($@) {
@@ -194,7 +338,7 @@ sub createvAppLinkedClone {
 		my $host = Vim::get_view(mo_ref => $vm->runtime->host);
 		my $ds_view = &findDatastore($host,$ds);
 		&createLinkClone($vm,$host,$ds_view,$snap,$folder);
-	}	
+	}
 }
 
 sub createLinkClone {
@@ -269,20 +413,35 @@ sub moveLinkedClonesIntovApp {
 
 sub updatevAppContainer {
 	my ($vappname,$linkclonename) = @_;
-
 	my $vApp = &getvApp($vappname);
+	my $vAppConfigSpec = getVAppConfigSpec($vApp);
 	my $lcvApp = &getvApp($linkclonename);
+	
+# TODO: map >vAppConfig->entityConfig[]->{'key'}  via  entitiyConfig->{'tag'}
+	
+	print color("yellow") . "Updating new vApp container with meta data from " . $vappname . " ...\n" . color("reset");
+      eval {
+         $lcvApp->UpdateVAppConfig(spec => $vAppConfigSpec);
+         print color("green") . "\tSuccessfully updated meta data vApp Clonecontainer " . $linkclonename ."!\n\n" . color("reset");
+      };
+      if($@) {
+         print color("red") . "Error in updating vApp container! - " . $@ . "\n\n" . color("reset");
+      }
+} # updatevAppContainer
 
+sub getVAppConfigSpec {
+	my ($vApp) = @_;
 	my $vAppConfigSpec = VAppConfigSpec->new();
 
-	if(defined($vApp->vAppConfig->entityConfig) && defined($lcvApp->vAppConfig->entityConfig)) {
+#	&& defined($lcvApp->vAppConfig->entityConfig)
+	if(defined($vApp->vAppConfig->entityConfig)) {
                 my $lc_entityConfigs = $vApp->vAppConfig->entityConfig;
-                my $newlc_entityConfigs = $lcvApp->vAppConfig->entityConfig;
+#                my $newlc_entityConfigs = $lcvApp->vAppConfig->entityConfig;
 
                 my @entityConfig = ();
                 foreach my $lc ( sort {$a->tag cmp $b->tag} @$lc_entityConfigs) {
                         foreach my $newlc ( sort {$a->tag cmp $b->tag} @$newlc_entityConfigs) {
-                                if($lc->tag eq $newlc->tag) {
+                              if($lc->tag eq $newlc->tag) {
                                         my $entitySpec = VAppEntityConfigInfo->new();
 
                                         $entitySpec->{'key'} = $newlc->key;
@@ -296,7 +455,6 @@ sub updatevAppContainer {
                                         if(defined($lc->startOrder)) {
                                                 $entitySpec->{'startOrder'} = $lc->startOrder;
                                         }
-
                                         if(defined($lc->stopAction)) {
                                                 $entitySpec->{'stopAction'} = $lc->stopAction;
                                         }
@@ -430,15 +588,8 @@ sub updatevAppContainer {
 		$vAppConfigSpec->{'property'} = \@propertyConfig;
 	}
 	
-	print color("yellow") . "Updating new vApp Linked Clone container with meta data from " . $vappname . " ...\n" . color("reset");
-        eval {
-                $lcvApp->UpdateVAppConfig(spec => $vAppConfigSpec);
-                print color("green") . "\tSuccessfully updated meta data vApp Linked Clonecontainer " . $linkclonename ."!\n\n" . color("reset");
-        };
-        if($@) {
-                print color("red") . "Error in updating vApp container! - " . $@ . "\n\n" . color("reset");
-        }
-}
+	return $vAppConfigSpec;
+} # getVAppConfigSpec
 
 sub powerOnvApp {
 	my ($vappname) = @_;
@@ -484,6 +635,7 @@ sub shutdownvApp {
         my $msg = color("green") . "\tSucessfully shutdown on vApp!\n" . color("reset");
         &getStatus($task,$msg);
 }
+
 
 sub queryvAppSnapshots {
 	my ($vappname) = @_;
@@ -594,7 +746,7 @@ sub commitAllSnapshots {
 			}
 		}
 	}
-}	
+}
 
 sub queryVMs {
 	my ($vappname) = @_;
@@ -603,7 +755,7 @@ sub queryVMs {
 
 	print color("cyan") . "vApp: $vappname\n" . color("reset");
 	foreach(@$vapp_entities) {
-		my $entity = Vim::get_view(mo_ref => $_->key);
+		my $entity = Vim::get_view(mo_ref => $_->key, properties => ['name']);
 		if($entity->isa('VirtualMachine')) {
 			print "\tVM: " . color("yellow") . $entity->name . "\n" . color("reset");
 		} else {
@@ -672,7 +824,7 @@ sub findDatastore {
 sub validateConnection {
 	my ($host_version,$host_license,$host_type) = @_;
 	my $service_content = Vim::get_service_content();
-	my $licMgr = Vim::get_view(mo_ref => $service_content->licenseManager);	
+	my $licMgr = Vim::get_view(mo_ref => $service_content->licenseManager, properties => ['licenses']);
 
 	########################
 	# CHECK HOST VERSION
