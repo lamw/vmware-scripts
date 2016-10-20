@@ -15,7 +15,6 @@
 .PARAMETER dbPassword
    VCDB Password
 .EXAMPLE
-  Run the script locally on the Microsoft SQL Server hosting the vCenter Server Database
   Get-VCDBUsagevPostgres -dbServer vcenter60-1.primp-industries.com -dbName VCDB -dbUser vc -dbPass "VMware1!"
 #>
 
