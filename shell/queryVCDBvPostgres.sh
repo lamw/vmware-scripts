@@ -24,5 +24,6 @@ FROM  (
        WHERE nspname IN ('vc', 'vpx') and relkind in ('r', 't')) t
 GROUP BY tabletype;
 "
-
+# read-only connection
+export PGOPTIONS="-c default_transaction_read_only=on"
 /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB -c "${VCDB_SQL_QUERY}"
