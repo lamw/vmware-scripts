@@ -48,7 +48,7 @@ GROUP BY tabletype;
 "@
 
     $conn = New-Object System.Data.Odbc.OdbcConnection
-    $conn.ConnectionString = "Driver={PostgreSQL UNICODE(x64)};Server=$dbServer;Port=5432;Database=$dbName;Uid=$dbUser;Pwd=$dbPass;"
+    $conn.ConnectionString = "Driver={PostgreSQL UNICODE(x64)};Server=$dbServer;Port=5432;Database=$dbName;Uid=$dbUser;Pwd=$dbPass;ReadOnly=1"
     $conn.open()
     $cmd = New-object System.Data.Odbc.OdbcCommand($query,$conn)
     $ds = New-Object system.Data.DataSet
