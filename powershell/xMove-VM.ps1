@@ -39,9 +39,9 @@ Function xMove-VM {
     [String]$switch,
     [Parameter(Mandatory=$true)]
     [String]$cluster,
-    [parameter(Mandatory=$false)]
+    [Parameter(Mandatory=$false)]
     [String]$datastore,
-    [Paraneter(Mandatory=$true)]
+    [Parameter(Mandatory=$true)]
     [String]$sourceVMHost,
     [Parameter(Mandatory=$true)]
     [String]$vmhost,
