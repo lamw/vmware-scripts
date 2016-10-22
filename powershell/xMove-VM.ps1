@@ -280,7 +280,7 @@ foreach ($vmname in $importedVMList){
                     a random time post-move!"
     }
     Write-Verbose "The destination host will be $($vmhostobject).name"
-    xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -cluster $destClusterName -vmhost $vmhostobject.name -sourceVMHost $vmobject.vmHost
+    xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -cluster $destClusterName -vmhost $vmhostobject.name -sourceVMHost [string]$vmobject.vmHost
 }
 
 # Disconnect from Source/Destination VC
