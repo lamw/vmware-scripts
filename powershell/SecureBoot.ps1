@@ -1,14 +1,13 @@
-﻿<#
-.SYNOPSIS Query Seure Boot setting for a VM in vSphere 6.5
-.NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.PARAMETER Vm
-  VM to query Secure Boot setting
-.EXAMPLE
-  Get-VM -Name Windows10 | Get-SecureBoot
-#>
-
-Function Get-SecureBoot {
+﻿Function Get-SecureBoot {
+    <#
+    .SYNOPSIS Query Seure Boot setting for a VM in vSphere 6.5
+    .NOTES  Author:  William Lam
+    .NOTES  Site:    www.virtuallyghetto.com
+    .PARAMETER Vm
+      VM to query Secure Boot setting
+    .EXAMPLE
+      Get-VM -Name Windows10 | Get-SecureBoot
+    #>
     param(
         [Parameter(
             Mandatory=$true,
@@ -22,19 +21,18 @@ Function Get-SecureBoot {
      Write-Host "Secure Boot is" $secureBootSetting
 }
 
-<#
-.SYNOPSIS Enable/Disable Seure Boot setting for a VM in vSphere 6.5
-.NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.PARAMETER Vm
-  VM to enable/disable Secure Boot
-.EXAMPLE
-  Get-VM -Name Windows10 | Set-SecureBoot -Enabled $true
-.EXAMPLE
-  Get-VM -Name Windows10 | Set-SecureBoot -Enabled $false
-#>
-
 Function Set-SecureBoot {
+    <#
+    .SYNOPSIS Enable/Disable Seure Boot setting for a VM in vSphere 6.5
+    .NOTES  Author:  William Lam
+    .NOTES  Site:    www.virtuallyghetto.com
+    .PARAMETER Vm
+      VM to enable/disable Secure Boot
+    .EXAMPLE
+      Get-VM -Name Windows10 | Set-SecureBoot -Enabled
+    .EXAMPLE
+      Get-VM -Name Windows10 | Set-SecureBoot -Disabled
+    #>
     param(
         [Parameter(
             Mandatory=$true,
@@ -42,13 +40,15 @@ Function Set-SecureBoot {
             ValueFromPipelineByPropertyName=$true)
         ]
         [VMware.VimAutomation.ViCore.Impl.V1.Inventory.InventoryItemImpl]$Vm,
-        [String]$Enabled
+        [Switch]$Enabled,
+        [Switch]$Disabled
      )
 
-    if($Enabled -eq $true) {
+    if($Enabled) {
         $secureBootSetting = $true
         $reconfigMessage = "Enabling Secure Boot for $Vm"
-    } else {
+    }
+    if($Disabled) {
         $secureBootSetting = $false
         $reconfigMessage = "Disabling Secure Boot for $Vm"
     }
