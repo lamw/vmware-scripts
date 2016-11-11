@@ -370,11 +370,12 @@ be sent to https://github.com/migrate2vcsa for further processing`n"
 }
 
 # Please replace variables your own VCDB details
-$dbType = "remote"
+$dbType = "mssql"
+$connectionType = "remote"
 $dbServer = "sql.primp-industries.com"
 $dbPort = "1433"
 $dbInstance = "VCDB"
 $dbUsername = "sa"
 $dbPassword = "VMware1!"
 
-Get-VCDBUsage -connectionType remote -dbType $dbType -dbServer $dbServer -dbPort $dbPort -dbInstance $dbInstance -dbUsername $dbUsername -dbPassword $dbPassword
+Get-VCDBUsage -connectionType $connectionType -dbType $dbType -dbServer $dbServer -dbPort $dbPort -dbInstance $dbInstance -dbUsername $dbUsername -dbPassword $dbPassword
