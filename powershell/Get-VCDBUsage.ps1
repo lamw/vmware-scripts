@@ -259,8 +259,8 @@ GROUP BY tabletype
             Write-Host -ForegroundColor Green "`nRunning Remote MSSQL VCDB Usage Query"
 
             $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-            if($dbPort -eq $null) {
-              $SqlConnection.ConnectionString = "Server = $dbServer, Database = $dbInstance; User ID = $dbUsername; Password = $dbPassword;"
+            if($dbPort -eq 0) {
+              $SqlConnection.ConnectionString = "Server = $dbServer; Database = $dbInstance; User ID = $dbUsername; Password = $dbPassword;"
             } else {
               $SqlConnection.ConnectionString = "Server = $dbServer, $dbPort; Database = $dbInstance; User ID = $dbUsername; Password = $dbPassword;"
             }
