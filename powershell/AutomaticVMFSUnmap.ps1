@@ -19,6 +19,8 @@ Function Get-VMFSUnmap {
         [VMware.VimAutomation.ViCore.Impl.V1.DatastoreManagement.DatastoreImpl]$Datastore
      )
 
+     $datastoreInfo = $Datastore.ExtensionData.Info
+
      if($datastoreInfo -is [VMware.Vim.VmfsDatastoreInfo] -and $datastoreInfo.Vmfs.MajorVersion -eq 6) {
         $datastoreInfo.Vmfs | select Name, UnmapPriority, UnmapGranularity
      } else {
