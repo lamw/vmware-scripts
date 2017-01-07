@@ -58,6 +58,10 @@ vmware-session-nonce=$sessionnonce&entity=%3Centity+type%3D%22ManagedEntity%22+x
 
     # Second request using a POST and specifying our session from initial login + body request
     $results = Invoke-WebRequest -Uri $mob_url -WebSession $vmware -Method POST -Body $body
+
+    # Logout out of vSphere MOB
+    $mob_logout_url = "https://$vc_server/mob/logout"
+    Invoke-WebRequest -Uri $mob_logout_url -WebSession $vmware -Method GET    
 }
 
 Function Disable-vSphereMethod {

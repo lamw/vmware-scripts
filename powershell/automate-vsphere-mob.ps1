@@ -47,6 +47,10 @@ vmware-session-nonce=$sessionnonce&name=VirtualCenter.InstanceName
 # Second request using a POST and specifying our session from initial login + body request
 $results = Invoke-WebRequest -Uri $mob_url -WebSession $vmware -Method POST -Body $body
 
+# Logout out of vSphere MOB
+$mob_logout_url = "https://$vc_server/mob/logout"
+Invoke-WebRequest -Uri $mob_logout_url -WebSession $vmware -Method GET
+
 # Clean up the results for further processing
 # Extract InnerText, split into string array & remove empty lines
 $cleanedUpResults = $results.ParsedHtml.body.innertext.split("`n").replace("`"","") | ? {$_.trim() -ne ""}
