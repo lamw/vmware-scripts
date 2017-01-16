@@ -104,12 +104,10 @@ if($operation eq 'query_vms') {
 			print color("red") . "Operation \"migrate\" requires command line param --cluster!\n\n" . color("reset");
 			exit 1
 		}
-		&migrateVApp(
-				srcvappname  => $vapp,
+		&migrateVApp( srcvappname  => $vapp,
 				dstvappname => $vapp_clone_name,
 				dstclustername => $cluster_name,
-				dstdatastorename => $vapp_datastore
-		);
+				dstdatastorename => $vapp_datastore);
 } else {
 		print color("red") . "Invalid operation!\n" . color("reset");
 }
@@ -157,7 +155,7 @@ sub migrateVApp {
 	my $dstclustername = $args{dstclustername};
 	my $dstdatastorename = $args{dstdatastorename};
 
-	my $srcvappview = &getvApp($srcvappname, ['name', 'datastore', 'parentFolder', 'config', 'vm', 'vAppConfig' ]);
+	my $srcvappview = &getvApp($srcvappname, ['name', 'datastore', 'parentFolder', 'config', 'vm' ]);
 	unless($srcvappview) {
 		Util::disconnect();
 		print color("red") . "Unable to find vApp: \"$srcvappname\"!\n\n" . color("reset");
@@ -249,7 +247,7 @@ sub migrateVApp {
 		} else {
 			print color("red") . "\tError in creating vApp container! - " . $@ . "\n\n" . color("reset");
 		}
-		my $vAppConfigSpec = getVAppConfigSpec( vappview => $srcvappview );
+		
 		my @movedvmsrefs = ();
 		foreach my $vmref (@{$srcvappview->{vm}}){
 			my $relocate_spec = VirtualMachineRelocateSpec->new (datastore => $dstdatastoreview->{mo_ref},
@@ -265,9 +263,8 @@ sub migrateVApp {
 			print color('yellow'). "Moving vms to new vApp.\n".color('reset');
 			$dstvappview->MoveIntoResourcePool(list => [@movedvmsrefs]);
 		}
-		$dstvappview->ViewBase::update_view_data();
-		&mapEntityConfigViaTag(configspec => $vAppConfigSpec, vappview => $dstvappview);
-		&applyVAppConfig( vappview => $dstvappview, configspec=>$vAppConfigSpec);
+
+		&updatevAppContainer($srcvappname,$dstvappname);
 		print color("magenta") . "New vApp '${dstvappname}' is ready! - Remember to remove source vApp '${srcvappname}'!\n\n" . color("reset");
 	}
 } # migrate VApp
@@ -417,52 +414,23 @@ sub moveLinkedClonesIntovApp {
 sub updatevAppContainer {
 	my ($vappname,$linkclonename) = @_;
 	my $vApp = &getvApp($vappname);
-	my $vAppConfigSpec = getVAppConfigSpec( vappview => $vApp );
-	my $lcvApp = &getvApp($linkclonename);	
-
-	mapEntityConfigViaTag($vAppConfigSpec, $lcvApp->vAppConfig->entityConfig);
+	my $vAppConfigSpec = getVAppConfigSpec($vApp);
+	my $lcvApp = &getvApp($linkclonename);
+	
+# TODO: map >vAppConfig->entityConfig[]->{'key'}  via  entitiyConfig->{'tag'}
+	
 	print color("yellow") . "Updating new vApp container with meta data from " . $vappname . " ...\n" . color("reset");
-
-	applyVAppConfig( vappview =>$lcvApp, configspec=>$vAppConfigSpec)
-} # updatevAppContainer
-
-
-sub applyVAppConfig{
-	my %args = @_;
-	my $vapp = $args{vappview};
-	my $config = $args{configspec};
-	my $vappname = $vapp->{name};
       eval {
-         $vapp->UpdateVAppConfig(spec => $config);
-         print color("green") . "\tSuccessfully updated meta data vApp Clonecontainer " . $vappname ."!\n\n" . color("reset");
+         $lcvApp->UpdateVAppConfig(spec => $vAppConfigSpec);
+         print color("green") . "\tSuccessfully updated meta data vApp Clonecontainer " . $linkclonename ."!\n\n" . color("reset");
       };
       if($@) {
          print color("red") . "Error in updating vApp container! - " . $@ . "\n\n" . color("reset");
       }
-} # applyVAppConfig
-
-
-sub mapEntityConfigViaTag {
-	my %args = @_;
-	my $vAppCfg = $args{configspec};
-	my $dstVApp = $args{vappview};
-
-	my $dstEntityCfg = $dstVApp->vAppConfig->entityConfig;
-	my $resultEntityCfg = $vAppCfg->{entityConfig};
-	foreach my $resultEntity ( sort {$a->tag cmp $b->tag} @$resultEntityCfg) {
-		foreach my $dstEntity ( sort {$a->tag cmp $b->tag} @$dstEntityCfg) {
-			if($resultEntity->tag eq $dstEntity->tag) {
-				$resultEntity->{key} = $dstEntity->key;
-			}
-		}
-	}
-	return $vAppCfg;
-} # mappEntityConfigViaTag
-
+} # updatevAppContainer
 
 sub getVAppConfigSpec {
-	my %args = @_;
-	my $vApp = $args{vappview};
+	my ($vApp) = @_;
 	my $vAppConfigSpec = VAppConfigSpec->new();
 
 #	&& defined($lcvApp->vAppConfig->entityConfig)
@@ -471,13 +439,12 @@ sub getVAppConfigSpec {
 #                my $newlc_entityConfigs = $lcvApp->vAppConfig->entityConfig;
 
                 my @entityConfig = ();
-                # tag = Name of Virtual Machine
-                # key = moref of Virtual Machine eg. vm-208
-                foreach my $lc ( @$lc_entityConfigs) {
+                foreach my $lc ( sort {$a->tag cmp $b->tag} @$lc_entityConfigs) {
+                        foreach my $newlc ( sort {$a->tag cmp $b->tag} @$newlc_entityConfigs) {
+                              if($lc->tag eq $newlc->tag) {
                                         my $entitySpec = VAppEntityConfigInfo->new();
 
-                                        $entitySpec->{'key'} = $lc->key;
-                                        $entitySpec->{'tag'} = $lc->tag;
+                                        $entitySpec->{'key'} = $newlc->key;
 
                                         if(defined($lc->startAction)) {
                                                 $entitySpec->{'startAction'} = $lc->startAction;
@@ -499,8 +466,8 @@ sub getVAppConfigSpec {
                                         }
                                         push @entityConfig,$entitySpec;
                                 }
-#                        }
-#                }
+                        }
+                }
                 $vAppConfigSpec->{'entityConfig'} = \@entityConfig;
         }
 
