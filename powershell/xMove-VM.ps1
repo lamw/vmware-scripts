@@ -12,6 +12,10 @@
    File Name  : xMove-VM.ps1
    Author     : William Lam - @lamw
    Version    : 1.0
+   
+   Updated by  : Askar Kopbayev - @akopbayev
+   Version     : 1.1
+   Description : The script allows to run compute-only xVC-vMotion when the source VM has multiple disks on differnet datastores.
 .LINK
     http://www.virtuallyghetto.com/2016/05/automating-cross-vcenter-vmotion-xvc-vmotion-between-the-same-different-sso-domain.html
 .LINK
@@ -41,6 +45,7 @@ Function xMove-VM {
     [String]$datastore,
     [String]$vmhost,
     [String]$vmnetworks
+    [Int]$xvctype
     )
 
     # Retrieve Source VC SSL Thumbprint
@@ -93,6 +98,19 @@ add-type @"
     $spec.datastore = $datastore_view.Id
     $spec.host = $vmhost_view.Id
     $spec.pool = $cluster_view.ExtensionData.ResourcePool
+
+    # Relocate Spec Disk Locator
+    if($xvctype -eq 1){
+        $HDs = Get-VM -Server $sourcevc -Name $vm | Get-HardDisk
+        $HDs | %{
+            $disk = New-Object VMware.Vim.VirtualMachineRelocateSpecDiskLocator
+            $disk.diskId = $_.Extensiondata.Key 
+            $SourceDS = $_.FileName.Split("]")[0].TrimStart("[")
+            $DestDS = Get-Datastore -Server $destvc -name $sourceDS
+            $disk.Datastore = $DestDS.ID
+            $spec.disk += $disk
+        }
+    }
 
     # Service Locator for the destination vCenter Server
     # regardless if its within same SSO Domain or not
@@ -170,12 +188,13 @@ $vmhostname = "vesxi60-5.primp-industries.com"
 $vmnetworkname = "LA-VM-Network1,LA-VM-Network2"
 $switchname = "LA-VDS"
 $switchtype = "vds"
+$ComputeXVC = 1
 
 # Connect to Source/Destination vCenter Server
 $sourceVCConn = Connect-VIServer -Server $sourceVC -user $sourceVCUsername -password $sourceVCPassword
 $destVCConn = Connect-VIServer -Server $destVC -user $destVCUsername -password $destVCpassword
 
-xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -switch $switchname -cluster $clustername -vmhost $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname
+xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -switch $switchname -cluster $clustername -vmhost $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname -xvcType $computeXVC
 
 # Disconnect from Source/Destination VC
 Disconnect-VIServer -Server $sourceVCConn -Confirm:$false
