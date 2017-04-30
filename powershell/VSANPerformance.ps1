@@ -88,7 +88,7 @@ Function Get-VSANPerformanceStat {
     .PARAMETER EntityId
         The vSAN Management API Entity Reference. Please refer to vSAN Mgmt API docs
     .EXAMPLE
-        Get-VSANPerformanceStats -Cluster VSAN-Cluster -StartTime "04/23/2017 4:00" -EndTime "04/23/2017 4:05" -EntityId "disk-group:5239bee8-9297-c091-df17-241a4c197f8d"
+        Get-VSANPerformanceStat -Cluster VSAN-Cluster -StartTime "04/23/2017 4:00" -EndTime "04/23/2017 4:05" -EntityId "disk-group:5239bee8-9297-c091-df17-241a4c197f8d"
 #>
     param(
         [Parameter(Mandatory=$true)][String]$Cluster,
