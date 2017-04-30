@@ -87,14 +87,17 @@ Function Get-VSANPerformanceStat {
         The end time to scope the query (format: "04/23/2017 4:10")
     .PARAMETER EntityId
         The vSAN Management API Entity Reference. Please refer to vSAN Mgmt API docs
+    .PARAMETER Metric
+        The vSAN performance metric name for the given entity
     .EXAMPLE
-        Get-VSANPerformanceStat -Cluster VSAN-Cluster -StartTime "04/23/2017 4:00" -EndTime "04/23/2017 4:05" -EntityId "disk-group:5239bee8-9297-c091-df17-241a4c197f8d"
+        Get-VSANPerformanceStat -Cluster VSAN-Cluster -StartTime "04/23/2017 4:00" -EndTime "04/23/2017 4:05" -EntityId "disk-group:5239bee8-9297-c091-df17-241a4c197f8d" -Metric iopsSched
 #>
     param(
         [Parameter(Mandatory=$true)][String]$Cluster,
         [Parameter(Mandatory=$true)][String]$StartTime,
         [Parameter(Mandatory=$true)][String]$EndTime,
-        [Parameter(Mandatory=$true)][String]$EntityId
+        [Parameter(Mandatory=$true)][String]$EntityId,
+        [Parameter(Mandatory=$true)][String]$Metric
     )
     function Convert-StringToDateTime {
         # Borrowed from https://blogs.technet.microsoft.com/heyscriptingguy/2014/12/19/powertip-convert-string-into-datetime-object/#comment-209544
@@ -126,7 +129,8 @@ Function Get-VSANPerformanceStat {
 
     $spec = New-Object VMware.Vsan.Views.VsanPerfQuerySpec
     $spec.EntityRefId = $EntityId
-    $spec.StartTime = $startTime
-    $spec.EndTime = $endTime
+    $spec.Labels = @($Metric)
+    $spec.StartTime = $start
+    $spec.EndTime = $end
     $vpm.VsanPerfQueryPerf(@($spec),$cluster_view)
 }
