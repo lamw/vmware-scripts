@@ -85,20 +85,28 @@
 
     $results = @()
     foreach ($vmhost in (Get-Cluster -Name $Cluster | Get-VMHost)) {
-        if(($vmhost.ApiVersion -eq "6.0" -and (Get-AdvancedSetting -Entity $vmhost -Name "Misc.HostAgentUpdateLevel").value -eq "3")) {
+        if( ($vmhost.ApiVersion -eq "6.0" -and (Get-AdvancedSetting -Entity $vmhost -Name "Misc.HostAgentUpdateLevel").value -eq "3") -or ($vmhost.ApiVersion -eq "6.5") ) {
             $esxiVersion = ($vmhost.ApiVersion) + " Update " + (Get-AdvancedSetting -Entity $vmhost -Name "Misc.HostAgentUpdateLevel").value
-            $rhttpProxy = Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiRhttpproxyDisabledProtocols" -ErrorAction SilentlyContinue
-            $vmauth = Get-AdvancedSetting -Entity $vmhost -Name "UserVars.VMAuthdDisabledProtocols" -ErrorAction SilentlyContinue
-            $vps = Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiVPsDisabledProtocols" -ErrorAction SilentlyContinue
+            
+            $vps = (Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiVPsDisabledProtocols" -ErrorAction SilentlyContinue).value
+            # ESXi 6.5 - UserVars.ESXiVPsDisabledProtocols covers both VPs+rHTTP
+            if($vmhost.ApiVersion -eq "6.5") {
+                $rhttpProxy = $vps
+                # Only TLS 1.2 is enabled 
+                $vmauth = "tlsv1,tlsv1.1,sslv3"
+            } else {
+                $rhttpProxy = (Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiRhttpproxyDisabledProtocols" -ErrorAction SilentlyContinue).value
+                $vmauth = (Get-AdvancedSetting -Entity $vmhost -Name "UserVars.VMAuthdDisabledProtocols" -ErrorAction SilentlyContinue).value
+            }
             $sfcbd = Get-SFCBDConf -vmhost $vmhost
 
             $hostTLSSettings = [pscustomobject] @{
                 vmhost = $vmhost.name;
-                #version = $esxiVersion;
-                hostd = $rhttpProxy.value;
-                authd = $vmauth.value;
+                version = $esxiVersion;
+                hostd = $rhttpProxy;
+                authd = $vmauth;
                 sfcbd = $sfcbd
-                ioFilterVSANVP = $vps.value
+                ioFilterVSANVP = $vps
             }
             $results+=$hostTLSSettings
         }
@@ -205,18 +213,19 @@ Function Set-ESXiDPC {
 
     Write-Host "`nDisabling the following TLS protocols: $tlsString on ESXi hosts ...`n"
     foreach ($vmhost in (Get-Cluster -Name $Cluster | Get-VMHost)) {
-        if($vmhost.ApiVersion -eq "6.0" -and (Get-AdvancedSetting -Entity $vmhost -Name "Misc.HostAgentUpdateLevel").value -eq "3") {
+        if( ($vmhost.ApiVersion -eq "6.0" -and (Get-AdvancedSetting -Entity $vmhost -Name "Misc.HostAgentUpdateLevel").value -eq "3") -or ($vmhost.ApiVersion -eq "6.5") ) {
             Write-Host "Updating $vmhost ..."
 
             Write-Host "`tUpdating sfcb.cfg ..."
             UpdateSFCBConfig -vmhost $vmhost
 
-            Write-Host "`tUpdating UserVars.ESXiRhttpproxyDisabledProtocols ..."
-            Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiRhttpproxyDisabledProtocols" | Set-AdvancedSetting -Value $tlsString -Confirm:$false | Out-Null
+            if($vmhost.ApiVersion -eq "6.0") {
+                Write-Host "`tUpdating UserVars.ESXiRhttpproxyDisabledProtocols ..."
+                Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiRhttpproxyDisabledProtocols" | Set-AdvancedSetting -Value $tlsString -Confirm:$false | Out-Null
 
-            Write-Host "`tUpdating UserVars.VMAuthdDisabledProtocols ..."
-            Get-AdvancedSetting -Entity $vmhost -Name "UserVars.VMAuthdDisabledProtocols" | Set-AdvancedSetting -Value $tlsString -Confirm:$false | Out-Null
-
+                Write-Host "`tUpdating UserVars.VMAuthdDisabledProtocols ..."
+                Get-AdvancedSetting -Entity $vmhost -Name "UserVars.VMAuthdDisabledProtocols" | Set-AdvancedSetting -Value $tlsString -Confirm:$false | Out-Null
+            }
             Write-Host "`tUpdating UserVars.ESXiVPsDisabledProtocols ..."
             Get-AdvancedSetting -Entity $vmhost -Name "UserVars.ESXiVPsDisabledProtocols" | Set-AdvancedSetting -Value $tlsString -Confirm:$false | Out-Null
         }
