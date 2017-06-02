@@ -21,8 +21,8 @@ my %opts = (
    },
    clonename => {
       type => "=s",
-      help => "Name of cloned VM",
-      required => 1,
+      help => "Name of cloned VM. Omit to create a new VM.",
+      required => 0,
    },
    vmfolder => {
       type => "=s",
@@ -41,14 +41,6 @@ my $clonename = Opts::get_option('clonename');
 my $datastorecluster = Opts::get_option('datastorecluster');
 my $vmfolder = Opts::get_option('vmfolder');
 
-# get VM view
-my $vm = Vim::find_entity_view(view_type => 'VirtualMachine', filter => {'name' => $vmname}, properties => ['name']);
-unless($vm) {
-	print "Unable to locate VM: $vmname!\n";
-	Util::disconnect();
-	exit 1;
-}
-
 # get datastore cluster view
 my $dscluster = Vim::find_entity_view(view_type => 'StoragePod', filter => {'name' => $datastorecluster}, properties => ['name']);
 unless($dscluster) {
@@ -65,35 +57,57 @@ unless($folder) {
         exit 1;
 }
 
-# get storage rsc mgr
-my $storageMgr = Vim::get_view(mo_ref => Vim::get_service_content()->storageResourceManager);
-
-# create storage spec
-my $podSpec = StorageDrsPodSelectionSpec->new(storagePod => $dscluster);
-my $location = VirtualMachineRelocateSpec->new();
-my $cloneSpec = VirtualMachineCloneSpec->new(powerOn => 'false', template => 'false', location => $location);
-my $storageSpec = StoragePlacementSpec->new(type => 'clone', cloneName => $clonename, folder => $folder, podSelectionSpec => $podSpec, vm => $vm, cloneSpec => $cloneSpec);
-
-eval {
-	my ($result,$key,$task,$msg);
-	$result = $storageMgr->RecommendDatastores(storageSpec => $storageSpec);
-
-	#reetrieve SDRS recommendation 
-	$key = eval {$result->recommendations->[0]->key} || [];
-
-	#if key exists, we have a recommendation and need to apply it
-	if($key) {
-		print "Cloning \"$vmname\" to \"$clonename\" onto \"$datastorecluster\"\n";
-		$task = $storageMgr->ApplyStorageDrsRecommendation_Task(key => [$key]);
-		$msg = "\tSuccesfully cloned VM!";
-		&getStatus($task,$msg);
-	} else {
-		print Dumper($result);
-		print "Uh oh ... something went terribly wrong and we did not get back SDRS recommendation!\n";
-	}
-};
-if($@) {
-	print "Error: " . $@ . "\n";
+# clone mode
+if ( defined $clonename ) {
+   
+   my $vm = Vim::find_entity_view(view_type => 'VirtualMachine', filter => {'name' => $vmname}, properties => ['name']);
+   unless($vm) {
+       print "Unable to locate VM: $vmname!\n";
+       Util::disconnect();
+       exit 1;
+   }
+  
+  # get storage rsc mgr
+  my $storageMgr = Vim::get_view(mo_ref => Vim::get_service_content()->storageResourceManager);
+  
+  # create storage spec
+  my $podSpec = StorageDrsPodSelectionSpec->new(storagePod => $dscluster);
+  my $location = VirtualMachineRelocateSpec->new();
+  my $cloneSpec = VirtualMachineCloneSpec->new(powerOn => 'false', template => 'false', location => $location);
+  my $storageSpec = StoragePlacementSpec->new(type => 'clone', cloneName => $clonename, folder => $folder, podSelectionSpec => $podSpec, vm => $vm, cloneSpec => $cloneSpec);
+  
+  eval {
+      my ($result,$key,$task,$msg);
+      $result = $storageMgr->RecommendDatastores(storageSpec => $storageSpec);
+  
+      #reetrieve SDRS recommendation 
+      $key = eval {$result->recommendations->[0]->key} || [];
+  
+      #if key exists, we have a recommendation and need to apply it
+      if($key) {
+          print "Cloning \"$vmname\" to \"$clonename\" onto \"$datastorecluster\"\n";
+          $task = $storageMgr->ApplyStorageDrsRecommendation_Task(key => [$key]);
+          $msg = "\tSuccesfully cloned VM!";
+          &getStatus($task,$msg);
+      } else {
+          print Dumper($result);
+          print "Uh oh ... something went terribly wrong and we did not get back SDRS recommendation!\n";
+      }
+  };
+  if($@) {
+      print "Error: " . $@ . "\n";
+  }
+  
+# Create NEW VM mode
+} else {
+      
+   my $vmCfg = VirtualMachineConfigSpec->new(
+      name => $vmname,
+      memoryMB => 2048,
+      numCPUs => 2
+   );
+   
+   
 }
 
 Util::disconnect();
