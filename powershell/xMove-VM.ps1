@@ -8,14 +8,23 @@
    two vCenter Servers that ARE part of the same SSO Domain (aka Enhanced Linked Mode)
 
    This script also supports migrating VMs connected to both a VSS/VDS as well as having multiple vNICs
+
+   This script also supports migrating to/from VMware Cloud on AWS (VMC)
 .NOTES
    File Name  : xMove-VM.ps1
    Author     : William Lam - @lamw
    Version    : 1.0
-   
+
    Updated by  : Askar Kopbayev - @akopbayev
    Version     : 1.1
    Description : The script allows to run compute-only xVC-vMotion when the source VM has multiple disks on differnet datastores.
+
+   Updated by  : William Lam - @lamw
+   Version     : 1.2
+   Description : Added additional parameters to be able to perform cold migration to/from VMware Cloud on AWS (VMC)
+                 -ResourcePool
+                 -uppercaseuuid
+
 .LINK
     http://www.virtuallyghetto.com/2016/05/automating-cross-vcenter-vmotion-xvc-vmotion-between-the-same-different-sso-domain.html
 .LINK
@@ -23,7 +32,7 @@
 
 .INPUTS
    sourceVCConnection, destVCConnection, vm, switchtype, switch,
-   cluster, datastore, vmhost, vmnetworks,
+   cluster, resourcepool, datastore, vmhost, vmnetworks, $xvctype, $uppercaseuuid
 .OUTPUTS
    Console output
 #>
@@ -42,10 +51,12 @@ Function xMove-VM {
     [String]$switchtype,
     [String]$switch,
     [String]$cluster,
+    [String]$resourcepool,
     [String]$datastore,
     [String]$vmhost,
-    [String]$vmnetworks
-    [Int]$xvctype
+    [String]$vmnetworks,
+    [Int]$xvctype,
+    [Boolean]$uppercaseuuid
     )
 
     # Retrieve Source VC SSL Thumbprint
@@ -77,8 +88,14 @@ add-type @"
     # Dest Datastore to migrate VM to
     $datastore_view = (Get-Datastore -Server $destVCConn -Name $datastore)
 
-    # Dest Cluster to migrate VM to
-    $cluster_view = (Get-Cluster -Server $destVCConn -Name $cluster)
+    # Dest Cluster/ResourcePool to migrate VM to
+    if($cluster) {
+        $cluster_view = (Get-Cluster -Server $destVCConn -Name $cluster)
+        $resource = $cluster_view.ExtensionData.resourcePool
+    } else {
+        $rp_view = (Get-ResourcePool -Server $destVCConn -Name $resourcepool)
+        $resource = $rp_view.ExtensionData.MoRef
+    }
 
     # Dest ESXi host to migrate VM to
     $vmhost_view = (Get-VMHost -Server $destVCConn -Name $vmhost)
@@ -97,14 +114,14 @@ add-type @"
     $spec = New-Object VMware.Vim.VirtualMachineRelocateSpec
     $spec.datastore = $datastore_view.Id
     $spec.host = $vmhost_view.Id
-    $spec.pool = $cluster_view.ExtensionData.ResourcePool
+    $spec.pool = $resource
 
     # Relocate Spec Disk Locator
     if($xvctype -eq 1){
         $HDs = Get-VM -Server $sourcevc -Name $vm | Get-HardDisk
         $HDs | %{
             $disk = New-Object VMware.Vim.VirtualMachineRelocateSpecDiskLocator
-            $disk.diskId = $_.Extensiondata.Key 
+            $disk.diskId = $_.Extensiondata.Key
             $SourceDS = $_.FileName.Split("]")[0].TrimStart("[")
             $DestDS = Get-Datastore -Server $destvc -name $sourceDS
             $disk.Datastore = $DestDS.ID
@@ -119,7 +136,13 @@ add-type @"
     $credential.username = $destVCusername
     $credential.password = $destVCpassword
     $service.credential = $credential
-    $service.instanceUuid = $destVCConn.InstanceUuid
+    # For some xVC-vMotion, VC's InstanceUUID must be in all caps
+    # Haven't figured out why, but this flag would allow user to toggle (default=false)
+    if($uppercaseuuid) {
+        $service.instanceUuid = $destVCConn.InstanceUuid
+    } else {
+        $service.instanceUuid = ($destVCConn.InstanceUuid).ToUpper()
+    }
     $service.sslThumbprint = $destVCThumbprint
     $service.url = "https://$destVC"
     $spec.service = $service
@@ -170,7 +193,7 @@ add-type @"
     # Issue Cross VC-vMotion
     $task = $vm_view.RelocateVM_Task($spec,"defaultPriority")
     $task1 = Get-Task -Id ("Task-$($task.value)")
-    $task1 | Wait-Task -Verbose
+    $task1 | Wait-Task
 }
 
 # Variables that must be defined
@@ -183,18 +206,19 @@ $destVC = "vcenter60-3.primp-industries.com"
 $destVCUsername = "administrator@vghetto.local"
 $destVCpassword = "VMware1!"
 $datastorename = "la-datastore1"
-$clustername = "LA-Cluster"
+$resourcepool = "WorkloadRP"
 $vmhostname = "vesxi60-5.primp-industries.com"
 $vmnetworkname = "LA-VM-Network1,LA-VM-Network2"
 $switchname = "LA-VDS"
 $switchtype = "vds"
 $ComputeXVC = 1
+$UppercaseUUID = $false
 
 # Connect to Source/Destination vCenter Server
 $sourceVCConn = Connect-VIServer -Server $sourceVC -user $sourceVCUsername -password $sourceVCPassword
 $destVCConn = Connect-VIServer -Server $destVC -user $destVCUsername -password $destVCpassword
 
-xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -switch $switchname -cluster $clustername -vmhost $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname -xvcType $computeXVC
+xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -switch $switchname -resourcepool $resourcepool -vmhost $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname -xvcType $computeXVC -uppercaseuuid $UppercaseUUID
 
 # Disconnect from Source/Destination VC
 Disconnect-VIServer -Server $sourceVCConn -Confirm:$false
