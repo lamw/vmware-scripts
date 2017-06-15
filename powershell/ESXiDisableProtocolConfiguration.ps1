@@ -14,8 +14,6 @@
         Returns current disabled TLS protocols for Hostd, Authd, sfcbd & VSANVP/IOFilter 
     .PARAMETER Cluster
         The name of the vSphere Cluster
-    .PARAMETER VMhost
-        The name of a standalone ESXi host
     .EXAMPLE
         Get-ESXiDPC -Cluster VSAN-Cluster
 #>
