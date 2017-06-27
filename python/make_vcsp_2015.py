@@ -209,9 +209,8 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
 
 def main():
     if len(sys.argv) < 3:
-        print (''
-            "Usage:"
-            "python make_vcsp_2016.py <library name> <library location on disk> <md5check, default true>")
+        print ("Usage: python %s <library name> <library location"
+               " on disk> <md5check, default true>" % sys.argv[0])
         sys.exit()
 
     lib_name = sys.argv[1]
