@@ -1,4 +1,4 @@
-﻿Function Get-HTML5VMConsoleURL {
+﻿Function Get-VMConsoleURL {
 <#
     .NOTES
     ===========================================================================
@@ -8,21 +8,27 @@
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
-        This function generates the HTML5 VM Console URL as seen when using the
+        This function generates the HTML5 VM Console URL (default) as seen when using the
         vSphere Web Client connected to a vCenter Server 6.5 environment. You must
         already be logged in for the URL to be valid or else you will be prompted
-        to login before being re-directed to VM Console
+        to login before being re-directed to VM Console. You have option of also generating
+        either the Standalone VMRC or WebMKS URL using additional parameters
     .PARAMETER VMName
         The name of the VM
     .PARAMETER webmksUrl
         Set to true to generate the WebMKS URL instead (e.g. wss://<host>/ticket/<ticket>)
+    .PARAMETER vmrcUrl
+        Set to true to generate the WebMKS URL instead (e.g. vmrc://...)
     .EXAMPLE
-        Get-HTML5VMConsoleURL -VMName "Embedded-VCSA1"
+        Get-VMConsoleURL -VMName "Embedded-VCSA1"
     .EXAMPLE
-        Get-HTML5VMConsoleURL -VMName "Embedded-VCSA1" -webmksUrl $true
+        Get-VMConsoleURL -VMName "Embedded-VCSA1" -vmrcUrl $true
+    .EXAMPLE
+        Get-VMConsoleURL -VMName "Embedded-VCSA1" -webmksUrl $true
         #>
     param(
         [Parameter(Mandatory=$true)][String]$VMName,
+        [Parameter(Mandatory=$false)][Boolean]$vmrcUrl,
         [Parameter(Mandatory=$false)][Boolean]$webmksUrl
     )
 
@@ -70,6 +76,11 @@
         $VMHostName = $WebMKSTicket.host
         $Ticket = $WebMKSTicket.Ticket
         $URL = "wss://$VMHostName`:443/ticket/$Ticket"
+    } elseif($vmrcUrl) {
+        $VCName = $global:DefaultVIServer.Name
+        $SessionMgr = Get-View $DefaultViserver.ExtensionData.Content.SessionManager
+        $Ticket = $SessionMgr.AcquireCloneTicket()
+        $URL = "vmrc://clone`:$Ticket@$VCName`:443/?moid=$VMMoref"
     } else {
         $VCInstasnceUUID = $global:DefaultVIServer.InstanceUuid
         $VCName = $global:DefaultVIServer.Name
