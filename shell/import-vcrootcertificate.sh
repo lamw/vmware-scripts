@@ -38,7 +38,7 @@ if [ "${NODE_TYPE}" == "vc" ]; then
     # Install Trusted root CA for vCenter Server Appliance
     echo -e "\nDownloading VC SSL Certificate to ${DOWNLOAD_PATH}"
     # Check to see if the URL is the old filename or the new
-    HTTP_CODE=$(curl -k -s -w "%{http_code}" "https://192.168.30.200/certs/download" -o /tmp/cert.zip)
+    HTTP_CODE=$(curl -k -s -w "%{http_code}" "https://192.168.30.200/certs/download" -o ${DOWNLOAD_PATH})
     if [ "${HTTP_CODE}" -eq 400 ]; then
         curl -k -s "https://${NODE_IP}/certs/download.zip" -o ${DOWNLOAD_PATH}
     fi
