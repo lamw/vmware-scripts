@@ -18,7 +18,7 @@
     .PARAMETER webmksUrl
         Set to true to generate the WebMKS URL instead (e.g. wss://<host>/ticket/<ticket>)
     .PARAMETER vmrcUrl
-        Set to true to generate the WebMKS URL instead (e.g. vmrc://...)
+        Set to true to generate the VMRC URL instead (e.g. vmrc://...)
     .EXAMPLE
         Get-VMConsoleURL -VMName "Embedded-VCSA1"
     .EXAMPLE
