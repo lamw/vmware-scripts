@@ -26,7 +26,7 @@ my @supportedVersion = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
 
 my %opts = (
 	cluster => {
-				type => "=s",
+		type => "=s",
 		help => "The name of a vCenter cluster to query",
 		required => 0,
 	},
@@ -35,15 +35,15 @@ my %opts = (
 		help => "The name of a vCenter datacenter to query",
 		required => 0,
 	},
-				hostlist => {
-	  type => "=s",
-	  help => "File containting list of ESX/ESXi host(s) to query",
-	  required => 0,
+	hostlist => {
+		type => "=s",
+		help => "File containting list of ESX/ESXi host(s) to query",
+		required => 0,
 	},
-				vmlist => {
-	  type => "=s",
-	  help => "File containting list of VM(s) to query",
-	  required => 0,
+	vmlist => {
+		type => "=s",
+		help => "File containting list of VM(s) to query",
+		required => 0,
 	},
 	type => {
 		type => "=s",
@@ -54,13 +54,13 @@ my %opts = (
 		type => "=s",
 		help => "The name of the report to output. Please add \".html\" extension",
 		required => 0,
-					default => "vmware_health_report.html",
+		default => "vmware_health_report.html",
 	},
 	logcount => {
 		type => "=s",
 		help => "The number of lines to output from hostd logs",
 		required => 0,
-					default => 15,
+		default => 15,
 	},
 	vmperformance => {
 		type => "=s",
@@ -86,28 +86,28 @@ my %opts = (
 		required => 0,
 		default => "no",
 	},
-				demo => {
-	  type => "=s",
-	  help => "[yes|no]",
-	  required => 0,
-	  default => "no",
+	demo => {
+		type => "=s",
+		help => "[yes|no]",
+		required => 0,
+		default => "no",
 	},
-				conf => {
-	  type => "=s",
-	  help => "File containing Host and VM specific configurations to output",
-	  required => 0,
+	conf => {
+		type => "=s",
+		help => "File containing Host and VM specific configurations to output",
+		required => 0,
 	},
-				printerfriendly => {
-	  type => "=s",
-	  help => "Whether the html output will be printer friendly [yes|no]",
-	  required => 0,
-					default => "no",
+	printerfriendly => {
+		type => "=s",
+		help => "Whether the html output will be printer friendly [yes|no]",
+		required => 0,
+		default => "no",
 	},
-				debug  => {
-	  type => "=s",
-	  help => "Enable/Disable debugging to help William troubleshot [0|1]",
-					required => 0,
-				},
+	debug  => {
+		type => "=s",
+		help => "Enable/Disable debugging to help William troubleshot [0|1]",
+		required => 0,
+	},
 );
 
 # validate options, and connect to the server
