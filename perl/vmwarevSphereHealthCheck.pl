@@ -105,7 +105,7 @@ my %opts = (
 	},
 	debug  => {
 		type => "=s",
-		help => "Enable/Disable debugging to help William troubleshot [0|1]",
+		help => "Enable/Disable debugging to help William troubleshoot [0|1]",
 		required => 0,
 	},
 );
@@ -5644,7 +5644,7 @@ sub validateSystem {
 
 	if(!grep(/$ver/,@supportedVersion)) {
 		Util::disconnect();
-		print "Error: This script only supports vSphere \"@supportedVersion\" or greater!\n\n";
+		print "Error: This script only supports vSphere \"@supportedVersion\"! (found $ver)\n\n";
 		exit 1;
 	}
 }
