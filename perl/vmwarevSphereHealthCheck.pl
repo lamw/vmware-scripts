@@ -5699,28 +5699,14 @@ sub prettyPrintData{
 
 	my($size);
 
-	if($type eq 'B') {
+	if(grep (/^$type$/, ('B', 'K', 'M', 'G'))) {
+		$bytes *= 1024 if ($type eq 'K');
+		$bytes *= 1048576 if ($type eq 'M');
+		$bytes *= 1073741824 if ($type eq 'G');
+
 		$size = $bytes . ' Bytes' if ($bytes < 1024);
 		$size = sprintf("%.2f", ($bytes/1024)) . ' KB' if ($bytes >= 1024 && $bytes < 1048576);
 		$size = sprintf("%.2f", ($bytes/1048576)) . ' MB' if ($bytes >= 1048576 && $bytes < 1073741824);
-		$size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-		$size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
-	}
-	elsif($type eq 'K') {
-		$bytes = $bytes * (1024);
-		$size = sprintf("%.2f", ($bytes/1048576)) . ' MB' if ($bytes >= 1048576 && $bytes < 1073741824);
-		$size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-		$size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
-	}
-	elsif($type eq 'M') {
-		$bytes = $bytes * (1048576);
-		$size = sprintf("%.2f", ($bytes/1048576)) . ' MB' if ($bytes >= 1048576 && $bytes < 1073741824);
-		$size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-		$size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
-	}
-
-	elsif($type eq 'G') {
-		$bytes = $bytes * (1073741824);
 		$size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
 		$size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
 	}
