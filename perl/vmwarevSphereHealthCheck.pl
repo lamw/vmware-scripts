@@ -5331,7 +5331,7 @@ sub startReport {
 	}
 
 	$start_time = time();
-	open(REPORT_OUTPUT, ">$report");
+	open(REPORT_OUTPUT, ">encoding(UTF-8)", "$report") or die $!;
 
 	$my_time = "Date: ".giveMeDate('MDYHMS');
 	my $html_start = <<HTML_START;
@@ -5340,7 +5340,7 @@ sub startReport {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="author" content="William Lam"/>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>VMware vSphere Health Check Report v$version - $my_time ($system_name)</title>
 <style type="text/css">
 <!--
