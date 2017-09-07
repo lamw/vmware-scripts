@@ -4552,7 +4552,8 @@ sub printDatacenterSummary {
 			if(defined($pod->summary)) {
 				my @podDatastores = ();
 				my ($podDSCount,$podVMCount) = (0,0);
-				foreach my $ds ( @{$pod->childEntity} ) {
+				# If a pod has no datastores, childEntity will be undef, so force an empty array.
+				foreach my $ds ( defined($pod->childEntity) ? @{$pod->childEntity} : () ) {
 					my $child_view = Vim::get_view(mo_ref => $ds);
 
 					if($child_view->isa("Datastore")) {
@@ -4673,7 +4674,8 @@ sub printDatacenterSummary {
 			if(defined($pod->summary)) {
 				my @podDatastores = ();
 				my $podDSCount = 0;
-				foreach my $ds ( @{$pod->childEntity} ) {
+				# If a pod has no datastores, childEntity will be undef, so force an empty array.
+				foreach my $ds ( defined($pod->childEntity) ? @{$pod->childEntity} : () ) {
 					my $child_view = Vim::get_view(mo_ref => $ds, properties => ['name','summary.maintenanceMode']);
 
 					if($child_view->isa("Datastore")) {
