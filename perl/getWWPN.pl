@@ -29,7 +29,8 @@ my %vmhbas = ();
 &processConfigurationFile($conf);
 
 foreach(@hosts) {
-	my $host_view = Vim::find_entity_view(view_type => 'HostSystem', filter => { name => $_ });
+	my $host_view = Vim::find_entity_view(view_type => 'HostSystem', filter => { name => $_ }
+                                          , properties => [ 'name', 'config']);
 	my $hbas = $host_view->config->storageDevice->hostBusAdapter;
 	foreach my $hba (@$hbas) {
         	if ($hba->isa("HostFibreChannelHba")) {
