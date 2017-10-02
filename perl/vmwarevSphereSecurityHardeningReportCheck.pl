@@ -84,7 +84,10 @@ my %opts = (
 ################################
 # VERSION
 ################################
-my $version = "5.1.0";
+
+# Edited By: Alex Lopez - added compatability for 5.5/6.0
+
+my $version = "6.0.0";
 $Util::script_version = $version;
 
 # read and validate command-line parameters 
@@ -214,14 +217,14 @@ sub vCenterReport {
 
 	#VSH01
 	$success = 2;
-	$desc = "Maintain supported operating system database and hardware for vCenter";
-	$resolution = "Please refer to vCenter doc for further details";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	$desc = "Maintain supported operating system, database, and hardware for vCenter";
+	$resolution = "Verify that vCenter Server is running on supported OS, hardware and database";
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "use-supported-system";
 	} else {
 		$code = "VSH01";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
 	if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -231,13 +234,13 @@ sub vCenterReport {
 	$success = 2;
 	$desc = "Keep vCenter Server system properly patched";
 	$resolution = "Stay up-to-date on patches for Windows Server";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "apply-os-patches";
 	} else {
 		$code = "VSH02";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
-        @supportedCheckLevel = qw(enterprise profile1 profile3);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
+        @supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
 	if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -246,13 +249,13 @@ sub vCenterReport {
 	$success = 2;
         $desc = "Provide standard Windows system protection on the vCenter Server host";
         $resolution = "Provide Windows system protection";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "secure-vcenter-os";
         } else {
 		$code = "VSH03";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
-        @supportedCheckLevel = qw(enterprise profile1 profile3);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
+        @supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -261,13 +264,13 @@ sub vCenterReport {
         $success = 2;
 	$desc = "Avoid unneeded user login to vCenter Server system";
 	$resolution = "Self explantory";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "limit-user-login";
         } else {
 		$code = "VSH04";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
-        @supportedCheckLevel = qw(enterprise profile1 profile3);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
+        @supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -276,12 +279,12 @@ sub vCenterReport {
         $success = 2;
 	$desc = "Install vCenter Server using a Service Account instead of a built-in Windows account";
 	$resolution = "Setup Service Account to run vCenter service";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "install-with-service-account";
 	} else {
 		$code = "VSH05";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(dmz profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                	&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -291,12 +294,12 @@ sub vCenterReport {
 	$success = 2;
 	$desc = "Restrict usage of vSphere administrator privilege";
 	$resolution = "Please refer to vCenter doc for further details";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "restrict-admin-privilege";
         } else {
 		$code = "VSH06";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(enterprise dmz profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -306,8 +309,8 @@ sub vCenterReport {
 	$desc = "Secure the vSphere Administrator role and assign it to specific users";
 	$resolution = "Please refer to vCenter doc for further details";
 	$code = "restrict-admin-role";
-	@supportedApiVer = qw(5.0.0 5.1.0);
-        @supportedCheckLevel = qw(profile1 profile3);
+	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
+        @supportedCheckLevel = qw(profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -316,7 +319,7 @@ sub vCenterReport {
         $desc = "Restrict unauthorized vSphere users from being able to execute commands within the guest virtual machine";
 	$resolution = "Please refer to vCenter doc for further details";
         $code = "restrict-guest-control";
-	@supportedApiVer = qw(5.0.0 5.1.0);
+	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -326,7 +329,7 @@ sub vCenterReport {
         $desc = "restrict-Linux-clients";
         $resolution = "Please refer to vCenter doc for further details";
         $code = "restrict-Linux-clients";
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0);
         @supportedCheckLevel = qw(profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -336,12 +339,12 @@ sub vCenterReport {
         $success = 2;
         $desc = "Check for privilege re-assignment after vCenter Server restarts";
 	$resolution = "Please refer to vCenter doc for further details & <a href=\"http://kb.vmware.com/kb/1021804\">http://kb.vmware.com/kb/1021804</a>";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "check-privilege-reassignment";
         } else {
 		$code = "VSH07";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1. 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(dmz profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                	&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -351,7 +354,7 @@ sub vCenterReport {
 	$code = "monitor-admin-assignment";
 	$desc = "Monitor that vCenter Server administrative users have the correct Roles assigned";
 	$resolution = "Please refer to vCenter doc for further details";
-	@supportedApiVer = qw(5.0.0 5.1.0);
+	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -361,22 +364,22 @@ sub vCenterReport {
         $code = "remove-revoked-certificates";
         $desc = "Remove revoked certificates from vCenter Server";
         $resolution = "Please refer to vCenter doc for further details";
-        @supportedApiVer = qw(5.1.0);
-        @supportedCheckLevel = qw(profile1 profile2);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
+        @supportedCheckLevel = qw(profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
 
 	#VSH10
         $success = 2;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "remove-failed-install-logs";
 	} else {
         	$code = "VSH10";
 	}
         $desc = "Clean up log files after failed installations of vCenter Server";
 	$resolution = "Please refer to vCenter doc for further details & <a href=\"http://kb.vmware.com/kb/1021804\">http://kb.vmware.com/kb/1021804</a>";
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -385,12 +388,12 @@ sub vCenterReport {
 	#VSC01
 	$success = 1;
 	$desc = "Do not use default self-signed certificates";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0") {
                 $code = "no-self-signed-certs";
 	} else {
 		$code = "VSC01";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         @supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
 		my $url = $service_url;
@@ -454,12 +457,12 @@ sub vCenterReport {
         $success = 2;
         $desc = "Monitor access to SSL certificates";
 	$resolution = "Please refer to vCenter doc for further details";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "monitor-certificate-access";
         } else {
 		$code = "VSC02";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         @supportedCheckLevel = qw(dmz profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
 		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -469,7 +472,7 @@ sub vCenterReport {
         $desc = "Remove expired certificates from vCenter Server.";
         $resolution = "Please refer to vCenter doc for further details";
 	$code = "remove-expired-certificates";
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -494,12 +497,12 @@ sub vCenterReport {
         $success = 2;
         $desc = "Always verify SSL certificates";
 	$resolution = "Please refer to vCenter doc for further details";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "verify-ssl-certificates";
 	} else {
 		$code = "VSC04";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(dmz profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -509,7 +512,7 @@ sub vCenterReport {
 	$desc = "Set a timeout for thick-client login without activity";
 	$resolution = "Set inactivity timeout for the vSphere Client (thick client)";
 	$code = "thick-client-timeout";
-	@supportedApiVer = qw(5.0.0 5.1.0);
+	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
 	if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -519,12 +522,12 @@ sub vCenterReport {
         $success = 2;
         $desc = "Restrict network access to vCenter";
 	$resolution = "Use a local firewall or Windows systems to protect vCenter";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "restrict-network-access";
         } else {
 		$code = "VSC05";
 	}
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(dmz profile1 profile2);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -534,7 +537,7 @@ sub vCenterReport {
         $desc = "Use least privileges for the vCenter Server database user";
         $resolution = "Please refer to vCenter doc for further details";
         $code = "restrict-vcs-db-user";
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(profile1 profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -544,13 +547,13 @@ sub vCenterReport {
         $success = 2;
         $desc = "Block access to ports not being used by vCenter";	
 	$resolution = "Verify ports using <a href=\"http://kb.vmware.com/kb/1012382\">http://kb.vmware.com/kb/1012382</a>";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "block-unused-ports";
         } else {
 		$code = "VSC06";
 	}
 	@supportedCheckLevel = qw(dmz profile1 profile2);
-	@supportedApiVer = qw(4.0.0 4.1.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -559,7 +562,7 @@ sub vCenterReport {
         $desc = "Disable datastore Web browser";
         $resolution = "Add &#60;enableHttpDatastoreAccess&#62;false&#60;/enableHttpDatastoreAccess&#62 to vpxd.cfg";
         $code = "disable-datastore-web";
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0);
         @supportedCheckLevel = qw(profile1);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -569,7 +572,7 @@ sub vCenterReport {
         $desc = "Restrict datastore browser";
         $resolution = "Please refer to vCenter doc for further details ";
         $code = "restrict-datastore-web";
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         @supportedCheckLevel = qw(profile2 profile3);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
@@ -577,14 +580,14 @@ sub vCenterReport {
 
 	#VSC07
         $success = 1;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0") {
                 $code = "disable-mob";
 	} else {
         	$code = "VSC07";
 	}
 	$desc = "Disable Managed Object Browser";
 	@supportedCheckLevel = qw(dmz profile1 profile2);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
 		my $url = $service_url;
 		$url =~ s/\/webService//g;
@@ -667,7 +670,7 @@ sub vCenterReport {
 	
 	#VSD01
         $success = 2;
-	if($vcenter_api eq "5.0.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "restrict-vc-db-user";
 	} else {
 		$code = "VSD01";
@@ -675,7 +678,7 @@ sub vCenterReport {
         $desc = "Use least privileges for the vCenter Database";
 	$resolution = "Please refer to vCenter doc for further details";
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -684,7 +687,7 @@ sub vCenterReport {
         $code = "restrict-vum-db-user";
 	$desc = "Use least privileges for the Update Manager database user";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -693,7 +696,7 @@ sub vCenterReport {
         $code = "limit-vum-users";
         $desc = "Limit user login to Update Manager system";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -702,7 +705,7 @@ sub vCenterReport {
         $code = "audit-vum-login";
         $desc = "Audit user login to Update Manager system";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -711,13 +714,13 @@ sub vCenterReport {
 	$success = 2;
 	$desc = "Restrict the use of Linux.based Clients";
 	$resolution = "Please refer to vCenter doc for further details";
-	if($vcenter_api eq "5.0.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.5.0") {
 		$code = "restrict-linux-clients";
 	} else {
 		$code = "VCL01";
 	}
 	@supportedCheckLevel = qw(dmz profile1 profile2);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                	&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -726,13 +729,13 @@ sub vCenterReport {
         $success = 2;
         $desc = "Verify the Integrity of vSphere Client";
 	$resolution = "Verify plugin extensions under Plugins->Managed Plugins on the Installed Plugins tab";
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "verify-client-plugins";
 	} else {
 		$code = "VCL02";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -796,7 +799,7 @@ sub vCenterReport {
 
 	#VUM02
         $success = 2;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0") {
 		$code = "patch-vum-os";
 	} else {
 		$code = "VUM02";
@@ -804,14 +807,14 @@ sub vCenterReport {
 	$desc = "Keep Update Manager system properly patched";
 	$resolution = "Keep VUM patched";
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
 
 	#VUM03
 	$success = 2;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "secure-vum-os";
         } else {
 		$code = "VUM03";
@@ -819,7 +822,7 @@ sub vCenterReport {
 	$desc = "Provide standard Windows system protection on the Update Manager host";
 	$resolution = "Provide Windows system protection";
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -841,7 +844,7 @@ sub vCenterReport {
 
 	#VUM05
 	$success = 2;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "no-vum-self-management";
         } else {
 		$code = "VUM05";
@@ -849,14 +852,14 @@ sub vCenterReport {
 	$desc = "Do not configure Update Manager to manage its own VM or its vCenter Server's VM";
 	$resolution = "Self explanatory";
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
 		
 	#VUM06
         $success = 2;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "no-vum-self-signed-certs";
         } else {
 	        $code = "VUM06";
@@ -864,14 +867,14 @@ sub vCenterReport {
         $desc = "Do not use default self-signed certificates";
         $resolution = "Please refer to vCenter doc for further details & <a href=\"http://kb.vmware.com/kb/1023011\">http://kb.vmware.com/kb/1023011</a>";
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
 
 	#VUM10
 	$success = 2;
-	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0") {
+	if($vcenter_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "isolate-vum-airgap";
         } else {
         	$code = "VUM10";
@@ -879,7 +882,7 @@ sub vCenterReport {
 	$desc = "Limit the connectivity between Update Manager and public patch repositories";	
 	$resolution = "Please refer to the vCenter doc for further details";
 	@supportedCheckLevel = qw(enterprise dmz sslf profile1);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
 		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -889,7 +892,7 @@ sub vCenterReport {
 	$desc = "Limit the connectivity between Update Manager and public patch repositories";
 	$resolution = "Please refer to the vCenter doc for further details";
 	@supportedCheckLevel = qw(profile3);
-	@supportedApiVer = qw(5.0.0 5.1.0);
+	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 	if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -899,7 +902,7 @@ sub vCenterReport {
 	$desc = "Limit the connectivity between Update Manager and public patch repositories";
 	$resolution = "Please refer to the vCenter doc for further details";
         @supportedCheckLevel = qw(profile2);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -909,7 +912,262 @@ sub vCenterReport {
         $desc = "Restrict read access to VCO files with authentication data to administrators";
         $resolution = "Please refer to the vCenter doc for further details";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+                &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+        
+	#VCS01
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "change-default-password";
+        } else {
+        	$code = "VCS01";
+	}
+	$desc = "During installation of the VCSA, the default password is not changed. This must be done manually";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+	
+	#VCS02
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "config-ntp";
+        } else {
+        	$code = "VCS02";
+	}
+	$desc = "Configure NTP time synchronization";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+	
+	#VCS03
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "restrict-certificate-access";
+        } else {
+        	$code = "VCS03";
+	}
+	$desc = "Restrict access to SSL certificates";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1);
+        @supportedApiVer = qw(5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+	
+	#VCS04
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "use-service-accounts";
+        } else {
+        	$code = "VCS04";
+	}
+	$desc = "Use unique service accounts when applications connect to vCenter";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS05
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "use-unique-roles";
+        } else {
+        	$code = "VCS05";
+	}
+	$desc = "Ensure that only service accounts use a specific role when accessing vCenter";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS06
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "verify-nfc-ssl";
+        } else {
+        	$code = "VCS06";
+	}
+	$desc = "Ensure SSL for Network File copy (NFC) is enabled";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS07
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "Verify-RDP-encryption";
+        } else {
+        	$code = "VCS07";
+	}
+	$desc = "Verify RDP encryption levels";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS08
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "vpxuser-password-age";
+        } else {
+        	$code = "VCS08";
+	}
+	$desc = "Ensure that vpxuser auto-password change meets policy";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS09
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "change-sso-admin-password";
+        } else {
+        	$code = "VCS09";
+	}
+	$desc = '"Change default SSO Administrator password (administrator@vsphere.local)"';	
+	$resolution = 'Log into the vCenter Server and/or Appliance and change the password for administrator@vsphere.local';
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS10
+	$success = 2;
+	if($vcenter_api eq "6.0.0") {
+                $code = "limit-cim-access";
+        } else {
+        	$code = "VCS10";
+	}
+	$desc = "Do not provide administrator level access (i.e. root) to CIM-based hardware monitoring tools or other 3rd party applications";	
+	$resolution = "Please refer to the vCenter doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS11
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "verify-ssl-certificates";
+        } else {
+        	$code = "VCS11";
+	}
+	$desc = "Always verify SSL certificates";	
+	$resolution = "Instruct users of one of the vSphere clients to never ignore certificate verification warnings";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#VCS12
+	$success = 2;
+	if($vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+                $code = "web-client-timeout";
+        } else {
+        	$code = "VCS12";
+	}
+	$desc = "Set a timeout for web-client login without activity";	
+	$resolution = "Consult the VMware documentation for more information";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#SSO01
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "check-SSO-Password-expiration";
+        } else {
+        	$code = "SSO01";
+	}
+	$desc = "Check SSO passwords for expiration";	
+	$resolution = "There's no current method for notification of password expiration. Record the date for expiration and reset the password before that date";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#SSO02
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "check-SSO-Password-policy";
+        } else {
+        	$code = "SSO02";
+	}
+	$desc = "Ensure SSO Password policy conforms to local policy";	
+	$resolution = 'Log into vCenter as an SSO administrator (default user is administrator@vsphere.local) and select Configuration. There you can edit the password and lockout policies';
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#SSO03
+	$success = 2;
+	if($vcenter_api eq "6.0.0") {
+                $code = "verify-SSO-Password-policy";
+        } else {
+        	$code = "SSO03";
+	}
+	$desc = "Ensure SSO Password policy conforms to local policy";	
+	$resolution = 'Log into vCenter as an SSO administrator (default user is administrator@vsphere.local) and select Configuration. There you can edit the password and lockout policies';
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#SSO04
+	$success = 2;
+	if($vcenter_api eq "6.0.0") {
+                $code = "verify-SSO-Lockout-policy";
+        } else {
+        	$code = "SSO04";
+	}
+	$desc = "Ensure SSO Lockout policy conforms to local policy";	
+	$resolution = "Please refer to the vCenter doc for further details & <a href=\"http://pubs.vmware.com/vsphere-60/topic/com.vmware.vsphere.security.doc/GUID-2D25D311-AB56-40F4-9834-BC19A7D2EA3D.html\">http://pubs.vmware.com/vsphere-60/topic/com.vmware.vsphere.security.doc/GUID-2D25D311-AB56-40F4-9834-BC19A7D2EA3D.html</a>";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
+		&log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
+
+	#SSO05
+	$success = 2;
+	if($vcenter_api eq "5.5.0") {
+                $code = "no-SSO-self-signed-certs";
+        } else {
+        	$code = "SSO05";
+	}
+	$desc = "Use default self-signed certificates for communication if required by local policy";	
+	$resolution = "Ensure that any certificates presented by each vCenter component can be verified by a trusted certification authority or manually via SSL thumbprints";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$vcenter_api)) {
                 &log("VCENTER",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -926,14 +1184,14 @@ sub vNetworkReport {
 	#NAR01
         $success = 2;
 	$resolution = "Please refer to the vNetwork Doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "isolate-mgmt-network-vlan";
 	} else {
 		$code = "NAR01";
 	}
 	$desc = "Ensure that vSphere management traffic is on a restricted network";
 	@supportedCheckLevel = qw(enterprise sslf dmz profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		&log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}			
@@ -943,7 +1201,7 @@ sub vNetworkReport {
 	$resolution = "Please refer to the vNetwork Doc for further details";
 	$code = "isolate-mgmt-network-airgap";
 	@supportedCheckLevel = qw(profile1);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -952,13 +1210,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "Ensure VMotion Traffic is isolated";
         $resolution = "Please refer to the vNetwork Doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "isolate-vmotion-network-vlan";
 	} else {
 		$code = "NAR02";
 	}
 	@supportedCheckLevel = qw(enterprise sslf dmz profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
         	&log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -968,7 +1226,7 @@ sub vNetworkReport {
         $resolution = "Please refer to the vNetwork Doc for further details";
         $code = "isolate-vmotion-network-airgap";
         @supportedCheckLevel = qw(profile1);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -977,13 +1235,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "Ensure IP Based Storage Traffic is isolated";
         $resolution = "Please refer to the vNetwork Doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "isolate-storage-network-airgap";
         } else {
 		$code = "NAR03";
 	}
-	@supportedCheckLevel = qw(enterprise sslf dmz profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedCheckLevel = qw(enterprise sslf dmz profile1);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
         	&log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -992,23 +1250,13 @@ sub vNetworkReport {
         $success = 2;
         $desc = "Ensure that IP-based storage traffic is isolated";
         $resolution = "Please refer to the vNetwork Doc for further details";
-        if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+        if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "isolate-storage-network-vlan";
         } else {
                 $code = "NAR02";
         }
         @supportedCheckLevel = qw(enterprise sslf dmz profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
-        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
-                &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
-        }
-
-	$success = 2;
-        $desc = "Ensure IP Based Storage Traffic is isolated";
-        $resolution = "Please refer to the vNetwork Doc for further details";
-        $code = "isolate-storage-network-airgap";
-        @supportedCheckLevel = qw(profile1);
-        @supportedApiVer = qw(5.0.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1019,7 +1267,7 @@ sub vNetworkReport {
 	$resolution = "Please refer to the vNetwork Doc for further details";
 	$code = "limit-administrator-scope";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1028,13 +1276,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "Strictly control access to Management network";
         $resolution = "Please refer to the vNetwork Doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "restrict-mgmt-network-access-gateway";
 	} else {
 		$code = "NAR04";
 	}
 	@supportedCheckLevel = qw(enterprise sslf dmz profile1);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 	       	&log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -1044,7 +1292,7 @@ sub vNetworkReport {
         $resolution = "Please refer to the vNetwork Doc for further details";
 	$code = "restrict-mgmt-network-access-jumpbox";
 	@supportedCheckLevel = qw(enterprise sslf dmz profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1054,7 +1302,7 @@ sub vNetworkReport {
         $resolution = "Please refer to the vNetwork Doc for further details";
         $code = "enable-portfast";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1062,13 +1310,13 @@ sub vNetworkReport {
 	#NCN02
 	$success = 1;
 	$desc = "Ensure that there are no unused ports on a Distributed vSwitch Port Group";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "no-unused-dvports";
 	} else {
 		$code = "NCN02";
 	}	
-	@supportedCheckLevel = qw(dmz profile1 profile2 profile3);
-       	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedCheckLevel = qw(dmz profile1 profile2);
+       	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
         	my $dvsMgr = Vim::get_view(mo_ref => Vim::get_service_content()->dvSwitchManager);
                 my $dvs_targets = $dvsMgr->QueryDvsConfigTarget(host => $host_view);
@@ -1097,7 +1345,7 @@ sub vNetworkReport {
 	$code = "disable-dvportgroup-autoexpand";
 	$desc = "Verify that the autoexpand option for VDS dvPortgroups is disabled";
 	@supportedCheckLevel = qw(profile1 profile2);
-	@supportedApiVer = qw(5.0.0 5.1.0);
+	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 	my $dvPortgroupList;
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch', properties => ['name','portgroup']);
@@ -1124,7 +1372,7 @@ sub vNetworkReport {
 
 	my ($macSuccess,$forgeSuccess,$promSuccess) = (1,1,1);
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 	my (@dvpgMacChange,@dvpgForgedTransmit,@dvpgProm) = ();
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 my $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch', properties => ['name','portgroup']);
@@ -1180,14 +1428,14 @@ sub vNetworkReport {
 	#NCN03,NCN04,NCN05
 	$success = 1;
 	@supportedCheckLevel = qw(dmz profile1 profile2 profile3);
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
 	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		foreach(@$vSwitches) {
 			my $vSwitch_name = $_->name;
 			if($_->spec->policy->security) {
 				if($_->spec->policy->security->macChanges) {
 					$success = 0;
-					if($host_api eq "5.0.0") {
+					if($host_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 						$code = "reject-mac-changes";
 					} else {
 						$code = "NCN03";
@@ -1198,7 +1446,7 @@ sub vNetworkReport {
 				}
 				if($_->spec->policy->security->forgedTransmits) {
 					$success = 0;
-					if($host_api eq "5.0.0") {
+					if($host_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                                                 $code = "reject-forged-transmit";
 					} else {
                                         	$code = "NCN04";
@@ -1209,7 +1457,7 @@ sub vNetworkReport {
 				}
 				if($_->spec->policy->security->allowPromiscuous) {
 					$success = 0;
-					if($host_api eq "5.0.0") {
+					if($host_api eq "5.0.0" || $vcenter_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                                                 $code = "reject-promiscuous-mode";
 					} else {
                                         	$code = "NCN05";
@@ -1230,13 +1478,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "Ensure that port groups are not configured to value of the native VLAN";
 	$resolution = "Please refer to vNetwork doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "no-native-vlan-1";
 	} else {
 		$code = "NCN06";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
         	&log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -1245,13 +1493,13 @@ sub vNetworkReport {
         $success = 2;
         $desc = "Ensure that port groups are not configured to VLAN 4095 except for Virtual Guest Tagging (VGT)";
         $resolution = "VLAN ID setting on all port groups should not be set to 4095 unless VGT is required";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "no-vgt-vlan-4095";
         } else {
 		$code = "NCN07";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1260,13 +1508,13 @@ sub vNetworkReport {
         $success = 2;
         $desc = "Ensure that port groups are not configured to VLAN values reserved by upstream physical switches";
         $resolution = "VLAN ID setting on all port groups should not be set to reserved values of the physical switch";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "no-reserved-vlans";
         } else {
 		$code = "NCN08";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1275,13 +1523,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "Ensure that port groups are configured with a clear network label";
 	$resolution = "Clearly label your portgroups along with identifer to specify functionality";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "label-portgroups";
         } else {
 		$code = "NCN10";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1290,13 +1538,13 @@ sub vNetworkReport {
 	$success = 2;
 	$desc = "Ensure that all vSwitches have a clear network label";
 	$resolution = "Clearly label your vSwitches";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "label-vswitches";
         } else {
 		$code = "NCN11";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1306,7 +1554,7 @@ sub vNetworkReport {
 	$resolution = "Clearly label your dvPortgroups";
 	$code = "document-vlans-vds";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1316,7 +1564,7 @@ sub vNetworkReport {
         $resolution = "Clearly label your portgroups";
         $code = "document-vlans";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1325,13 +1573,13 @@ sub vNetworkReport {
 	$success = 2;
 	$desc = "Fully document all VLANs used on vSwitches";
 	$resolution = "Document all VLANs on vSwitches";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "verify-vlan-id";
         } else {
 		$code = "NCN12";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1366,13 +1614,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "Ensure that the non-negotiate option is configured for trunk links between external physical switches and virtual switches in VST mode";
         $resolution = "Please refer to vNetwork doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "set-non-negotiate";
         } else {
 		$code = "NPN02";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1381,13 +1629,13 @@ sub vNetworkReport {
         $success = 2;
 	$desc = "VLAN trunk links must be connected only to physical switch ports that function as trunk links";
         $resolution = "Self explanatory";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $vcenter_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
                 $code = "verify-vlan-trunk";
         } else {
 		$code = "NPN03";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1397,7 +1645,7 @@ sub vNetworkReport {
 	$resolution = "Please refer to vNetwork doc for further details";
 	$code = "upstream-bpdu-stp";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1407,7 +1655,7 @@ sub vNetworkReport {
 	$resolution = "dvSwitch PVLANS require primary and secondary VLAN ID's. These need to correspond to the ID's on external PVLAN-aware upstream switches if any";
         $code = "document-pvlans";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		&log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -1417,7 +1665,7 @@ sub vNetworkReport {
         $resolution = "Please refer to vNetwork doc for further details";
         $code = "restrict-netflow-usage";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -1427,7 +1675,7 @@ sub vNetworkReport {
         $resolution = "Please refer to vNetwork doc for further details";
         $code = "restrict-portmirror-usage";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
 	my $vdsList;
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch', properties => ['name','config']);
@@ -1448,7 +1696,7 @@ sub vNetworkReport {
         $resolution = "N/A";
         $code = "limit-network-healthcheck";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch', properties => ['name','config']);
 		foreach my $dvSwitch (@$dvSwitches) {
@@ -1468,10 +1716,35 @@ sub vNetworkReport {
         $resolution = "Please refer to vNetwork doc for further details";
         $code = "restrict-port-level-overrides";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
+
+        $success = 2;
+        $desc = "Enable BPDU filter on the ESXi host to prevent being locked out of physical switch ports with Portfast and BPDU Guard enabled";
+        $resolution = "Please refer to vNetwork doc for further details";
+        $code = "enable-bdpu-filter";
+        @supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("VNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#NPN04
+        $success = 2;
+        $desc = "Prevent unintended use of VMsafe network APIs";
+        $resolution = "Please refer to vNetwork doc for further details";
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
+		$code = "verify-dvfilter-bind";
+	} else {
+		$code = "NPN04";
+	}
+	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("VMNETWORK",$hostname,$code,$desc,$success,"N/A",$resolution);
+	}
 }
 
 sub VMReport {
@@ -1494,12 +1767,12 @@ sub VMReport {
 
 		#VMX01
 		$success = 1;
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                 	%valuesToCheck = ("isolation.tools.diskWiper.disable","true");
                 	$code = "disable-disk-shrinking-wiper";
                 	$req_check_level = $check_level;
                 	$desc = "Disable virtual disk shrinking";
-                	@supportedApiVer = qw(5.0.0 5.1.0);
+                	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                 	if(&checkApiVersion(\@supportedApiVer,$host_api)) {
                         	&queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 	}
@@ -1513,7 +1786,7 @@ sub VMReport {
 			$code = "VMX01";
 			$req_check_level = "enterprise";
 			$desc = "Prevent Virtual Disk Shrinking";
-			@supportedApiVer = qw(4.0.0 4.1.0);
+			@supportedApiVer = qw(4.0.0 4.1.0 5.5.0 6.0.0);
         		if(&checkApiVersion(\@supportedApiVer,$host_api)) {
 				&queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
 			}
@@ -1521,18 +1794,18 @@ sub VMReport {
 
 		#VMX02
 		$success = 1;
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			if($check_level eq 'profile3') {
 				$code = "limit-console-connections-one";
-        	                $req_check_level = "profile3";
+        	                $req_check_level = "profile1 profile2";
 				%valuesToCheck = ("RemoteDisplay.maxConnections","1");
 			} else {
 				$code = "limit-console-connections-two";
-                        	$req_check_level = $check_level;
+                        	$req_check_level = "profile3";
 				%valuesToCheck = ("RemoteDisplay.maxConnections","2");
                 	}
                         $desc = "Limit sharing of console connections";
-			@supportedApiVer = qw(5.0.0 5.1.0);
+			@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         if(&checkApiVersion(\@supportedApiVer,$host_api)) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                         }
@@ -1549,11 +1822,11 @@ sub VMReport {
 
 		#VMX03
 		$success = 1;
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			%valuesToCheck = ("isolation.tools.copy.disable","true");
 			$code = "disable-console-copy";
 			$desc = "Explicitly disable copy operations";
-			@supportedApiVer = qw(5.0.0 5.1.0);
+			@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 			$req_check_level = $check_level;
 			if(&checkApiVersion(\@supportedApiVer,$host_api)) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
@@ -1562,7 +1835,7 @@ sub VMReport {
 			%valuesToCheck = ("isolation.tools.paste.disable","true");
 			$code = "disable-console-paste";
 			$desc = "Explicitly disable paste operations";
-			@supportedApiVer = qw(5.0.0 5.1.0);
+			@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 			$req_check_level = $check_level;
 			if(&checkApiVersion(\@supportedApiVer,$host_api)) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
@@ -1571,7 +1844,7 @@ sub VMReport {
 			%valuesToCheck = ("isolation.monitor.control.disable","true");
                         $code = "disable-monitor-control";
                         $desc = "Disable VM Monitor Control";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
                         $req_check_level = $check_level;
                         if(&checkApiVersion(\@supportedApiVer,$host_api) && ($req_check_level eq "profile1")) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
@@ -1580,7 +1853,7 @@ sub VMReport {
 			%valuesToCheck = ("isolation.tools.dnd.disable","false");
                         $code = "disable-console-dnd";
                         $desc = "Explicitly disable copy/paste operations";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         $req_check_level = $check_level;
                         if(&checkApiVersion(\@supportedApiVer,$host_api) && ($req_check_level eq "profile1")) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
@@ -1589,7 +1862,7 @@ sub VMReport {
 			%valuesToCheck = ("isolation.tools.setGUIOptions.enable","false");
                         $code = "disable-console-gui-options";
                         $desc = "Explicitly disable copy/paste operations";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         $req_check_level = $check_level;
                         if(&checkApiVersion(\@supportedApiVer,$host_api) && ($req_check_level eq "profile1")) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
@@ -1608,9 +1881,9 @@ sub VMReport {
 		#VMX10
 	        $success = 2;
 		$desc = "Disconnect unauthorized devices";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "disconnect-devices-floppy";
-			@supportedApiVer = qw(5.0.0 5.1.0);
+			@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 			$req_check_level = $check_level;
 		} else {
 	        	$code = "VMX10";
@@ -1622,9 +1895,9 @@ sub VMReport {
                 	&checkDevice($devices,$vmname,$deviceToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
 
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "disconnect-devices-serial";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         $req_check_level = $check_level;
                 } else {
                         $code = "VMX10";
@@ -1636,9 +1909,9 @@ sub VMReport {
                 	&checkDevice($devices,$vmname,$deviceToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
 
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "disconnect-devices-parallel";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         $req_check_level = $check_level;
                 } else {
                         $code = "VMX10";
@@ -1650,9 +1923,9 @@ sub VMReport {
                 	&checkDevice($devices,$vmname,$deviceToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
 
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
                         $code = "disconnect-devices-usb";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
                         $req_check_level = $check_level;
                 } else {
                         $code = "VMX10";
@@ -1664,9 +1937,9 @@ sub VMReport {
                         &checkDevice($devices,$vmname,$deviceToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
 
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "disconnect-devices-ide";
-                        @supportedApiVer = qw(5.0.0 5.1.0);
+                        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         $req_check_level = $check_level;
                 } else {
                         $code = "VMX10";
@@ -1680,12 +1953,12 @@ sub VMReport {
 
 		#VMX11
 		$success = 1;
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "prevent-device-interaction-connect";
 			%valuesToCheck = ("isolation.device.connectable.disable","true");
 			$desc = "Prevent unauthorized removal connection and modification of devices";
 			$req_check_level = $check_level;
-			@supportedApiVer = qw(5.0.0 5.1.0);
+			@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                         if(&checkApiVersion(\@supportedApiVer,$host_api)) {
                                 &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                         }
@@ -1710,13 +1983,13 @@ sub VMReport {
 		$success = 1;
 		%valuesToCheck = ("vmci0.unrestricted","false");
                 $desc = "Disable VM-to-VM communication through VMCI";
-		if($host_api eq "5.0.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.5.0") {
 			$code = "disable-intervm-vmci";
 		} else {
 			$code = "VMX12";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-	        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0);
+	        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.5.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			&queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
 		}
@@ -1741,13 +2014,13 @@ sub VMReport {
 		$success = 1;
 		%valuesToCheck = ("tools.setInfo.sizeLimit","1048576");
 		$desc = "Limit informational messages from the VM to the VMX file";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "limit-setinfo-size";
 		} else {
 			$code = "VMX21";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-	        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 	                &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
@@ -1756,13 +2029,13 @@ sub VMReport {
                 $success = 1;
 		$desc = "Avoid using independent nonpersistent disks";
 		$resolution = "N/A";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "disable-independent-nonpersistent";
 		} else {
 			$code = "VMX22";
 		}
 		@supportedCheckLevel = qw(dmz profile1 profile2);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			foreach(@$devices) {
         	        	if($_->isa('VirtualDisk') && $_->backing->diskMode eq "independent_nonpersistent") {
@@ -1777,13 +2050,13 @@ sub VMReport {
 		#VMX23
                 $success = 2;
                 $desc = "Use secure protocols for virtual serial port access";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "use-secure-serial-communication";
                 } else {
 			$code = "VMX23";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -1791,9 +2064,9 @@ sub VMReport {
 		#VMX24
                 $success = 2;
 		$desc = "Disable certain unexposed features";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$req_check_level = $check_level;
-			@supportedApiVer = qw(5.0.0 5.1.0);
+			@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 			if($req_check_level eq "profile1" || $req_check_level eq "profile2") {
 				$code = "disable-unexposed-features-unitypush";
 				%valuesToCheck = ("isolation.tools.unity.push.update.disable","true");
@@ -1940,13 +2213,13 @@ sub VMReport {
 		$success = 1;
                 %valuesToCheck = ("tools.guestlib.enableHostInfo","false");
 		$desc = "Do not send host performance information to guests";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "restrict-host-info";
 		} else {
 			$code = "VMX31";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			&queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
 		}
@@ -1956,7 +2229,17 @@ sub VMReport {
                 $desc = "Disable tools auto install";
                 $code = "disable-autoinstall";
 		@supportedCheckLevel = qw(profile1 profile2);
-                @supportedApiVer = qw(5.0.0 5.1.0);
+                @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                        &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
+                }
+
+		$success = 1;
+                %valuesToCheck = ("isolation.tools.autoInstall.disable","true");
+                $desc = "Disable tools auto install";
+                $code = "disable-VMtools-autoinstall";
+		@supportedCheckLevel = qw(profile1 profile2);
+                @supportedApiVer = qw(6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
@@ -1966,7 +2249,7 @@ sub VMReport {
                 $desc = "Disable VM logging";
                 $code = "disable-logging";
                 @supportedCheckLevel = qw(profile1);
-                @supportedApiVer = qw(5.0.0 5.1.0);
+                @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			&log("VM",$vmname,$code,$desc,$success,"logging=false must be manually added to .vmx","Please refer to VM doc for further details");
                 }
@@ -1976,7 +2259,7 @@ sub VMReport {
                 $desc = "Disable VIX messages from the VM";
                 $code = "disable-vix-messages";
                 @supportedCheckLevel = qw(profile1);
-                @supportedApiVer = qw(5.0.0 5.1.0);
+                @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
@@ -1986,7 +2269,7 @@ sub VMReport {
                 $desc = "Limit VM logging";
                 $code = "limit-log-number";
                 @supportedCheckLevel = qw(profile2 profile3);
-                @supportedApiVer = qw(5.0.0 5.1.0);
+                @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
@@ -1995,8 +2278,8 @@ sub VMReport {
                 %valuesToCheck = ("log.rotateSize","100000");
                 $desc = "Limit VM logging";
                 $code = "limit-log-size";
-                @supportedCheckLevel = qw(profile1 profile3);
-                @supportedApiVer = qw(5.0.0 5.1.0);
+                @supportedCheckLevel = qw(profile2 profile3);
+                @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &queryVMAdvConfiguration(\%vms_all_adv_params,$vmname,\%valuesToCheck,$code,$desc,$resolution,$check_level,$req_check_level);
                 }
@@ -2006,13 +2289,13 @@ sub VMReport {
 		$desc = "Control access to VMsafe CPU/Mem APIs";
                 $resolution = "Please refer to VM doc for further details";
 		my $param = "vmsafe.enable";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
 			$code = "verify-vmsafe-cpumem-enable";
 		} else {
 	                $code = "VMX51";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,$param,$resolution);
                 }
@@ -2022,13 +2305,13 @@ sub VMReport {
 		$desc = "Control access to VMsafe CPU/Mem APIs";
                 $resolution = "Please refer to VM doc for further details";
                 $param = "vmsafe.agentAddress";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
                         $code = "verify-vmsafe-cpumem-agentaddress";
                 } else {
                 	$code = "VMX52";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,$param,$resolution);
                 }
@@ -2038,13 +2321,13 @@ sub VMReport {
 		$desc = "Control access to VMsafe CPU/Mem APIs";
                 $resolution = "Please refer to VM doc for further details";
                 $param = "vmsafe.agentPort";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
                         $code = "verify-vmsafe-cpumem-agentport";
                 } else {
                 	$code = "VMX54";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,$param,$resolution);
                 }
@@ -2053,13 +2336,13 @@ sub VMReport {
 		$success = 2;
 		$desc = "Control access to virtual machines through VMsafe network APIs";
                 $resolution = "Please refer to VM doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "verify-network-filter";
                 } else {
                 	$code = "VMX55";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -2079,13 +2362,13 @@ sub VMReport {
 		$success = 2;
 		$desc = "Secure Virtual Machines as You Would Secure Physical Machines";
                 $resolution = "Please refer to VM doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "secure-guest-os";
 		} else {
         	        $code = "VMP01";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 	                &log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -2094,13 +2377,13 @@ sub VMReport {
                 $success = 2;
 		$desc = "Disable unnecessary or superfluous functions inside VMs";
                 $resolution = "Please refer to VM doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "disable-unnecessary-functions";
 		} else {	
 	                $code = "VMP02";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 	                &log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -2109,13 +2392,13 @@ sub VMReport {
                 $success = 2;
 		$desc = "Use Templates to deploy VMs whenever possible";
                 $resolution = "Please refer to VM doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "use-vm-templates";
                 } else {	
 			$code = "VMP03";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -2124,13 +2407,13 @@ sub VMReport {
                 $success = 2;
 		$desc = "Prevent Virtual Machines from Taking Over Resources";
                 $resolution = "Please refer to VM doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "control-resource-usage";
 		} else {	
 	                $code = "VMP04";
 		}
 		@supportedCheckLevel = qw(dmz profile1 profile2);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         &log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -2139,13 +2422,103 @@ sub VMReport {
                 $success = 2;
 		$desc = "Minimize Use of the VM Console";
                 $resolution = "Please refer to VM doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                         $code = "minimize-console-use";
 		} else {
         	        $code = "VMP05";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+                @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
+                }
+
+		#VMP06
+                $success = 2;
+		$desc = "Disable 3D features on Server and desktop virtual machines";
+                $resolution = "Please refer to VM doc for further details";
+		if($host_api eq "5.5.0") {
+                        $code = "disable-non-essential-3D-features";
+		} else {
+        	        $code = "VMP06";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+                @supportedApiVer = qw(5.5.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
+                }
+
+		#VMP07
+                $success = 2;
+		$desc = "Disable all but VGA mode on virtual machines";
+                $resolution = "Please refer to VM doc for further details";
+		if($host_api eq "5.5.0") {
+                        $code = "enable-VGA-Only-Mode";
+		} else {
+        	        $code = "VMP07";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+                @supportedApiVer = qw(5.5.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
+                }
+
+		#VMP08
+                $success = 2;
+		$desc = "Control access to VM console via VNC protocol";
+                $resolution = "Please refer to VM doc for further details";
+		if($host_api eq "5.5.0" || $host_api eq "6.0.0") {
+                        $code = "minimize-console-VNC-use";
+		} else {
+        	        $code = "VMP08";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+                @supportedApiVer = qw(5.5.0 6.0.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
+                }
+
+		#VMP09
+                $success = 2;
+		$desc = "Check for enablement of salted VM's that are sharing memory pages";
+                $resolution = "Please refer to VM doc for further details";
+		if($host_api eq "6.0.0") {
+                        $code = "TransparentPageSharing-inter-VM-Enabled";
+		} else {
+        	        $code = "VMP09";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+                @supportedApiVer = qw(6.0.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
+                }
+
+		#VMP10
+                $success = 2;
+		$desc = "Ensure default setting for intra-VM TPS is correct";
+                $resolution = "Please refer to VM doc for further details";
+		if($host_api eq "6.0.0") {
+                        $code = "TransparentPageSharing-intra-enabled";
+		} else {
+        	        $code = "VMP10";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+                @supportedApiVer = qw(6.0.0);
+                if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
+                }
+
+		#VMP11
+                $success = 2;
+		$desc = "Audit all uses of PCI or PCIe passthrough functionality";
+                $resolution = "Please refer to VM doc for further details";
+		if($host_api eq "6.0.0") {
+                        $code = "verify-PCI-Passthrough";
+		} else {
+        	        $code = "VMP11";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+                @supportedApiVer = qw(6.0.0);
                 if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			&log("VM",$vmname,$code,$desc,$success,"N/A",$resolution);
                 }
@@ -2164,13 +2537,13 @@ sub HOSTReport {
 	$success = 2;
 	$desc = "Verify integrity of software before installation";
         $resolution = "Verify SHA1 hash after downloading from VMware";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "verify-install-media";
 	} else {
         	$code = "HIN01";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2179,13 +2552,13 @@ sub HOSTReport {
         $success = 2;
 	$desc = "Keep ESX/ESXi system properly patched";
         $resolution = "N/A";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                 $code = "apply-patches";
 	} else {
         	$code = "HIN02";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2193,7 +2566,7 @@ sub HOSTReport {
 	#HST01
 	$success = 1;
 	$desc = "Ensure Bidirectional CHAP Authentication is enabled for iSCSI traffic";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "enable-chap-auth";
 		$req_check_level = $check_level;
 	} else {
@@ -2206,7 +2579,7 @@ sub HOSTReport {
 		}
 	}
 	@supportedCheckLevel = qw(dmz profile1 profile2 profile3);
-	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if($req_check_level eq $check_level && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my @mutualChapSecrets = ();
 		my @chapSecrets = ();
@@ -2223,7 +2596,7 @@ sub HOSTReport {
 					if($authCapablities->chapAuthSettable && $authCapablities->targetChapSettable && $authCapablities->targetMutualChapSettable) {
 						if($authProperties->mutualChapAuthenticationType ne 'Use CHAP' || !defined($authProperties->mutualChapName) || $authProperties->mutualChapName eq '' || !defined($authProperties->mutualChapSecret) || $authProperties->mutualChapSecret eq '') {
 							$success = 0;
-							if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+							if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                                                         	$code = "enable-chap-auth";
                                                 	} else {
                                                         
@@ -2238,7 +2611,7 @@ sub HOSTReport {
 								$success = 0;
 								$desc = "Ensure uniqueness of CHAP authentication secrets";
 								$resolution = "CHAP \"names\" and \"secrets\" should be unique";
-								if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+								if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                                                         		$code = "unique-chap-secrets";
         	                                                        &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
                                                 		} else {
@@ -2254,7 +2627,7 @@ sub HOSTReport {
 					#standard chap
 					if(!$authProperties->chapAuthEnabled) {
 						$success = 0;
-						if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+						if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 							$code = "enable-chap-auth";
 						} else {
 							$code = "HST01";
@@ -2264,7 +2637,7 @@ sub HOSTReport {
 					}
 					if(!defined($authProperties->chapName) || $authProperties->chapName eq '') {
 						$success = 0;
-						if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+						if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                                                         $code = "enable-chap-auth";
                                                 } else {
                                                         $code = "HST01";
@@ -2274,7 +2647,7 @@ sub HOSTReport {
 					}
 					if(!defined($authProperties->chapSecret) || $authProperties->chapSecret  eq '') {
 						$success = 0;
-						if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+						if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                                                         $code = "enable-chap-auth";
                                                 } else {
                                                         $code = "HST01";
@@ -2288,7 +2661,7 @@ sub HOSTReport {
         	                                	$success = 0;
 							$desc = "Ensure uniqueness of CHAP authentication secrets";
 							$resolution = "CHAP secrets should be unique";
-							if($host_api eq "5.0.0") {
+							if($host_api eq "5.0.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
                                                  		$code = "unique-chap-secrets";
 								&log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
                                                 	} else {
@@ -2311,7 +2684,7 @@ sub HOSTReport {
 	$desc = "Zero out VMDK files prior to deletion";
         $resolution = "Please refer to the HOST doc for further details";
         @supportedCheckLevel = qw(profile1 profile2);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2320,13 +2693,13 @@ sub HOSTReport {
 	$success = 2;
 	$desc = "Mask and zone SAN resources appropriately";
         $resolution = "Zoning and masking capabilities for each SAN switch and disk array are vendor specific as are the tools for managing LUN masking";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "mask-zone-san";
 	} else {	
         	$code = "HCT03";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2342,7 +2715,7 @@ sub HOSTReport {
 	}
 
 	################################################################
-	# VALIDATE WHETHER OR NOT ENDPOING SERVICES HAVE BEEN DISABLED #
+	# VALIDATE WHETHER OR NOT ENDPOINT SERVICES HAVE BEEN DISABLED #
 	################################################################
 	my ($rootEP,$hostEP,$mobEP,$uiEP) = (0,0,0,0);
 
@@ -2360,7 +2733,7 @@ sub HOSTReport {
 	}
 
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		if($hosttype eq 'VirtualCenter') {
                         $success = 2;
@@ -2395,7 +2768,7 @@ sub HOSTReport {
 	$code = "esxi-no-self-signed-certs";
 	$desc = "Do not use default self-signed certificates for ESX/ESXi communication";
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
 	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my $openssl_results = `openssl x509 -in "$folder/ssl_cert" -issuer -sha1 -noout | grep "issuer"`;
 		chomp($openssl_results);
@@ -2440,13 +2813,13 @@ sub HOSTReport {
 	$success = 1;
 	$desc = "Disable Managed Object Browser";
 	$resolution = "<a href=\"https://$hostname/mob\">https://$hostname/mob</a> should be disabled";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "disable-mob";
 	} else {
 		$code = "HCM02";
 	}
 	@supportedCheckLevel = qw(sslf profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		if($hosttype eq 'VirtualCenter') {
                         $success = 2;
@@ -2587,13 +2960,13 @@ sub HOSTReport {
 	$success = 1;
 	$desc = "Configure remote syslog";
         $resolution = "Remote syslog should be configured";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "enable-remote-syslog";
 	} else {	
 		$code = "HLG01";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		if($hosttype eq 'VirtualCenter') {
 			$resolution = "Verify syslog is configured";
@@ -2614,7 +2987,7 @@ sub HOSTReport {
                         	my $advOpt = Vim::get_view(mo_ref => $host_view->configManager->advancedOption);
                         	my $results;
                         	eval {
-                                	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+                                	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
                         	        	$results = $advOpt->QueryOptions(name => 'Syslog.global.logHost');
                                 	} else {
                                         	$results = $advOpt->QueryOptions(name => 'Syslog.Remote.Hostname');
@@ -2640,10 +3013,10 @@ sub HOSTReport {
         $success = 1;
 	$desc = "Configure persistent logging";
         $resolution = "Please refer to HOST doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "config-persistent-logs";
 		@supportedCheckLevel = qw(profile1 profile2 profile3);
-		@supportedApiVer = qw(5.0.0 5.1.0);
+		@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
 		my $advOpt = Vim::get_view(mo_ref => $host_view->configManager->advancedOption);
                 my $results;
                 eval {
@@ -2676,7 +3049,7 @@ sub HOSTReport {
 	$desc = "Use Active Directory for local user authentication";
 	$resolution = "Please refer to the HOST doc for further details";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my $authManager = Vim::get_view(mo_ref => $host_view->configManager->authenticationManager);
 		my $authStores = $authManager->info->authConfig;
@@ -2693,7 +3066,7 @@ sub HOSTReport {
 	$desc = "When adding ESXi hosts to Active Directory use the vSphere Authentication Proxy to protect passwords";
 	$resolution = "Please refer to the HOST doc for further details";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2702,7 +3075,7 @@ sub HOSTReport {
 	$desc = "Verify Image Profile and VIB Acceptance Levels";
 	$resolution = "N/A";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$req_check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		my $imageConfig = Vim::get_view(mo_ref => $host_view->configManager->imageConfigManager);
 		eval {
@@ -2742,7 +3115,7 @@ sub HOSTReport {
         $desc = "Configure the ESXi host firewall to restrict access to services running on the host";
         $resolution = "Please refer to the HOST doc for further details";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2751,13 +3124,13 @@ sub HOSTReport {
 	$success = 1;
 	$desc = "Configure NTP time synchronization";
         $resolution = "NTP should be configured";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "config-ntp";
 	} else {
 		$code = "HLG03";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		foreach(@$services) {
 		        if($_->key eq 'ntpd') {
@@ -2776,13 +3149,13 @@ sub HOSTReport {
 	$success = 2;
 	$desc = "Do not provide root/administrator level access to CIM-based hardware monitoring tools or other 3rd party applications";
 	$resolution = "Please refer to the HOST doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "limit-cim-access";
 	} else {
 		$code = "HMT01";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2792,7 +3165,7 @@ sub HOSTReport {
 	$resolution = "Please refer to the HOST doc for further details";
 	$code = "remove-authorized-keys";
 	@supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2800,13 +3173,13 @@ sub HOSTReport {
 	#HMT02
 	$success = 1;
 	$desc = "Ensure proper SNMP configuration";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0" ) {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
 		$code = "config-snmp";
 	} else {
 		$code = "HMT02";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 		if($product eq 'embeddedEsx') {
 			my $snmpSys; 
@@ -2839,17 +3212,59 @@ sub HOSTReport {
 		}
 	}
 
+	#HMT02a
+	$success = 1;
+	$desc = "Ensure proper SNMP configuration";
+	if($host_api eq "6.0.0") {
+		$code = "config-snmp";
+	} else {
+		$code = "HMT02a";
+	}
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+		if($product eq 'embeddedEsx') {
+			my $snmpSys; 
+			eval {
+				$snmpSys = Vim::get_view(mo_ref => $host_view->configManager->snmpSystem->snmpConfigSpec);
+			};
+			if(!$@) {
+				if($snmpSys->configuration->enabled) {
+					if(!defined($snmpSys->configuration->port)) {
+						$success = 0;
+						$resolution = "SNMP is enabled but port is not configured";
+					}
+					if(!defined($snmpSys->configuration->readOnlyCommunities)) {
+						$success = 0;
+						$resolution = "SNMP is enabled but read only communities is not configured";
+					}
+					if(!defined($snmpSys->configuration->trapTargets)) {
+						$success = 0;
+						$resolution = "SNMP is enabled but trap targets are not configured";
+					}
+				}
+			} else {
+				$success = 0;
+				$resolution = "SNMP is not configured on the host";
+			}
+			if($success eq 1) {
+                	        $resolution = "N/A";
+	                }
+			&log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+		}
+	}
+
 	#HMT03
         $success = 2;
 	$desc = "Verify contents of exposed configuration files";
 	$resolution = "<a href=\"https://$hostname/host\">https://$hostname/host</a> is available and should be monitored for file intergrity";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "verify-config-files";
 	} else {
         	$code = "HMT03";
 	}
 	@supportedCheckLevel = qw(dmz profile1);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2880,13 +3295,13 @@ sub HOSTReport {
         $success = 2;
         $desc = "Prevent unintended use of VMsafe network APIs";
         $resolution = "Please refer to HOST doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $vcenter_api eq "6.0.0") {
 		$code = "verify-dvfilter-bind";
 	} else {
 		$code = "HMT12";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
@@ -2895,20 +3310,20 @@ sub HOSTReport {
         $success = 2;
 	$desc = "Verify no unauthorized kernel modules are loaded on the host";
 	$resolution = "Please refer to HOST doc for further details";
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0") {
 		$code = "verify-kernel-modules";
 	} else {
         	$code = "HMT15";
 	}
 	@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
 
 	#HMT20
         $success = 2;
-	if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+	if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 		$code = "set-password-complexity";
 	} else {
         	$code = "HMT20";
@@ -2916,7 +3331,22 @@ sub HOSTReport {
 	$desc = "Establish a password policy for password complexity";
         $resolution = "Please refer to HOST doc for further details";
 	@supportedCheckLevel = qw(dmz profile1 profile2 profile3);
-        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        @supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HMT21
+        $success = 2;
+	if($host_api eq "6.0.0") {
+		$code = "set-password-policies";
+	} else {
+        	$code = "HMT21";
+	}
+	$desc = "Establish a password policy for password complexity";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(dmz profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2926,7 +3356,7 @@ sub HOSTReport {
 	$desc = "Verify Active Directory ESX Admin group membership";
         $resolution = "Please refer to HOST doc for further details";
         @supportedCheckLevel = qw(dmz profile1 profile2 profile3);
-        @supportedApiVer = qw(5.0.0 5.1.0);
+        @supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -2941,12 +3371,12 @@ sub HOSTReport {
                	&log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
 
-	#HMT21
+	#HMT22
         $success = 2;
 	if($host_api eq "5.0.0") {
                 $code = "vpxuser-password-length";
 	} else {
-        	$code = "HMT21";
+        	$code = "HMT22";
 	}
         $desc = "Ensure that vpxuser password meets length policy";
         $resolution = "Please refer to HOST doc for further details";
@@ -2975,13 +3405,13 @@ sub HOSTReport {
 		$success = 2;
 		$desc = "Enable Lockdown Mode to restrict root access";
                 $resolution = "Lockdown mode is not enabled";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "enable-lockdown-mode";
 		} else {
 			$code = "HCN02";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-        	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			if($host_view->summary->managementServerIp) {
 				if(!defined($host_view->config->adminDisabled)) {
@@ -3000,8 +3430,68 @@ sub HOSTReport {
 	}
 
 	#HCN03
+	#FIX
+	if($product eq "embeddedEsx") {
+		$success = 2;
+		$desc = "Enable Lockdown Mode to restrict root access";
+                $resolution = "Lockdown mode is not enabled";
+		if($host_api eq "6.0.0") {
+			$code = "enable-normal-lockdown-mode";
+		} else {
+			$code = "HCN03";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+        	@supportedApiVer = qw(6.0.0);
+        	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			if($host_view->summary->managementServerIp) {
+				if(!defined($host_view->config->adminDisabled)) {
+					$resolution = "Lockdown mode can only be checked when executing against vCenter";
+				} else {
+					if(!$host_view->config->adminDisabled) {
+						$success = 0;
+					} else {
+						$success = 1;
+						$resolution = "N/A";
+					}
+				}
+			}
+			&log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+		}
+	}
+
+	#HCN04
+	#FIX
+	if($product eq "embeddedEsx") {
+		$success = 2;
+		$desc = "Enable Lockdown Mode to restrict root access";
+                $resolution = "Lockdown mode is not enabled";
+		if($host_api eq "6.0.0") {
+			$code = "enable-strict-lockdown-mode";
+		} else {
+			$code = "HCN04";
+		}
+		@supportedCheckLevel = qw(profile1 profile2 profile3);
+        	@supportedApiVer = qw(6.0.0);
+        	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+			if($host_view->summary->managementServerIp) {
+				if(!defined($host_view->config->adminDisabled)) {
+					$resolution = "Lockdown mode can only be checked when executing against vCenter";
+				} else {
+					if(!$host_view->config->adminDisabled) {
+						$success = 0;
+					} else {
+						$success = 1;
+						$resolution = "N/A";
+					}
+				}
+			}
+			&log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+		}
+	}
+
+	#HCN05
 	$success = 2;
-	$code = "HCN03";
+	$code = "HCN05";
 	$desc = "Avoid adding the root user to local groups";
 	$resolution = "Please refer to HOST doc for further details";
 	@supportedCheckLevel = qw(enterprise);
@@ -3010,10 +3500,10 @@ sub HOSTReport {
 		&log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
 	}
 
-	#HCN04
+	#HCN06
 	if($product eq "embeddedEsx") {
 		$success = 1;
-		$code = "HCN04";
+		$code = "HCN06";
 		$desc = "Disable Tech Support Mode";
 		$resolution = "Tech Support Mode should be disabled";
 	        $req_check_level = "sslf";
@@ -3045,7 +3535,7 @@ sub HOSTReport {
                 $desc = "Disable ESXi Shell unless needed for diagnostics or troubleshooting";
                 $resolution = "Please refer to HOST doc for further details";
 		@supportedCheckLevel = qw(profile1 profile2 profile3);
-        	@supportedApiVer = qw(5.0.0 5.1.0);
+        	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         my $serviceSys = Vim::get_view(mo_ref => $host_view->configManager->serviceSystem);
                         $services = $serviceSys->serviceInfo->service;
@@ -3066,7 +3556,7 @@ sub HOSTReport {
                 $desc = "Disable SSH";
                 $resolution = "Please refer to HOST doc for further details";
 		@supportedCheckLevel = qw(profile1 profile2 profile3);
-        	@supportedApiVer = qw(5.0.0 5.1.0);
+        	@supportedApiVer = qw(5.0.0 5.1.0 5.5.0 6.0.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         my $serviceSys = Vim::get_view(mo_ref => $host_view->configManager->serviceSystem);
                         $services = $serviceSys->serviceInfo->service;
@@ -3081,18 +3571,18 @@ sub HOSTReport {
                 }
         }
 
-	#HCN05
+	#HCN07
 	if($product eq "embeddedEsx") {
 	        $success = 1;
 		$desc = "Disable DCUI to prevent all local administrative control";
                 $resolution = "Please refer to HOST doc for further details";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "disable-dcui";
 		} else {
-        		$code = "HCN05";
+        		$code = "HCN07";
 		}
 		@supportedCheckLevel = qw(sslf profile1);
-        	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+        	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			my $serviceSys = Vim::get_view(mo_ref => $host_view->configManager->serviceSystem);
                         $services = $serviceSys->serviceInfo->service;
@@ -3107,10 +3597,10 @@ sub HOSTReport {
         	}
 	}
 
-	#HCN06
+	#HCN08
 	if($product eq "embeddedEsx") {
 	        $success = 1;
-        	$code = "HCN06";
+        	$code = "HCN08";
 	        $desc = "Disable Tech Support Mode unless needed for diagnostics and break-fix";
         	$resolution = "Please refer to HOST doc for further details";
 		@supportedCheckLevel = qw(sslf);
@@ -3129,24 +3619,24 @@ sub HOSTReport {
                 }
 	}
 
-	#HCN07
+	#HCN09
 	if($product eq "embeddedEsx") {
 		$success = 1;
 		$desc = "Set a timeout for the ESXi Shell to automatically disabled idle sessions after a predetermined period";
-		if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+		if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 			$code = "set-shell-timeout";
 			$resolution = "Set UserVars.ESXiShellTimeOut > 0";
 		} else {
- 	       		$code = "HCN07";
+ 	       		$code = "HCN09";
 	        	$resolution = "Set UserVars.TSMTimeOut > 0";
 		}
 		@supportedCheckLevel = qw(enterprise profile1 profile2 profile3);
-       	 	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0);
+       	 	@supportedApiVer = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0);
         	if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                         my $advOpt = Vim::get_view(mo_ref => $host_view->configManager->advancedOption);
                         my $results;
                         eval {
-				if($host_api eq "5.0.0" || $host_api eq "5.1.0") {
+				if($host_api eq "5.0.0" || $host_api eq "5.1.0" || $host_api eq "5.5.0" || $host_api eq "6.0.0") {
 					$results = $advOpt->QueryOptions(name => 'UserVars.ESXiShellTimeout');
 				} else {
                                 	$results = $advOpt->QueryOptions(name => 'UserVars.TSMTimeOut');
@@ -3173,7 +3663,7 @@ sub HOSTReport {
 		$desc = "Set a timeout to automatically terminate idle ESXi Shell and SSH sessions";
 		$resolution = "Set UserVars.ESXiShellInteractiveTimeout > 0";
 		@supportedCheckLevel = qw(profile1 profile2 profile3);
-		@supportedApiVer = qw(5.1.0);
+		@supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
 		if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
 			my $advOpt = Vim::get_view(mo_ref => $host_view->configManager->advancedOption);
 			my $results;
@@ -3228,7 +3718,7 @@ sub HOSTReport {
         $desc = "Create a non-root user account for local admin access";
         $resolution = "Please refer to HOST doc for further details";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -3238,7 +3728,17 @@ sub HOSTReport {
         $desc = "Set DCUI.Access to allow trusted users to  override lockdown mode";
         $resolution = "Please refer to HOST doc for further details";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+        $success = 2;
+        $code = "set-dcui-timeout";
+        $desc = "Audit DCUI timeout value";
+        $resolution = "Please refer to HOST doc for further details";
+        @supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -3248,7 +3748,7 @@ sub HOSTReport {
         $desc = "Configure a centralized location to collect ESXi host core dumps";
         $resolution = "Please refer to HOST doc for further details";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -3258,7 +3758,97 @@ sub HOSTReport {
         $desc = "Configure Host Profiles to monitor and alert on configuration changes";
         $resolution = "Please refer to HOST doc for further details";
         @supportedCheckLevel = qw(profile1 profile2 profile3);
-        @supportedApiVer = qw(5.1.0);
+        @supportedApiVer = qw(5.1.0 5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HCN10
+        $success = 2;
+	if($host_api eq "5.5.0" || $host_api eq "6.0.0") {
+		$code = "remove-revoked-certificates";
+	} else {
+        	$code = "HCN10";
+	}
+	$desc = "Remove revoked SSL certificates from the ESXi server";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(dmz profile1 profile2 profile3);
+        @supportedApiVer = qw(5.5.0 6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HCN11
+        $success = 2;
+	if($host_api eq "6.0.0") {
+		$code = "verify-ESXi-VIB-packages";
+	} else {
+        	$code = "HCN11";
+	}
+	$desc = "Verify no unauthorized VIB packages are loaded on the host";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HCN12
+        $success = 2;
+	if($host_api eq "6.0.0") {
+		$code = "firewall-enabled";
+	} else {
+        	$code = "HCN12";
+	}
+	$desc = "Configure the ESXi host firewall to restrict access to services running on the host ";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HCN13
+        $success = 2;
+	if($host_api eq "6.0.0") {
+		$code = "set-account-auto-unlock-time";
+	} else {
+        	$code = "HCN13";
+	}
+	$desc = "Set the time after which a locked account is automatically unlocked";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HCN14
+        $success = 2;
+	if($host_api eq "6.0.0") {
+		$code = "set-account-lockout";
+	} else {
+        	$code = "HCN14";
+	}
+	$desc = "Set the count of maximum failed login attempts before the account is locked out";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
+        if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
+                &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
+        }
+
+	#HCN15
+        $success = 2;
+	if($host_api eq "6.0.0") {
+		$code = "ESXi.audit-exception-users";
+	} else {
+        	$code = "HCN15";
+	}
+	$desc = "Audit the list of users who are on the Exception Users List and whether the have administrator privleges";
+        $resolution = "Please refer to HOST doc for further details";
+	@supportedCheckLevel = qw(profile1 profile2 profile3);
+        @supportedApiVer = qw(6.0.0);
         if(&checkRequestCheck(\@supportedCheckLevel,$check_level) && &checkApiVersion(\@supportedApiVer,$host_api)) {
                 &log("HOST",$hostname,$code,$desc,$success,"N/A",$resolution);
         }
@@ -3837,6 +4427,21 @@ HTML_START
 } elsif($api eq "5.0") {
         $html_start .= <<HTML_START
 Report based on: <a href="http://communities.vmware.com/docs/DOC-19605" target="_blank">VMware vSphere 5.0 Security Hardening Guide</a>
+<br/><br/>
+HTML_START
+} elsif($api eq "5.1") {
+        $html_start .= <<HTML_START
+Report based on: <a href="http://www.vmware.com/security/hardening-guides.html" target="_blank">VMware vSphere 5.1 Security Hardening Guide</a>
+<br/><br/>
+HTML_START
+} elsif($api eq "5.5") {
+        $html_start .= <<HTML_START
+Report based on: <a href="http://www.vmware.com/security/hardening-guides.html" target="_blank">VMware vSphere 5.5 Security Hardening Guide</a>
+<br/><br/>
+HTML_START
+} elsif($api eq "6.0") {
+        $html_start .= <<HTML_START
+Report based on: <a href="http://www.vmware.com/security/hardening-guides.html" target="_blank">VMware vSphere 6.0 Security Hardening Guide</a>
 <br/><br/>
 HTML_START
 }
