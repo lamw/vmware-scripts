@@ -28,7 +28,7 @@
    option1 or option2 for those looking to calculate Windows VC to VCSA Migration (vSphere 6.0 U2m only)
 .EXAMPLE
   Run the script locally on the Microsoft SQL Server hosting the vCenter Server Database
-  Get-VCDBUsage -dbType mssql -connectionType local
+  Get-VCDBUsage -dbType mssql -connectionType local -dbServer sql.primp-industries.com
 .EXAMPLE
   Run the script remotely on the Microsoft SQL Server hosting the vCenter Server Database
   Get-VCDBUsage -dbType mssql -connectionType local -dbServer sql.primp-industries.com -dbPort 1433 -dbInstance VCDB -dbUsername sa -dbPassword VMware1!
@@ -141,7 +141,7 @@ Function Get-VCDBUsage {
     param(
         [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][string]$dbType,
         [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][string]$connectionType,
-        [Parameter(Mandatory=$false,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][string]$dbServer,
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][string]$dbServer,
         [Parameter(Mandatory=$false,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][int]$dbPort,
         [Parameter(Mandatory=$false,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][string]$dbUsername,
         [Parameter(Mandatory=$false,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][string]$dbPassword,
@@ -234,7 +234,7 @@ GROUP BY tabletype
             }
 
             try {
-                $results = Invoke-Sqlcmd -Query $mssql_vcdb_usage_query
+                $results = Invoke-Sqlcmd -Query $mssql_vcdb_usage_query -ServerInstance $dbServer
             }
             catch { Write-Host -ForegroundColor Red "Unable to connect to the SQL Server. Its possible the SQL Server is not configured to allow remote connections`n"; exit }
 
@@ -251,7 +251,7 @@ GROUP BY tabletype
         }
 
         Function Run-RemoteMSSQLQuery {
-            if($dbServer -eq $null -or $dbPort -eq $null -or $dbInstance -eq $null -or $dbUsername -eq $null -or $dbPassword -eq $null) {
+            if($dbServer -eq $null -eq $null -or $dbInstance -eq $null -or $dbUsername -eq $null -or $dbPassword -eq $null) {
                 Write-host -ForegroundColor Red "One or more parameters is missing for the remote MSSQL Query option`n"
                 exit
             }
@@ -259,7 +259,11 @@ GROUP BY tabletype
             Write-Host -ForegroundColor Green "`nRunning Remote MSSQL VCDB Usage Query"
 
             $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-            $SqlConnection.ConnectionString = "Server = $dbServer, $dbPort; Database = $dbInstance; User ID = $dbUsername; Password = $dbPassword;"
+            if($dbPort -eq 0) {
+              $SqlConnection.ConnectionString = "Server = $dbServer; Database = $dbInstance; User ID = $dbUsername; Password = $dbPassword;"
+            } else {
+              $SqlConnection.ConnectionString = "Server = $dbServer, $dbPort; Database = $dbInstance; User ID = $dbUsername; Password = $dbPassword;"
+            }
 
             $SqlCmd = New-Object System.Data.SqlClient.SqlCommand
             $SqlCmd.CommandText = $mssql_vcdb_usage_query
@@ -370,11 +374,12 @@ be sent to https://github.com/migrate2vcsa for further processing`n"
 }
 
 # Please replace variables your own VCDB details
-$dbType = "remote"
+$dbType = "mssql"
+$connectionType = "remote"
 $dbServer = "sql.primp-industries.com"
 $dbPort = "1433"
 $dbInstance = "VCDB"
 $dbUsername = "sa"
 $dbPassword = "VMware1!"
 
-Get-VCDBUsage -connectionType remote -dbType $dbType -dbServer $dbServer -dbPort $dbPort -dbInstance $dbInstance -dbUsername $dbUsername -dbPassword $dbPassword
+Get-VCDBUsage -connectionType $connectionType -dbType $dbType -dbServer $dbServer -dbPort $dbPort -dbInstance $dbInstance -dbUsername $dbUsername -dbPassword $dbPassword

@@ -1,5 +1,5 @@
 """
-Generates a library ready to be used as a VCSP endpoint for content library 2015 (vsphere 6.0).
+Generates a library ready to be used as a VCSP endpoint for content library 2016 (vsphere 6.5).
 """
 
 __author__ = 'VMware, Inc.'
@@ -80,7 +80,7 @@ def _make_items(items, version=1):
     }
 
 
-def _dir2item(path, directory):
+def _dir2item(path, directory, md5_enabled):
     files_items = []
     name = os.path.split(path)[-1]
     vcsp_type = "vcsp.iso"
@@ -96,16 +96,19 @@ def _dir2item(path, directory):
             m = hashlib.md5()
             new_folder = os.path.dirname(p)
             if new_folder != folder: # new folder (ex: template1/)
-                folder_md5 = _md5_for_folder(new_folder)
+                if md5_enabled:
+                    folder_md5 = _md5_for_folder(new_folder)
                 folder = new_folder
-            m.update(os.path.dirname(p))
+            if md5_enabled:
+                m.update(os.path.dirname(p).encode('utf-8'))
             if ".ovf" in p:
                 vcsp_type = "vcsp.ovf"
             size = os.path.getsize(p)
             href = "%s/%s" % (directory, f)
             h = ""
-            with open(p, "rb") as handle:
-                h = _md5_for_file(handle)
+            if md5_enabled:
+                with open(p, "rb") as handle:
+                    h = _md5_for_file(handle)
             files_items.append({
                 "name": f,
                 "size": size,
@@ -115,7 +118,7 @@ def _dir2item(path, directory):
     return _make_item(name, vcsp_type, name, files_items, identifier = uuid.uuid4())
 
 
-def make_vcsp(lib_name, lib_path):
+def make_vcsp(lib_name, lib_path, md5_enabled):
     lib_json_loc = os.path.join(lib_path, LIB_FILE)
     lib_items_json_loc = os.path.join(lib_path, ITEMS_FILE)
 
@@ -157,7 +160,7 @@ def make_vcsp(lib_name, lib_path):
         p = os.path.join(lib_path, item_path)
         if not os.path.isdir(p):
             continue  # not interesting
-        items_json = _dir2item(p, item_path)
+        items_json = _dir2item(p, item_path, md5_enabled)
         if item_path not in old_items and updating_lib:
             changed = True
         elif item_path in old_items:
@@ -206,14 +209,17 @@ def make_vcsp(lib_name, lib_path):
 
 def main():
     if len(sys.argv) < 3:
-        print (''
-            "Usage:"
-            "python make_vcsp_2015.py <library name> <library location on disk>")
+        print ("Usage: python %s <library name> <library location"
+               " on disk> <md5check, default true>" % sys.argv[0])
         sys.exit()
+
     lib_name = sys.argv[1]
     lib_path = sys.argv[2]
+    md5_enabled = True
+    if len(sys.argv) == 4:
+       md5_enabled = (sys.argv[3].lower() == 'true')
 
-    make_vcsp(lib_name,lib_path)
+    make_vcsp(lib_name,lib_path, md5_enabled)
 
 if __name__ == "__main__":
     main()
