@@ -1,13 +1,27 @@
 #!/usr/bin/perl -w
-# Author: William Lam
-# Website: www.virtuallyghetto.com
+#
+# Copyright (c) 2007 VMware, Inc.  All rights reserved.
+#
+# Modified 'vmclone.pl' from VMware's VI Perl Toolkit Utilites by William Lam
+# http://engineering.ucsb.edu/~duonglt/vmware/vGhettoLinkedClone.html
+#
+# Modified by Chip Schweiss, chip.schweiss@wustl.edu
+# Merged changes from vmclone2.pl (https://communities.vmware.com/docs/DOC-12746) by Bill Call
+#   Allows for customization of either Windows or Linux VMs using the same schema.
+# Added support for cloning via linked clones or copying.
+# Added the ability to move the clone to specified folder
+# Added a switch to control power on after cloning
+# Added configuration to resolv.conf on Linux cloning
+
+# TODO: Add resource reservations, annotations, CPU cores
 
 use strict;
 use warnings;
+use Switch;
 
 use FindBin;
 use lib "$FindBin::Bin/../";
-use lib "/usr/lib/vmware-vcli/apps";
+use lib "/etc/puppetmaster/global/bin/autodeploy/tools/vghetto-scripts/perl";
 
 use VMware::VIRuntime;
 use XML::LibXML;
@@ -41,6 +55,46 @@ my %opts = (
       required => 0,
       default => "../sampledata/vmclone.xml",
    },
+   datastore => {
+      type => "=s",
+      help => "Name of the Datastore",
+      required => 0,
+   },
+   snapname => {
+      type => "=s",
+      help => "Name of Snapshot from pristine base image",
+      required => 1,
+   },
+   folder => {
+      type => "=s",
+      help => "Folder to place the clone in",
+      required => 0,
+   },
+   clone_type => {
+      type => "=s",
+      help => "Specify the clone type to perform [linked|copy]",
+      required => 0,
+      default => 'linked',
+   },
+   convert => {
+      type => "=s",
+      help => "Convert destination disk type [source|sesparse]",
+      required => 0,
+      default => 'source',
+   },
+   grainsize => {
+      type => "=s",
+      help => "Grainsize for SE Sparse disk [default 1024k]",
+      required => 0,
+      default => 1024,
+   },
+   power_vm => {
+      type => "=s",
+      help => "Flag to specify whether or not to power on virtual machine after cloning"
+           . "yes,no",
+      required => 0,
+      default => 'no',
+   },
    customize_guest => {
       type => "=s",
       help => "Flag to specify whether or not to customize guest: yes,no",
@@ -59,32 +113,6 @@ my %opts = (
       help => "The name of the schema file",
       required => 0,
       default => "../schema/vmclone.xsd",
-   },
-   datastore => {
-      type => "=s",
-      help => "Name of the Datastore",
-      required => 0,
-   },
-   snapname => {
-      type => "=s",
-      help => "Name of Snapshot from pristine base image",
-      required => 1,
-   },
-   folder => {
-      type => "=s",
-      help => "Folder to place the clone in",
-      required => 0,
-   },
-   convert => {
-      type => "=s",
-      help => "Convert destination disk type [source|sesparse]",
-      required => 1,
-   },
-   grainsize => {
-      type => "=s",
-      help => "Grainsize for SE Sparse disk [default 1024k]",
-      required => 0,
-      default => 1024,
    },
 );
 
@@ -108,11 +136,22 @@ Util::disconnect();
 sub clone_vm {
    my $vm_name = Opts::get_option('vmname');
    my $clone_name = Opts::get_option('vmname_destination');
+   my $clone_type = Opts::get_option('clone_type');
    my $vm_snapshot_name = Opts::get_option('snapname');
    my $convert = Opts::get_option('convert');
    my $grainsize = Opts::get_option('grainsize');
    my $vm_views = Vim::find_entity_views(view_type => 'VirtualMachine',
                                         filter => {'name' =>$vm_name});
+   my $parser = XML::LibXML->new();
+   my $tree = $parser->parse_file(Opts::get_option('filename'));
+   my $root = $tree->getDocumentElement;
+   my @cspec = $root->findnodes('Virtual-Machine-Spec');
+   my $clone_view;
+   my $config_spec_operation;
+   my @NIC;
+   my $nic_network;
+   my $nic_adapter;
+   
    if(@$vm_views) {
       foreach (@$vm_views) {
          my $host_name =  Opts::get_option('vmhost');
@@ -144,6 +183,7 @@ sub clone_vm {
                }
             }
 
+
 	    my ($vm_snapshot,$ref,$nRefs);
 	    if(defined $_->snapshot) {
             	($ref, $nRefs) = find_snapshot_name ($_->snapshot->rootSnapshotList,
@@ -152,6 +192,10 @@ sub clone_vm {
       	    if (defined $ref && $nRefs == 1) {
             	$vm_snapshot = Vim::get_view (mo_ref =>$ref->snapshot);
 	    }
+            else {
+                Util::trace(0, "\nSnapshot $vm_snapshot_name not found. \n");
+                return;
+            }
 
 	    my ($diskLocator,$relocate_spec,$diskType,$diskId);
 	
@@ -162,12 +206,22 @@ sub clone_vm {
 			last;
 		}
   	    }
-
-            if($convert eq "sesparse" && Vim::get_service_content()->about->version eq "5.1.0") {
+            
+            
+            if ($clone_type eq "copy") {
+               $convert = "source";
+               $relocate_spec = VirtualMachineRelocateSpec->new(datastore => $ds_info{mor},
+                        host => $host_view,
+                        pool => $comp_res_view->resourcePool);
+            }
+            elsif ($convert eq "sesparse" && Vim::get_service_content()->about->version eq "5.1.0") {
 		my $newdiskName = "[" . $ds_name . "] " . $clone_name . "/" . $clone_name . ".vmdk";
 
 	    	$diskLocator = VirtualMachineRelocateSpecDiskLocator->new(datastore => $ds_info{mor},
-			diskBackingInfo => VirtualDiskFlatVer2BackingInfo->new(fileName => $newdiskName, diskMode => 'persistent', deltaDiskFormat => 'seSparseFormat', deltaGrainSize => $grainsize),
+			diskBackingInfo => VirtualDiskFlatVer2BackingInfo->new(fileName => $newdiskName,
+                                                                               diskMode => 'persistent',
+                                                                               deltaDiskFormat => 'seSparseFormat',
+                                                                               deltaGrainSize => $grainsize),
 			diskId => $diskId);
 
 		$relocate_spec = VirtualMachineRelocateSpec->new(datastore => $ds_info{mor},
@@ -185,27 +239,33 @@ sub clone_vm {
             my $clone_spec ;
             my $config_spec;
             my $customization_spec;
-
+            my $poweron;
+            
+            # We will trigger the power on after cloning if spceified
+            $poweron = 0;
+            
+            
+            
             if ((Opts::get_option('customize_vm') eq "yes")
                 && (Opts::get_option('customize_guest') ne "yes")) {
                $config_spec = get_config_spec();
-               $clone_spec = VirtualMachineCloneSpec->new(powerOn => 0,template => 0,
-						       snapshot => $vm_snapshot,
-                                                       location => $relocate_spec,
-                                                       config => $config_spec,
-                                                       );
+               $clone_spec = VirtualMachineCloneSpec->new(powerOn => 0,
+                                                          template => 0,
+						          snapshot => $vm_snapshot,
+                                                          location => $relocate_spec,
+                                                          config => $config_spec,
+                                                          );
             }
             elsif ((Opts::get_option('customize_guest') eq "yes")
                 && (Opts::get_option('customize_vm') ne "yes")) {
                $customization_spec = VMUtils::get_customization_spec
                                               (Opts::get_option('filename'));
-               $clone_spec = VirtualMachineCloneSpec->new(
-                                                   powerOn => 0,
-                                                   template => 0,
-						   snapshot => $vm_snapshot,
-                                                   location => $relocate_spec,
-                                                   customization => $customization_spec,
-                                                   );
+               $clone_spec = VirtualMachineCloneSpec->new(powerOn => $poweron,
+                                                          template => 0,
+						          snapshot => $vm_snapshot,
+                                                          location => $relocate_spec,
+                                                          customization => $customization_spec,
+                                                          );
             }
             elsif ((Opts::get_option('customize_guest') eq "yes")
                 && (Opts::get_option('customize_vm') eq "yes")) {
@@ -213,7 +273,7 @@ sub clone_vm {
                                               (Opts::get_option('filename'));
                $config_spec = get_config_spec();
                $clone_spec = VirtualMachineCloneSpec->new(
-                                                   powerOn => 0,
+                                                   powerOn => $poweron,
                                                    template => 0,
 						   snapshot => $vm_snapshot,
                                                    location => $relocate_spec,
@@ -223,12 +283,22 @@ sub clone_vm {
             }
             else {
                $clone_spec = VirtualMachineCloneSpec->new(
-                                                   powerOn => 0,
+                                                   powerOn => $poweron,
                                                    template => 0,
 						   snapshot => $vm_snapshot,
                                                    location => $relocate_spec,
                                                    );
             }
+            
+            $Data::Dumper::Sortkeys = 1; #Sort the keys in the output
+            $Data::Dumper::Deepcopy = 1; #Enable deep copies of structures
+            $Data::Dumper::Indent = 1;   #Enable enough indentation to read the output
+            print Dumper ($customization_spec) . "\n";
+            
+            ##
+            # Do the actual clone
+            ##
+            
             Util::trace (0, "\nLink Cloning virtual machine '" . $clone_name . "' from '" . $vm_name . "' ...\n");
 
             eval {
@@ -288,11 +358,121 @@ sub clone_vm {
                }
             }
             else {
+               # Clone was sucessful.  Perform post clone tasks.
+               
                # Move to a folder if specified
                my $vm_folder = Opts::get_option('folder');
                if ($vm_folder ne "") {
                   move_vm_to_folder($clone_name, $vm_folder);
-               }      
+               }
+               
+               # Setup NICs and thier backing
+               foreach (@cspec) {
+                  if ($_->findvalue('NIC')) {
+                     # Network adapters are being defined.   Destroy existing ones first.
+                     $clone_view = Vim::find_entity_view(view_type => 'VirtualMachine',
+                                                         filter =>{ 'name' => $clone_name});
+                     if ($clone_view) {
+                        my $devices = $clone_view->config->hardware->device;
+                        foreach my $vnic_device (@$devices){
+                           if (index($vnic_device->deviceInfo->label, "Network adapter " ) != -1 ) {
+                              #remove the old vNIC
+                              Util::trace(0, "\nRemoving NIC " . ref($vnic_device) );
+                              $config_spec_operation = VirtualDeviceConfigSpecOperation->new('remove');
+                              my $vm_dev_spec = VirtualDeviceConfigSpec->new(device => $vnic_device,
+                                                                             operation => $config_spec_operation);
+                              my $vmChangespec = VirtualMachineConfigSpec->new(deviceChange => [ $vm_dev_spec ] );
+                              eval{
+                                 $clone_view->ReconfigVM_Task(spec => $vmChangespec);  
+                              };
+                              if ($@) {
+                                 Util::trace(0, "\nFailed to remove NIC.");
+                              } else {
+                                 Util::trace(0, "\nSuccess.");
+                              }
+                           }
+                           
+                        }
+                     } else {
+                        Util::trace(0, "\nCould not find newly created clone");
+                        exit 1
+                     }
+                     
+                     
+                     @NIC = $_->findnodes('NIC');
+                     # Add back network adapters as defined.
+                     $config_spec_operation = VirtualDeviceConfigSpecOperation->new('add');
+                     foreach (@NIC) {
+                        $nic_network = $_->findvalue('Network');
+                        if ( $_->findvalue('Adapter')) {
+                           $nic_adapter = $_->findvalue('Adapter');
+                        } else {
+                           $nic_adapter = "vmxnet3";
+                        }
+                        
+                        my $backing_info = VirtualEthernetCardNetworkBackingInfo->new(deviceName => $nic_network);
+                        my $newNetworkDevice;
+                        
+                        switch($nic_adapter) {
+                           case 'e1000' {
+                              $newNetworkDevice = VirtualE1000->new(key => -1,
+                                                                    backing => $backing_info,
+                                                                    addressType => 'Assigned');
+                           }
+                           case 'pcnet' {
+                              $newNetworkDevice = VirtualPCNet32->new(key => -1,
+                                                                      backing => $backing_info,
+                                                                      addressType => 'Assigned');
+                           }
+                           case 'vmxnet2' {
+                              $newNetworkDevice = VirtualVmxnet2->new(key => -1,
+                                                                      backing => $backing_info,
+                                                                      addressType => 'Assigned');
+                           }
+                           case 'vmxnet3' {
+                              $newNetworkDevice = VirtualVmxnet3->new(key => -1,
+                                                                      backing => $backing_info,
+                                                                      addressType => 'Assigned');
+                           }
+                           else {
+                              Util::trace(0, "\nInvalid adapter path $nic_adapter.");
+                           }
+                        }
+                        my $vm_dev_spec = VirtualDeviceConfigSpec->new(device => $newNetworkDevice,
+                                                                       operation => $config_spec_operation);
+                        my $vmChangespec = VirtualMachineConfigSpec->new(deviceChange => [ $vm_dev_spec ] );
+                        
+                        eval {
+                           $clone_view->ReconfigVM_Task(spec => $vmChangespec);
+                        };
+                        if ($@) {
+                           Util::trace(0, "\nFailed to add $nic_adapter on $nic_network to $clone_name.");
+                        } else {
+                           Util::trace(0, "\nSuccessfully added $nic_adapter on $nic_network to $clone_name.");
+                        }
+                        
+                        
+                     }
+                  }
+                  
+               }
+               
+               # Power on the VM if specified.
+               if (Opts::get_option('power_vm') eq "yes") {
+                  $clone_view = Vim::find_entity_view(
+                     view_type => "VirtualMachine",
+                     filter => { 'name' => $clone_name },
+                     );
+                  eval {
+                     $clone_view->PowerOnVM_Task();
+                  };
+                  if ($@) {
+                     Util::trace(0, "\nFailed to power on $clone_name" );
+                  } else {
+                     Util::trace(0, "\nSuccessfully powered on $clone_name" );
+                  }    
+               }
+               
             }
          }
       }
@@ -393,7 +573,7 @@ sub get_config_spec() {
 }
 
 sub get_disksize {
-   my $disksize = 4194304;
+   my $disksize = -1;
    my $parser = XML::LibXML->new();
    
    eval {
@@ -459,8 +639,8 @@ sub check_missing_value {
       Util::trace(0,"\nERROR in '$filename':\n fullname value missing ");
       $valid = 0;
    }
-   if (!$cust_spec[0]->findvalue('Organization-Name')) {
-      Util::trace(0,"\nERROR in '$filename':\n Organization name value missing ");
+   if (!$cust_spec[0]->findvalue('Orgnization-Name')) {
+      Util::trace(0,"\nERROR in '$filename':\n Orgnization name value missing ");
       $valid = 0;
    }
    return $valid;
@@ -496,8 +676,33 @@ sub validate {
           $valid = 0;
        }
     }
+    if (Opts::option_is_set('clone_type')) {
+       if ((Opts::get_option('clone_type') ne "linked")
+             && (Opts::get_option('clone_type') ne "copy")) {
+          Util::trace(0,"\nMust specify 'linked' or 'copy' for clone_type option");
+          $valid = 0;
+       }
+    }
+    if (Opts::option_is_set('convert')) {
+       if ((Opts::get_option('convert') ne "source")
+             && (Opts::get_option('convert') ne "sesparse")) {
+          Util::trace(0,"\nMust specify 'source' or 'sesparse' for convert option");
+          $valid = 0;
+       }
+    }
+    if (Opts::option_is_set('power_vm')) {
+       if ((Opts::get_option('power_vm') ne "yes")
+             && (Opts::get_option('power_vm') ne "no")) {
+          Util::trace(0,"\nMust specify 'yes' or 'no' for power_vm option");
+          $valid = 0;
+       }
+    }
+    
+    
    return $valid;
 }
+
+
 
 __END__
 
