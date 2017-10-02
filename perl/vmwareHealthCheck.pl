@@ -1007,7 +1007,7 @@ sub printHostDatastoreInfo {
 					my $browser = Vim::get_view (mo_ref => $ds->browser);
 					my $ds_path = "[" . $ds->info->name . "]";
 
-					my $file_query = FileQueryFlags->new(fileSize => 1,fileType => 0,modification => 1);
+					my $file_query = FileQueryFlags->new(fileSize => 1,fileType => 0,modification => 1, fileOwner => 0);
 
 					my $searchSpec = HostDatastoreBrowserSearchSpec->new(details => $file_query,matchPattern => ["*.vmsn", "*-delta.vmdk"]);
 					my $search_res = $browser->SearchDatastoreSubFolders(datastorePath => $ds_path,searchSpec => $searchSpec);
