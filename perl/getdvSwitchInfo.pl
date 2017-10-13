@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# Author: William Lam
+# Author: William Lam; Tim Lapawa
 # Website: www.virtuallyghetto.com
 # Reference: http://www.virtuallyghetto.com/2011/12/retrieving-information-from-distributed.html
 
@@ -12,7 +12,7 @@ use Term::ANSIColor;
 my %opts = (
         'list' => {
         type => "=s",
-        help => "Operation [all|summary|config|networkpool|portgroup|host|vm]",
+        help => "Operation [all|summary|config|networkpool|portgroup|host|vm|health]",
         required => 1,
         },
         'dvswitch' => {
@@ -27,15 +27,25 @@ Opts::add_options(%opts);
 # validate options, and connect to the server
 Opts::parse();
 Opts::validate();
-Util::connect();
+my $vim = Util::connect();
 
 my $list = Opts::get_option('list');
 my $dvswitch = Opts::get_option('dvswitch');
 my $dvSwitches;
-my $apiVersion = Vim::get_service_content()->about->version;
+my $apiVersion = $vim->get_service_content()->about->version;
 
 if($dvswitch) {
-	$dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch', filter => {'name' => $dvswitch});
+    if ( $list eq 'health' ) {
+        $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
+                                        , filter => {'name' => $dvswitch}
+                                        , properties => [ 'name', 'runtime', 'config.host' ]
+                                        );
+    } else {
+        $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
+                                        , filter => {'name' => $dvswitch}
+                                        , properties => {  }
+                                        );
+    }
 } else {
 	$dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch');
 }
@@ -289,9 +299,111 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
 			}
 		};
 		if($@) {
-			print "ERROR: Unable to query for entites connected to dvSwitch " . $@ . "\n";
+			print "ERROR: Unable to query for entities connected to dvSwitch " . $@ . "\n";
 		}
 	}
+	if($list eq "all" || $list eq "health") {
+    #  * dvSwitch->runtime->hostMemberRuntime[]
+    #    - lists all hosts of dvSwitch
+    #  *
+        my $hostMemberRuntimeInfo = $dvs->{runtime}->{hostMemberRuntime};
+        my %r = ();
+#        print "  Check NIC Infos for host: \t'".$host->name."'\n\n";
+        format STDOUT =
+ @<<<<<<<<<<<<<<<<<<<<<<<<<<< |@<<<<<< |@<<<<<<<<<<<<<<<<<<<<<<<<< |@<<<<<<<<<< |@<<<<<<<<<<<<<<<<<< |@<<<<<<<<<<<<<<<<<<<<<
+ $r{host},                     $r{pnic}, $r{switch},                $r{address}, $r{port},             $r{missingvlans}
+.
+        my $foundHealthCheckResults = undef;
+        foreach my $hostMember (@{$hostMemberRuntimeInfo}) {
+            if ( exists $hostMember->{healthCheckResult}) {
+
+                my $hostRef = $hostMember->{host};
+                my $hostView =  Vim::get_view( mo_ref => $hostRef, properties => [ 'name', 'configManager'] );
+
+                if ($hostMember->status ne 'up') {
+                    print ("\n".$hostView->name.color("red") . 'DOWN'.color('reset'));
+                    next;
+                }
+                
+                my $netMgr = undef;
+                my $checkResults = $hostMember->{healthCheckResult};
+                foreach my $checkResult (@{$checkResults}){
+                    if ( ref($checkResult) eq 'VMwareDVSVlanHealthCheckResult') {
+                        %r = (
+                            host         => $hostView->name,
+                            pnic         => '',
+                            switch       => '',
+                            address      => '',
+                            port         => '',
+                            missingvlans => '',
+                        );
+
+                        # find physical uplink for DVS uplinkPort
+                        #    dvs-83&doPath=config.host
+                        #
+                        my $dvsHostMembers = $dvs->{'config.host'};
+                        $netMgr = Vim::get_view(mo_ref => $hostView->configManager->networkSystem) if not $netMgr;
+                        foreach my $member (@{$dvsHostMembers}){
+                            my $dvsConfigHostrefValue = $member->{config}->{host}->{value};
+                            if ($hostRef->{value} eq $dvsConfigHostrefValue) {
+                                my $pnicSpecs = $member->{config}->{backing}->{pnicSpec};
+                                foreach my $pnic (@{$pnicSpecs}){
+                                    if ($pnic->{uplinkPortKey} eq $checkResult->{uplinkPortKey}) {
+                                        $r{pnic} = $pnic->{pnicDevice};
+                                    }
+                                }
+                            }
+                        }
+                        
+                        #
+                        # find CDP infos for pnic and host
+                        #
+                        my @physicalNicHintInfo = $netMgr->QueryNetworkHint();
+                        foreach (@physicalNicHintInfo) {
+                            foreach ( @{$_} ) {
+                                next if ($r{pnic} ne $_->device);  # skip wrong device
+                                if(defined($_->connectedSwitchPort)) {
+                                    $r{switch}  = $_->connectedSwitchPort->devId;
+                                    $r{address} = $_->connectedSwitchPort->address;
+                                    $r{port}    = $_->connectedSwitchPort->portId;
+                                }
+                            }
+                        }
+                        my $untrunkedVlans =  $checkResult->{untrunkedVlan};
+                        my %missingVlans = ();
+                        foreach my $untrunkedVlan (@{$untrunkedVlans}){
+                            my $start = int($untrunkedVlan->{start});
+                            my $end   = int($untrunkedVlan->{end});
+                            if ( $start eq $end ) {
+                                $missingVlans{$start} = 1;
+                            } else {
+                                for (my $i = $start; $i <= $end; $i++){ 
+                                    $missingVlans{$i} = 1;
+                                }
+                            }
+                        }
+                        my @sorted = keys %missingVlans;
+                        @sorted = sort {$a <=> $b} @sorted;
+                        $r{missingvlans} = join (',', @sorted);
+                        if (!$foundHealthCheckResults) {
+                            print "  Host                        | pnic   | switch                    | address    | port               | missing VLANs          \n";
+                            print " -----------------------------+--------+---------------------------+------------+--------------------+------------------------\n";
+                        }
+                        $foundHealthCheckResults ||= $hostMember;
+                        write;
+                    } # foreach VMwareDVSVlanHealthCheckResult
+                } # foreach healthCheckResult
+            } # if healthCheckResult 
+        } # foreach $hostMemberRuntimeInfo
+        if ( ! $foundHealthCheckResults) {
+            print 'Could not find any DVSwitch Health check results.';
+        }
+        print "\n";
+    }
 }
+if (!scalar @{ $dvSwitches}) {
+    print "WARN: Could not find dvSwitch: '".$dvswitch."' with service url '".$vim->{service_url}."'. DONE!";
+}
+
 
 Util::disconnect();
