@@ -32,7 +32,10 @@ my $vim = Util::connect();
 my $list = Opts::get_option('list');
 my $dvswitch = Opts::get_option('dvswitch');
 my $dvSwitches;
-my $apiVersion = $vim->get_service_content()->about->version;
+my $sc = $vim->get_service_content();
+my $apiVersion = $sc->about->version;
+
+print ("vCenterServer: ".color("yellow"). $vim->{service_url}. color('reset').' - '. color('yellow'). $sc->about->fullName . color("reset"). "\n");
 
 if($dvswitch) {
     if ( $list eq 'health' ) {
@@ -51,7 +54,7 @@ if($dvswitch) {
 }
 
 foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
-	print color("yellow") . $dvs->name . "\n" . color("reset");
+	print 'dvSwitch: '.color("yellow") . $dvs->name . "\n" . color("reset");
 	if($list eq "all" || $list eq "summary") {
 		print "UUID: " . color("cyan") . $dvs->summary->uuid . "\n" . color("reset");
 		print "Description: " . color("cyan") . ($dvs->summary->description ? $dvs->summary->description : "N/A") . "\n" . color("reset");
@@ -310,8 +313,8 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
         my %r = ();
 #        print "  Check NIC Infos for host: \t'".$host->name."'\n\n";
         format STDOUT =
- @<<<<<<<<<<<<<<<<<<<<<<<<<<< |@<<<<<< |@<<<<<<<<<<<<<<<<<<<<<<<<< |@<<<<<<<<<< |@<<<<<<<<<<<<<<<<<< |@<<<<<<<<<<<<<<<<<<<<<
- $r{host},                     $r{pnic}, $r{switch},                $r{address}, $r{port},             $r{missingvlans}
+ @<<<<<<<<<<<<<<<<<<<<<<<<<<< |@<<<<<< |@<<<<<<<<<<<<<<<<<<<<<<<<<... |@<<<<<<<<<<<<<<< |@<<<<<<<<<<<<<<<<<< |@*
+ $r{host},                     $r{pnic}, $r{switch},                   $r{address},     $r{port},             $r{missingvlans}
 .
         my $foundHealthCheckResults = undef;
         foreach my $hostMember (@{$hostMemberRuntimeInfo}) {
@@ -342,7 +345,7 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
                         #    dvs-83&doPath=config.host
                         #
                         my $dvsHostMembers = $dvs->{'config.host'};
-                        $netMgr = Vim::get_view(mo_ref => $hostView->configManager->networkSystem) if not $netMgr;
+                        $netMgr ||= Vim::get_view(mo_ref => $hostView->configManager->networkSystem);
                         foreach my $member (@{$dvsHostMembers}){
                             my $dvsConfigHostrefValue = $member->{config}->{host}->{value};
                             if ($hostRef->{value} eq $dvsConfigHostrefValue) {
@@ -382,12 +385,12 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
                                 }
                             }
                         }
-                        my @sorted = keys %missingVlans;
-                        @sorted = sort {$a <=> $b} @sorted;
+                        my @sorted = sort {$a <=> $b} keys %missingVlans;;
                         $r{missingvlans} = join (',', @sorted);
                         if (!$foundHealthCheckResults) {
-                            print "  Host                        | pnic   | switch                    | address    | port               | missing VLANs          \n";
-                            print " -----------------------------+--------+---------------------------+------------+--------------------+------------------------\n";
+                                                                                                       
+                            print "  Host                        | pnic   | switch                       | address         | port               | missing VLANs          \n";
+                            print " -----------------------------+--------+------------------------------+-----------------+--------------------+------------------------\n";
                         }
                         $foundHealthCheckResults ||= $hostMember;
                         write;
@@ -399,8 +402,8 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
             print 'Could not find any DVSwitch Health check results.';
         }
         print "\n";
-    }
-}
+    } # if --list all|health
+} # foreach @$dvSwitches
 if (!scalar @{ $dvSwitches}) {
     print "WARN: Could not find dvSwitch: '".$dvswitch."' with service url '".$vim->{service_url}."'. DONE!";
 }
