@@ -822,7 +822,6 @@ sub printVMSummary {
 					## BOOT TIME ##
 					$vmstateString .= "<td>".($vm->runtime->bootTime ? $vm->runtime->bootTime : "N/A")."</td>";
 
-					# BRB: Check for 6.5.0
 					if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
 						## UPTIME ##
 						$vmstateString .= "<td>".($vm->summary->quickStats->uptimeSeconds ? &getUptime($vm->summary->quickStats->uptimeSeconds) : "N/A")."</td>";
@@ -1832,7 +1831,6 @@ sub printHostSummary {
 				}
 
 				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
-					# BRB: Check version 6.5.0
 					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						my $systemFile = "";
 						if($local_host->config->systemFile) {
@@ -1874,7 +1872,6 @@ sub printHostSummary {
 				else { $stateString .= "<td>UNKNOWN</td>"; }
 
 				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
-					# BRB: Check version 6.5.0
 					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						if($local_host->summary->quickStats->uptime) {
 							my $uptime = $local_host->summary->quickStats->uptime;
@@ -1900,7 +1897,6 @@ sub printHostSummary {
 				$stateString .= "<td>".(($local_host->summary->runtime->inMaintenanceMode) ? "YES" : "NO")."</td>";
 
 				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
-					# BRB: Check version 6.5.0
 					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						$stateString .= "<td>".(($local_host->runtime->standbyMode) ? $local_host->runtime->standbyMode : "N/A")."</td>";
 					} else {
@@ -2151,7 +2147,6 @@ sub printHostSummary {
 					$capString .= "<td>".($local_host->capability->virtualExecUsageSupported ? "YES" : "NO")."</td>";
 
 					if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
-						# BRB: Check version 6.5.0
 						if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 							## STORAGE IORM ##
 							$capString .= "<td>".($local_host->capability->storageIORMSupported ? "YES" : "NO")."</td>";
@@ -2803,7 +2798,6 @@ sub printHostSummary {
 									$model = $lun->model;
 									$queuedepth = $lun->queueDepth;
 									if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
-										# BRB: Check version 6.5.0
 										if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 											$vStorageSupport = ($lun->vStorageSupport ? $lun->vStorageSupport : "N/A");
 										} else {
@@ -2825,7 +2819,6 @@ sub printHostSummary {
 								$state_string .= $_." ";
 							}
 							if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
-								# BRB: Check version 6.5.0
 								if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 									$lun_row .= "<td>".$vStorageSupport."</td>";
 								} else {
@@ -2869,7 +2862,6 @@ sub printHostSummary {
 
 							if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 								my ($iormEnable,$iormThres,$dsMaintMode,$iormAggDisable,$iormStatsCollEnable) = ("N/A","N/A","N/A","N/A","N/A");
-								# BRB: Check version 6.5.0
 								if(($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') && $ds->summary->type eq 'VMFS') {
 									$iormEnable = ($ds->iormConfiguration->enabled ? "YES" : "NO");
 									$iormThres = ($ds->iormConfiguration->congestionThreshold ? $ds->iormConfiguration->congestionThreshold . " ms" : "N/A");
