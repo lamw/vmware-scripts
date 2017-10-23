@@ -2,6 +2,7 @@
 # Author: William Lam
 # Website: www.virtuallyghetto.com
 
+use 5.10.0;
 use strict;
 use warnings;
 use Math::BigInt;
@@ -127,6 +128,12 @@ my (@vmw_apps,@perf_host_list,@vms_perf,@hosts_in_cluster,@portgroups_in_cluster
 my (%hostlists,%vmlists,%configurations,%vmmac_to_portgroup_mapping,%vswitch_portgroup_mappping,%lun_row_info,%luns,%datastore_row_info,%datastores,%portgroup_row_info,%seen_dvs) = ();
 my ($hardwareConfigurationString,$stateString,$hostString,$healthHardwareString,$healthSoftwareString,$nicString,$configString,$hbaString,$cdpString,$lunString,$datastoreString,$cacheString,$portgroupString,$multipathString,$dvsString,$logString,$taskString,$numaString,$hostPerfString,$vmString,$vmstateString,$vmconfigString,$vmstatString,$vmftString,$vmeztString,$vmtoolString,$vmstorageString,$vmnetworkString,$vmthinString,$vmPerfString,$vmsnapString,$vmcdString,$vmflpString,$vmrdmString,$vmdeltaString,$vmnpivString,$advString,$agentString,$mgmtString,$vmrscString,$capString,$vmdeviceString,$iscsiString) = ("","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","");
 my (@datastore_cluster_jump_tags,@cluster_jump_tags,@host_jump_tags,@vm_jump_tags) = ();
+
+
+###############
+# PROPERTY filters
+###############
+my $datacenter_properties = [ 'name' ];
 
 ###############
 # COLORS
@@ -598,7 +605,8 @@ sub getDatastoreCluster {
 		print REPORT_OUTPUT "<div id=\"tab7\" class=\"content\">";
 		#please do not touch this, else the jump tags will break
 		print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
-		$datacenter_views = Vim::find_entity_views(view_type => 'Datacenter');
+		$datacenter_views = Vim::find_entity_views(view_type => 'Datacenter'
+                                                   , properties => $datacenter_properties );
 		foreach(sort {$a->name cmp $b->name} @$datacenter_views) {
 			$datastore_cluster_count++;
 			&printDatacenterSummary($_,$datastore_cluster_count,$atype,$aversion);
@@ -3687,6 +3695,22 @@ sub buildVMReport {
 		$table_vm_conf .= "</table>\n";
 		$vmString .= "<br/>".$table_vm_conf;
 		($table_vm_conf,$vmftString) = ("","");
+	}
+	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+		$hostTag = "VM Eagerzeroed Thick (EZT) Provisioned-$cluster_count";
+		$hostTagShort = "VM Eagerzeroed Thick (EZT) Provisioned";
+
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LABEL</th><th>EZT VMDK(s)</th><th>CAPACITY</th></tr>\n";
+
+		$table_vm_conf .= $vmeztString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmeztString) = ("","");
 	}
 	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
 		$hostTag = "VM Eagerzeroed Thick (EZT) Provisioned-$cluster_count";
