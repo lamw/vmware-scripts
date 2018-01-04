@@ -67,7 +67,7 @@ add-type @"
         $cluster_view = (Get-Datacenter -Server $destVCConn -Name $datacenter | Get-Cluster -Server $destVCConn -Name $cluster)
         $resource = $cluster_view.ExtensionData.resourcePool
     } else {
-        $rp_view = (Get-Datacenter -Server $destVCConn -Name $dstdatacenter | Get-ResourcePool -Server $destVCConn -Name $resourcepool)
+        $rp_view = (Get-Datacenter -Server $destVCConn -Name $datacenter | Get-ResourcePool -Server $destVCConn -Name $resourcepool)
         $resource = $rp_view.ExtensionData.MoRef
     }
 
@@ -185,6 +185,7 @@ $destVCpassword = "VMware1!"
 $datastorename = "vsanDatastore"
 $datacenter = "Datacenter-SiteB"
 $cluster = "Santa-Barbara"
+$resourcepool = "MyRP" # cluster property not needed if rp is used
 $vmhostname = "vesxi65-4.primp-industries.com"
 $vmnetworkname = "VM Network"
 $foldername = "Discovered virtual machine"
