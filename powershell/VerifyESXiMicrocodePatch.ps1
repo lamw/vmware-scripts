@@ -133,11 +133,11 @@ Function Verify-ESXiMicrocodePatch {
 
         $cpuFeatures = $vmhost.Config.FeatureCapability
         foreach ($cpuFeature in $cpuFeatures) {
-            if($cpuFeature.key -eq "cpuid.IBRS") {
+            if($cpuFeature.key -eq "cpuid.IBRS" -and $cpuFeature.value -eq 1) {
                 $IBRSPass = $true
-            } elseif($cpuFeature.key -eq "cpuid.IBPB") {
+            } elseif($cpuFeature.key -eq "cpuid.IBPB" -and $cpuFeature.value -eq 1) {
                 $IBPBPass = $true
-            } elseif($cpuFeature.key -eq "cpuid.STIBP") {
+            } elseif($cpuFeature.key -eq "cpuid.STIBP" -and $cpuFeature.value -eq 1) {
                 $STIBPPass = $true
             }
         }
