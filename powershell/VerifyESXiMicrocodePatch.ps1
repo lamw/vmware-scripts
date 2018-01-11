@@ -138,7 +138,7 @@ Function Verify-ESXiMicrocodePatch {
             } elseif($cpuFeature.key -eq "cpuid.IBPB") {
                 $IBPBPass = $true
             } elseif($cpuFeature.key -eq "cpuid.STIBP") {
-                $STIBPass = $true
+                $STIBPPass = $true
             }
         }
 
@@ -151,7 +151,7 @@ Function Verify-ESXiMicrocodePatch {
             VMHost = $vmhostDisplayName;
             IBRPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
-            STIBPresent = $STIBPass;
+            STIBPresent = $STIBPPass;
             Affected = $vmhostAffected;
         }
         $results+=$tmp
