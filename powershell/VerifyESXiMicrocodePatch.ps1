@@ -29,56 +29,59 @@ Function Verify-ESXiMicrocodePatchAndVM {
 
     if($ClusterName) {
         $cluster = Get-View -ViewType ClusterComputeResource -Property Name,ResourcePool -Filter @{"name"=$ClusterName}
-        $vms = Get-View ((Get-View $cluster.ResourcePool).VM)
+        $vms = Get-View ((Get-View $cluster.ResourcePool).VM) -Property Name,Config.Version,Runtime.PowerState,Runtime.FeatureRequirement
     } elseif($VMName) {
-        $vms = Get-View -ViewType VirtualMachine -Property Name,Config.Version,Runtime.FeatureRequirement -Filter @{"name"=$VMName}
+        $vms = Get-View -ViewType VirtualMachine -Property Name,Config.Version,Runtime.PowerState,Runtime.FeatureRequirement -Filter @{"name"=$VMName}
     } else {
-        $vms = Get-View -ViewType VirtualMachine -Property Name,Config.Version,Runtime.FeatureRequirement
+        $vms = Get-View -ViewType VirtualMachine -Property Name,Config.Version,Runtime.PowerState,Runtime.FeatureRequirement
     }
 
     $results = @()
     foreach ($vm in $vms | Sort-Object -Property Name) {
-        $vmDisplayName = $vm.Name
-        $vmvHW = $vm.Config.Version
+        # Only check VMs that are powered on
+        if($vm.Runtime.PowerState -eq "poweredOn") {
+            $vmDisplayName = $vm.Name
+            $vmvHW = $vm.Config.Version
 
-        $vHWPass = $false
-        if($vmvHW -eq "vmx-04" -or $vmvHW -eq "vmx-06" -or $vmvHW -eq "vmx-07" -or $vmvHW -eq "vmx-08") {
-            $vHWPass = "N/A"
-        } elseif($vmvHW -eq "vmx-09" -or $vmvHW -eq "vmx-10" -or $vmvHW -eq "vmx-11" -or $vmvHW -eq "vmx-12" -or $vmvHW -eq "vmx-13") {
-            $vHWPass = $true
-        }
-
-        $IBRSPass = $false
-        $IBPBPass = $false
-        $STIBPPass = $false
-
-        $cpuFeatures = $vm.Runtime.FeatureRequirement
-        foreach ($cpuFeature in $cpuFeatures) {
-            if($cpuFeature.key -eq "cpuid.IBRS") {
-                $IBRSPass = $true
-            } elseif($cpuFeature.key -eq "cpuid.IBPB") {
-                $IBPBPass = $true
-            } elseif($cpuFeature.key -eq "cpuid.STIBP") {
-                $STIBPPass = $true
+            $vHWPass = $false
+            if($vmvHW -eq "vmx-04" -or $vmvHW -eq "vmx-06" -or $vmvHW -eq "vmx-07" -or $vmvHW -eq "vmx-08") {
+                $vHWPass = "N/A"
+            } elseif($vmvHW -eq "vmx-09" -or $vmvHW -eq "vmx-10" -or $vmvHW -eq "vmx-11" -or $vmvHW -eq "vmx-12" -or $vmvHW -eq "vmx-13") {
+                $vHWPass = $true
             }
-        }
 
-        $vmAffected = $true
-        if( ($IBRSPass -eq $true -or $IBPBPass -eq $true -or $STIBPPass -eq $true) -and $vHWPass -eq $true) {
-            $vmAffected = $false
-        } elseif($vHWPass -eq "N/A") {
-            $vmAffected = $vHWPass
-        }
+            $IBRSPass = $false
+            $IBPBPass = $false
+            $STIBPPass = $false
 
-        $tmp = [pscustomobject] @{
-            VM = $vmDisplayName;
-            IBRPresent = $IBRSPass;
-            IBPBPresent = $IBPBPass;
-            STIBPresent = $STIBPPass;
-            vHW = $vmvHW;
-            Affected = $vmAffected;
+            $cpuFeatures = $vm.Runtime.FeatureRequirement
+            foreach ($cpuFeature in $cpuFeatures) {
+                if($cpuFeature.key -eq "cpuid.IBRS") {
+                    $IBRSPass = $true
+                } elseif($cpuFeature.key -eq "cpuid.IBPB") {
+                    $IBPBPass = $true
+                } elseif($cpuFeature.key -eq "cpuid.STIBP") {
+                    $STIBPPass = $true
+                }
+            }
+
+            $vmAffected = $true
+            if( ($IBRSPass -eq $true -or $IBPBPass -eq $true -or $STIBPPass -eq $true) -and $vHWPass -eq $true) {
+                $vmAffected = $false
+            } elseif($vHWPass -eq "N/A") {
+                $vmAffected = $vHWPass
+            }
+
+            $tmp = [pscustomobject] @{
+                VM = $vmDisplayName;
+                IBRPresent = $IBRSPass;
+                IBPBPresent = $IBPBPass;
+                STIBPresent = $STIBPPass;
+                vHW = $vmvHW;
+                Affected = $vmAffected;
+            }
+            $results+=$tmp
         }
-        $results+=$tmp
     }
     $results | ft
 }
@@ -116,7 +119,7 @@ Function Verify-ESXiMicrocodePatch {
 
     if($ClusterName) {
         $cluster = Get-View -ViewType ClusterComputeResource -Property Name,Host -Filter @{"name"=$ClusterName}
-        $vmhosts = Get-View $cluster.Host
+        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability
     } elseif($VMHostName) {
         $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability -Filter @{"name"=$VMHostName}
     } else {
