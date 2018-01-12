@@ -119,12 +119,15 @@ Function Verify-ESXiMicrocodePatch {
 
     if($ClusterName) {
         $cluster = Get-View -ViewType ClusterComputeResource -Property Name,Host -Filter @{"name"=$ClusterName}
-        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability
+        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability,Hardware.CpuFeature
     } elseif($VMHostName) {
-        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability -Filter @{"name"=$VMHostName}
+        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature -Filter @{"name"=$VMHostName}
     } else {
-        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability
+        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature
     }
+
+    #List from https://kb.vmware.com/s/article/52345
+    $intelSightings = @("0x000306C3", "0x000306F2", "0x000306F4", "0x00040671", "0x000406F1", "0x000406F1", "0x00050663")
 
     $results = @()
     foreach ($vmhost in $vmhosts | Sort-Object -Property Name) {
@@ -150,12 +153,34 @@ Function Verify-ESXiMicrocodePatch {
            $vmhostAffected = $false
         }
 
+        #output from $vmhost.Hardware.CpuFeature is a binary string ':' delimited to nibbles
+        #the easiest way I could figure out the hex conversion was to make a byte array
+        $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":","" -Split "(?<=\G\d{8})(?=\d{8})"
+        $cpuSignature = ($cpuidEAX | Foreach-Object {[System.Convert]::ToByte($_, 2)} | Foreach-Object {$_.ToString("X2")}) -Join ""
+        $cpuSignature = "0x" + $cpuSignature
+
+        $cpuFamily = [System.Convert]::ToByte($cpuidEAX[2], 2).ToString("X2")
+        #$cpuModel = [System.Convert]::ToByte($cpuidEAX[3], 2).ToString("X2")
+        #$cpuStepping = [System.Convert]::ToByte($cpuidEAX[1], 2).ToString("X2")
+
+        #no need to check the CPU for IntelSightings if we aren't on Intel
+        if ($cpuFamily -eq "06") {
+            $intelSighting = $false
+            if($intelSightings -contains $cpuSignature) {
+                $intelSighting = $true
+            }
+        }
+        else {
+            $IntelSighting = "n/a"
+        }
+
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
             IBRPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPresent = $STIBPPass;
             Affected = $vmhostAffected;
+            IntelSighting = $intelSighting;
         }
         $results+=$tmp
     }
