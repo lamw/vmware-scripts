@@ -126,6 +126,14 @@ Function Verify-ESXiMicrocodePatch {
         $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability
     }
 
+    #The following CPUs have microcode available (not a complete list)
+    #https://www.bleepingcomputer.com/news/security/intel-releases-linux-cpu-microcodes-to-fix-meltdown-and-spectre-bugs/
+    #https://github.com/hannob/meltdownspectre-patches/blob/master/README.md
+    $updatedCPUs = @("06-4f-01","06-3e-04","06-4e-03","06-3d-04","06-45-01","06-46-01","06-47-01","06-3f-04",
+                     "06-5e-03","06-3c-03","06-3f-02","06-56-02","06-56-03","06-8e-09","06-8e-0a","06-9e-09",
+                     "06-9e-0a","06-9e-0b","06-55-04","06-7a-01"
+                    )
+
     $results = @()
     foreach ($vmhost in $vmhosts | Sort-Object -Property Name) {
         $vmhostDisplayName = $vmhost.Name
@@ -150,12 +158,24 @@ Function Verify-ESXiMicrocodePatch {
            $vmhostAffected = $false
         }
 
+        $esxcli = Get-EsxCli -VMHost $vmhost.Name -V2
+        $cpuFamily = "{0:x2}" -f [int]$esxcli.hardware.cpu.list.Invoke()[0].Family
+		$cpuModel = "{0:x2}" -f [int]$esxcli.hardware.cpu.list.Invoke()[0].Model
+        $cpuStepping = "{0:x2}" -f [int]$esxcli.hardware.cpu.list.Invoke()[0].Stepping
+        $cpuIdentifier = "$($cpuFamily)-$($cpuModel)-$($cpuStepping)"
+
+        $microcodeAvailable = $false
+        if($updatedCPUs -contains $cpuIdentifier) {
+            $microcodeAvailable = $true
+        }
+
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
             IBRPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPresent = $STIBPPass;
             Affected = $vmhostAffected;
+            MicrocodeAvailable = $microcodeAvailable
         }
         $results+=$tmp
     }
