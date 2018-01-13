@@ -169,10 +169,10 @@ Function Verify-ESXiMicrocodePatch {
             $intelSighting = $false
             if($intelSightings -contains $cpuSignature) {
                 if ($vmhostAffected -eq $true) {
-                    $intelSighting = $true
+                    $intelSighting = "AffectedOncePatched"
                 }
                 else {
-                    $intelSighting = "AffectedOncePatched"
+                    $intelSighting = $true
                 }
             }
         }
