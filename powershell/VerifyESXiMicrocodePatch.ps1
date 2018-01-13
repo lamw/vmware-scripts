@@ -168,7 +168,12 @@ Function Verify-ESXiMicrocodePatch {
         if ($cpuFamily -eq "06") {
             $intelSighting = $false
             if($intelSightings -contains $cpuSignature) {
-                $intelSighting = $true
+                if ($vmhostAffected -eq $true) {
+                    $intelSighting = $true
+                }
+                else {
+                    $intelSighting = "AffectedOncePatched"
+                }
             }
         }
         else {
