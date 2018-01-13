@@ -119,11 +119,11 @@ Function Verify-ESXiMicrocodePatch {
 
     if($ClusterName) {
         $cluster = Get-View -ViewType ClusterComputeResource -Property Name,Host -Filter @{"name"=$ClusterName}
-        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability,Hardware.CpuFeature
+        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware
     } elseif($VMHostName) {
-        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature -Filter @{"name"=$VMHostName}
+        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware -Filter @{"name"=$VMHostName}
     } else {
-        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature
+        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware
     }
 
     #List from https://kb.vmware.com/s/article/52345
@@ -132,6 +132,7 @@ Function Verify-ESXiMicrocodePatch {
     $results = @()
     foreach ($vmhost in $vmhosts | Sort-Object -Property Name) {
         $vmhostDisplayName = $vmhost.Name
+        $cpuModel = $vmhost.Summary.Hardware.CpuModel
 
         $IBRSPass = $false
         $IBPBPass = $false
@@ -176,6 +177,7 @@ Function Verify-ESXiMicrocodePatch {
 
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
+            CPU = $cpuModel;
             IBRPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPresent = $STIBPPass;
