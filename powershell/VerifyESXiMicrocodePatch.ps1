@@ -78,7 +78,7 @@ Function Verify-ESXiMicrocodePatchAndVM {
                 IBPBPresent = $IBPBPass;
                 STIBPresent = $STIBPPass;
                 vHW = $vmvHW;
-                Affected = $vmAffected;
+                HypervisorAssistedGuestAffected = $vmAffected;
             }
             $results+=$tmp
         }
@@ -186,7 +186,7 @@ Function Verify-ESXiMicrocodePatch {
             IBRPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPresent = $STIBPPass;
-            Affected = $vmhostAffected;
+            HypervisorAssistedGuestAffected = $vmhostAffected;
             IntelSighting = $intelSighting;
         }
         $results+=$tmp
