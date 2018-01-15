@@ -74,9 +74,9 @@ Function Verify-ESXiMicrocodePatchAndVM {
 
             $tmp = [pscustomobject] @{
                 VM = $vmDisplayName;
-                IBRPresent = $IBRSPass;
+                IBRSPresent = $IBRSPass;
                 IBPBPresent = $IBPBPass;
-                STIBPresent = $STIBPPass;
+                STIBPPresent = $STIBPPass;
                 vHW = $vmvHW;
                 HypervisorAssistedGuestAffected = $vmAffected;
             }
@@ -183,9 +183,9 @@ Function Verify-ESXiMicrocodePatch {
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
             CPU = $cpuModel;
-            IBRPresent = $IBRSPass;
+            IBRSPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
-            STIBPresent = $STIBPPass;
+            STIBPPresent = $STIBPPass;
             HypervisorAssistedGuestAffected = $vmhostAffected;
             IntelSighting = $intelSighting;
         }
