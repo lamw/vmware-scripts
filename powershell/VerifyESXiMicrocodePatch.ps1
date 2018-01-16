@@ -111,23 +111,37 @@ Function Verify-ESXiMicrocodePatch {
         Verify-ESXiMicrocodePatch -ClusterName cluster-01
     .EXAMPLE
         Verify-ESXiMicrocodePatch -VMHostName esxi-01
+    .EXAMPLE
+        Verify-ESXiMicrocodePatch -ClusterName "Virtual SAN Cluster" -IncludeMicrocodeVerCheck $true -PlinkPath "C:\Users\lamw\Desktop\plink.exe" -ESXiUsername "root" -ESXiPassword "foobar"
 #>
     param(
         [Parameter(Mandatory=$false)][String]$VMHostName,
-        [Parameter(Mandatory=$false)][String]$ClusterName
+        [Parameter(Mandatory=$false)][String]$ClusterName,
+        [Parameter(Mandatory=$false)][Boolean]$IncludeMicrocodeVerCheck=$false,
+        [Parameter(Mandatory=$false)][String]$PlinkPath,
+        [Parameter(Mandatory=$false)][String]$ESXiUsername,
+        [Parameter(Mandatory=$false)][String]$ESXiPassword
     )
 
     if($ClusterName) {
         $cluster = Get-View -ViewType ClusterComputeResource -Property Name,Host -Filter @{"name"=$ClusterName}
-        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware
+        $vmhosts = Get-View $cluster.Host -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware,ConfigManager.ServiceSystem
     } elseif($VMHostName) {
-        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware -Filter @{"name"=$VMHostName}
+        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware,ConfigManager.ServiceSystem -Filter @{"name"=$VMHostName}
     } else {
-        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware
+        $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware,ConfigManager.ServiceSystem
     }
 
     #List from https://kb.vmware.com/s/article/52345
     $intelSightings = @("0x000306C3", "0x000306F2", "0x000306F4", "0x00040671", "0x000406F1", "0x000406F1", "0x00050663")
+
+    #List of blacklisted Microcode containing Intel Sighting issue from https://kb.vmware.com/s/article/52345
+    $intelSightingsMicrocodeVersion = @("0x00000023", "0x00000023", "0x0000003B", "0x0000001B", "0x0B000025", "0x07000011")
+
+    # Remote SSH commands for retrieving current ESXi host microcode version
+    $plinkoptions = "-ssh -pw $ESXiPassword"
+    $cmd = "vsish -e cat /hardware/cpu/cpuList/0 | grep `'Current Revision:`'"
+    $remoteCommand = '"' + $cmd + '"'
 
     $results = @()
     foreach ($vmhost in $vmhosts | Sort-Object -Property Name) {
@@ -154,6 +168,29 @@ Function Verify-ESXiMicrocodePatch {
            $vmhostAffected = $false
         }
 
+        # Retrieve Microcode version if user specifies which unfortunately requires SSH access
+        if($IncludeMicrocodeVerCheck -and $PlinkPath -ne $null -and $ESXiUsername -ne $null -and $ESXiPassword -ne $null) {
+            $serviceSystem = Get-View $vmhost.ConfigManager.ServiceSystem
+            $services = $serviceSystem.ServiceInfo.Service
+            foreach ($service in $services) {
+                if($service.Key -eq "TSM-SSH") {
+                    $ssh = $service
+                    break
+                }
+            }
+
+            $command = "echo yes | " + $PlinkPath + " " + $plinkoptions + " " + $ESXiUsername + "@" + $vmhost.Name + " " + $remoteCommand
+
+            if($ssh.Running){
+                $plinkResults = Invoke-Expression -command $command
+                $microcodeVersion = $plinkResults.split(":")[1]
+            } else {
+                $microcodeVersion = "SSHNeedsToBeEnabled"
+            }
+        } else {
+            $microcodeVersion = "N/A"
+        }
+
         #output from $vmhost.Hardware.CpuFeature is a binary string ':' delimited to nibbles
         #the easiest way I could figure out the hex conversion was to make a byte array
         $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":","" -Split "(?<=\G\d{8})(?=\d{8})"
@@ -167,12 +204,25 @@ Function Verify-ESXiMicrocodePatch {
         #no need to check the CPU for IntelSightings if we aren't on Intel
         if ($cpuFamily -eq "06") {
             $intelSighting = $false
-            if($intelSightings -contains $cpuSignature) {
-                if ($vmhostAffected -eq $true) {
-                    $intelSighting = "AffectedOncePatched"
+
+            # More robust validaion as we're checing BOTH CPU type + affected microcode version as outlined in the KB
+            if($IncludeMicrocodeVerCheck) {
+                if( ($intelSightings -contains $cpuSignature) -and ($intelSightingsMicrocodeVersion -contains $microcodeVersion)) {
+                    if ($vmhostAffected -eq $true) {
+                        $intelSighting = "AffectedOncePatched"
+                    }
+                    else {
+                        $intelSighting = $true
+                    }
                 }
-                else {
-                    $intelSighting = $true
+            } else {
+                if( $intelSightings -contains $cpuSignature) {
+                    if ($vmhostAffected -eq $true) {
+                        $intelSighting = "AffectedOncePatched"
+                    }
+                    else {
+                        $intelSighting = $true
+                    }
                 }
             }
         }
@@ -183,6 +233,7 @@ Function Verify-ESXiMicrocodePatch {
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
             CPU = $cpuModel;
+            Microcode = $microcodeVersion;
             IBRSPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPPresent = $STIBPPass;
@@ -191,5 +242,5 @@ Function Verify-ESXiMicrocodePatch {
         }
         $results+=$tmp
     }
-    $results | ft
+    $results | FT
 }
