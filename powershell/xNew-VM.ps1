@@ -25,6 +25,7 @@
         - get items for credential for ServiceLocatorNamePassword from destination vCenter connection object (Client.Config)
         Ideas for other updates:
         - add support for specifying destination datastorecluster
+        - add support for cloning template
     #>
 
     param(
