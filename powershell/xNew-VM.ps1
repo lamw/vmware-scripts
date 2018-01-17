@@ -1,10 +1,14 @@
-# Function New-xVM {
-    <#
-        .SYNOPSIS Perform a Cross vCenter Clone Operation across two different vCenter Servers which can either be part of the same or different SSO Domain
-        .NOTES  Author:  William Lam
-        .NOTES  Site:    www.virtuallyghetto.com
-        .REFERENCE Blog: http://www.virtuallyghetto.com/2018/01/cross-vcenter-clone-with-vsphere-6-0.html
+    <#  .Description
+        Perform a Cross vCenter Clone Operation across two different vCenter Servers which can either be part of the same or different SSO Domain
+
+        .SYNOPSIS
+        Cross vCenter Clone Operation across two different vCenter Servers
+
+
         .NOTES
+        Author:  William Lam
+        Site:    www.virtuallyghetto.com
+        Reference:  Blog: http://www.virtuallyghetto.com/2018/01/cross-vcenter-clone-with-vsphere-6-0.html
         Updates added Jan 2018 by Matt Boren:
         - use approved verb for function name
         - add -TrustAllCert Switch parameter to give user option as to whether they want to disable SSL certificate checking, instead of disabling checking regardless
@@ -18,6 +22,9 @@
         - remove unnecessary -Cluster parameter, since -VMHost is mandatory for clone to different vCenter
         - improve snapshot selection (limit scope to source VM, instead of "get snapshot by name in all of source vC", which may return multiple snapshots)
         - improve new object creation for use in CloneVM task (creation of fewer additional interim variables)
+        - get items for credential for ServiceLocatorNamePassword from destination vCenter connection object (Client.Config)
+        Ideas for other updates:
+        - add support for specifying destination datastorecluster
     #>
 
     param(
@@ -26,13 +33,13 @@
         [String]$sourcevmname,  ## Make SourceVM, take object from pipeline, get "source VC from this"
         [String]$destvmname,
         [String]$switchtype,
-        [String]$datacenter,
+        #[String]$datacenter,  DETERMINE FROM VMHost
         #[String]$cluster,  DETERMINE FROM VMHost
-        [String]$resourcepool,
-        [String]$datastore, ## add support for datastorecluster object?
+        [String]$resourcepool,  ## if not specified, get the resource pool of the cluster
+        [String]$datastore,
         [parameter(Mandatory=$true)][String]$vmhost,
         [String]$vmnetworks,
-        [String]$foldername,
+        [String]$foldername, ## default to "Discovered virtual machine" or "vm"
         [String]$snapshotname, ## get from VM below, instead of just by name in whole vCenter
         [Boolean]$poweron,
         [Boolean]$uppercaseuuid,
@@ -71,6 +78,7 @@
         $endpoint_request = [System.Net.Webrequest]::Create("$vcurl")
         # Get Thumbprint + add colons for a valid Thumbprint
         $destVCThumbprint = ($endpoint_request.ServicePoint.Certificate.GetCertHashString()) -replace '(..(?!$))','$1:'
+
         # Source VM to clone from
         $vm_view = Get-View (Get-VM -Server $sourcevc -Name $sourcevmname) -Property Config.Hardware.Device
 
