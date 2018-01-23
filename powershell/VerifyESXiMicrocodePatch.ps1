@@ -133,10 +133,10 @@ Function Verify-ESXiMicrocodePatch {
     }
 
     #List from https://kb.vmware.com/s/article/52345
-    $intelSightings = @("0x000306C3", "0x000306F2", "0x000306F4", "0x00040671", "0x000406F1", "0x000406F1", "0x00050663")
+    $intelSightings = @("0x000306C3", "0x000306E4", "0x000306F2", "0x000306F4", "0x00040671", "0x000406F1", "0x00050654", "0x00050663", "0x000506E3", "0x000906E9")
 
     #List of blacklisted Microcode containing Intel Sighting issue from https://kb.vmware.com/s/article/52345
-    $intelSightingsMicrocodeVersion = @("0x00000023", "0x00000023", "0x0000003B", "0x0000001B", "0x0B000025", "0x07000011")
+    $intelSightingsMicrocodeVersion = @("0x00000023", "0x0000042A", "0x0000003B", "0x00000010", "0x0000001B", "0x0B000025", "0x0200003A", "0x07000011", "0x000000C2", "0x0000007C")
 
     # Remote SSH commands for retrieving current ESXi host microcode version
     $plinkoptions = "-ssh -pw $ESXiPassword"
