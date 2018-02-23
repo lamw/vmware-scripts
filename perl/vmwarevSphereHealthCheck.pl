@@ -1403,7 +1403,7 @@ sub printVMSummary {
 							my $vm_disk_free = prettyPrintData($disk->freeSpace,'B');
 							my $vm_disk_cap = prettyPrintData($disk->capacity,'B');
 							my ($vm_perc_free, $perc_string) = ();
-							# If the disk is not mounted by the VM, it will return a zero size and capacity, leading to divide by zero.
+							# If the disk is not mounted by the VM, it will show a zero capacity, leading to divide by zero crash when calculating the percent free.
 							if ($disk->capacity != 0) {
 								$vm_perc_free = &restrict_num_decimal_digits((($disk->freeSpace / $disk->capacity) * 100),2);
 								$perc_string = getColor($vm_perc_free);
