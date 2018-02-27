@@ -6,7 +6,7 @@
 #>
 
 # Path to vRNI OVAs
-﻿$vRNIPlatformOVA = "C:\Users\primp\Desktop\VMWare-vRealize-Networking-insight-3.2.0.1480511973-platform.ova"
+$vRNIPlatformOVA = "C:\Users\primp\Desktop\VMWare-vRealize-Networking-insight-3.2.0.1480511973-platform.ova"
 $vRNIProxyOVA = "C:\Users\primp\Desktop\VMWare-vRealize-Networking-insight-3.2.0.1480511973-proxy.ova"
 
 # vRNI License Key
@@ -33,6 +33,7 @@ $NTPServer = "172.30.0.100"
 $VMCluster = "Primp-Cluster"
 $VMDatastore = "himalaya-local-SATA-re4gp4T:storage"
 $VMNetwork = "access333"
+$vmhost = "10.197.4.207"
 
 ### DO NOT EDIT BEYOND HERE ###
 
@@ -55,13 +56,12 @@ $json = $hash | ConvertTo-Json
 
 $location = Get-Cluster $VMCluster
 $datastore = Get-Datastore -Name $VMDatastore
-$vmhost = Get-VMHost
-$network = Get-VirtualPortGroup -Name $VMNetwork -VMHost $vmhost[0]
+$network = Get-VirtualPortGroup -Name $VMNetwork -VMHost $vmhost
 $vRNIPlatformOVFConfig = Get-OvfConfiguration $vRNIPlatformOVA
 $vRNIProxyOVFConfig = Get-OvfConfiguration $vRNIProxyOVA
 
 $vRNIPlatformOVFConfig.DeploymentOption.Value = $DeploymentSize
-$vRNIPlatformOVFConfig.NetworkMapping.Vlan256_corp_2.Value = $VMNetwork
+$vRNIPlatformOVFConfig.NetworkMapping.VM_Network.Value = $VMNetwork
 $vRNIPlatformOVFConfig.Common.IP_Address.Value = $vRNIPlatformIPAddress
 $vRNIPlatformOVFConfig.Common.Netmask.Value = $vRNIPlatformNetmask
 $vRNIPlatformOVFConfig.Common.Default_Gateway.Value = $vRNIPlatformGateway
@@ -70,7 +70,7 @@ $vRNIPlatformOVFConfig.Common.Domain_Search.Value = $DNSDomain
 $vRNIPlatformOVFConfig.Common.NTP.Value = $NTPServer
 
 $vRNIProxyOVFConfig.DeploymentOption.Value = $DeploymentSize
-$vRNIProxyOVFConfig.NetworkMapping.Vlan256_corp_2.Value = $VMNetwork
+$vRNIProxyOVFConfig.NetworkMapping.VM_Network.Value = $VMNetwork
 $vRNIProxyOVFConfig.Common.IP_Address.Value = $vRNIProxyIPAddress
 $vRNIProxyOVFConfig.Common.Netmask.Value = $vRNIProxyNetmask
 $vRNIProxyOVFConfig.Common.Default_Gateway.Value = $vRNIProxyGateway
@@ -84,6 +84,8 @@ $vRNIPlatformVM = Import-VApp -OvfConfiguration $vRNIPlatformOVFConfig -Source $
 My-Logger "Starting vRNI Platform VM ..."
 Start-VM -VM $vRNIPlatformVM -Confirm:$false | Out-Null
 
+My-Logger "Waiting for 600 seconds for services on platform to come up ..."
+sleep 600
 My-Logger "Checking to see if vRNI Platform VM is ready ..."
 while(1) {
     try {
