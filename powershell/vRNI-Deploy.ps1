@@ -56,6 +56,9 @@ $json = $hash | ConvertTo-Json
 
 $location = Get-Cluster $VMCluster
 $datastore = Get-Datastore -Name $VMDatastore
+# Removed Get-VMHost and moved it to vRNI Deployment Settings so that user can provide even the Host
+#$vmhost = Get-VMHost
+#$network = Get-VirtualPortGroup -Name $VMNetwork -VMHost $vmhost[0]
 $network = Get-VirtualPortGroup -Name $VMNetwork -VMHost $vmhost
 $vRNIPlatformOVFConfig = Get-OvfConfiguration $vRNIPlatformOVA
 $vRNIProxyOVFConfig = Get-OvfConfiguration $vRNIProxyOVA
