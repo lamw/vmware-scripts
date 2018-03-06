@@ -33,7 +33,7 @@ $NTPServer = "172.30.0.100"
 $VMCluster = "Primp-Cluster"
 $VMDatastore = "himalaya-local-SATA-re4gp4T:storage"
 $VMNetwork = "access333"
-$vmhost = "10.197.4.207"  #User can update the Host IP for on which VMs need to be deployed.
+$vmhost = "10.197.4.207"  #Host IP on which VMs need to be deployed.
 
 ### DO NOT EDIT BEYOND HERE ###
 
