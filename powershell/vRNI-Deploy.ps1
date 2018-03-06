@@ -1,5 +1,5 @@
 <#
-.SYNOPSIS Script to deploy vRealize Network Insight (vRNI) 3.2 Platform + Proxy VM
+.SYNOPSIS Script to deploy vRealize Network Insight (vRNI) 3.7 Platform + Proxy VM
 .NOTES  Author:  William Lam
 .NOTES  Site:    www.virtuallyghetto.com
 .NOTES  Reference: http://www.virtuallyghetto.com/2016/12/automated-deployment-and-setup-of-vrealize-network-insight-vrni.html
