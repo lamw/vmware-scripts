@@ -193,16 +193,23 @@ Function Verify-ESXiMicrocodePatch {
 
         #output from $vmhost.Hardware.CpuFeature is a binary string ':' delimited to nibbles
         #the easiest way I could figure out the hex conversion was to make a byte array
-        $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":","" -Split "(?<=\G\d{8})(?=\d{8})"
-        $cpuSignature = ($cpuidEAX | Foreach-Object {[System.Convert]::ToByte($_, 2)} | Foreach-Object {$_.ToString("X2")}) -Join ""
-        $cpuSignature = "0x" + $cpuSignature
+        $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":",""
+        $cpuidEAXbyte = $cpuidEAX -Split "(?<=\G\d{8})(?=\d{8})"
+        $cpuidEAXnible = $cpuidEAX -Split "(?<=\G\d{4})(?=\d{4})"
 
-        $cpuFamily = [System.Convert]::ToByte($cpuidEAX[2], 2).ToString("X2")
-        #$cpuModel = [System.Convert]::ToByte($cpuidEAX[3], 2).ToString("X2")
-        #$cpuStepping = [System.Convert]::ToByte($cpuidEAX[1], 2).ToString("X2")
+        $cpuSignature = "0x" + $(($cpuidEAXbyte | Foreach-Object {[System.Convert]::ToByte($_, 2)} | Foreach-Object {$_.ToString("X2")}) -Join "")
+
+        # https://software.intel.com/en-us/articles/intel-architecture-and-processor-identification-with-cpuid-model-and-family-numbers
+        $ExtendedFamily = [System.Convert]::ToInt32($($cpuidEAXnible[1] + $cpuidEAXnible[2]), 2)
+        $Family = [System.Convert]::ToInt32($cpuidEAXnible[5], 2)
+
+        # output now in decimal, not hex!
+        $cpuFamily = $ExtendedFamily + $Family
+        $cpuModel = [System.Convert]::ToByte($($cpuidEAXnible[3] + $cpuidEAXnible[6]), 2)
+        $cpuStepping = [System.Convert]::ToByte($cpuidEAXnible[7], 2)
 
         #no need to check the CPU for IntelSightings if we aren't on Intel
-        if ($cpuFamily -eq "06") {
+        if ($cpuFamily -eq "6") {
             $intelSighting = $false
 
             # More robust validaion as we're checing BOTH CPU type + affected microcode version as outlined in the KB
