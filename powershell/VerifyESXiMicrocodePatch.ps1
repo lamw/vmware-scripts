@@ -146,7 +146,7 @@ Function Verify-ESXiMicrocodePatch {
     $results = @()
     foreach ($vmhost in $vmhosts | Sort-Object -Property Name) {
         $vmhostDisplayName = $vmhost.Name
-        $cpuModel = $vmhost.Summary.Hardware.CpuModel
+        $cpuModelName = $($vmhost.Summary.Hardware.CpuModel -replace '\s+', ' ')
 
         $IBRSPass = $false
         $IBPBPass = $false
@@ -195,18 +195,18 @@ Function Verify-ESXiMicrocodePatch {
         #the easiest way I could figure out the hex conversion was to make a byte array
         $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":",""
         $cpuidEAXbyte = $cpuidEAX -Split "(?<=\G\d{8})(?=\d{8})"
-        $cpuidEAXnible = $cpuidEAX -Split "(?<=\G\d{4})(?=\d{4})"
+        $cpuidEAXnibble = $cpuidEAX -Split "(?<=\G\d{4})(?=\d{4})"
 
         $cpuSignature = "0x" + $(($cpuidEAXbyte | Foreach-Object {[System.Convert]::ToByte($_, 2)} | Foreach-Object {$_.ToString("X2")}) -Join "")
 
         # https://software.intel.com/en-us/articles/intel-architecture-and-processor-identification-with-cpuid-model-and-family-numbers
-        $ExtendedFamily = [System.Convert]::ToInt32($($cpuidEAXnible[1] + $cpuidEAXnible[2]), 2)
-        $Family = [System.Convert]::ToInt32($cpuidEAXnible[5], 2)
+        $ExtendedFamily = [System.Convert]::ToInt32($($cpuidEAXnibble[1] + $cpuidEAXnibble[2]), 2)
+        $Family = [System.Convert]::ToInt32($cpuidEAXnibble[5], 2)
 
         # output now in decimal, not hex!
         $cpuFamily = $ExtendedFamily + $Family
-        $cpuModel = [System.Convert]::ToByte($($cpuidEAXnible[3] + $cpuidEAXnible[6]), 2)
-        $cpuStepping = [System.Convert]::ToByte($cpuidEAXnible[7], 2)
+        $cpuModel = [System.Convert]::ToByte($($cpuidEAXnibble[3] + $cpuidEAXnibble[6]), 2)
+        $cpuStepping = [System.Convert]::ToByte($cpuidEAXnibble[7], 2)
 
         #no need to check the CPU for IntelSightings if we aren't on Intel
         if ($cpuFamily -eq "6") {
@@ -239,7 +239,10 @@ Function Verify-ESXiMicrocodePatch {
 
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
-            CPU = $cpuModel;
+            "CPU Model Name" = $cpuModelName;
+            Family = $cpuFamily;
+            Model = $cpuModel;
+            Stepping = $cpuStepping;
             Microcode = $microcodeVersion;
             IBRSPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
