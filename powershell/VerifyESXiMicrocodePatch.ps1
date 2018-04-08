@@ -132,11 +132,27 @@ Function Verify-ESXiMicrocodePatch {
         $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware,ConfigManager.ServiceSystem
     }
 
-    #List from https://kb.vmware.com/s/article/52345
-    $intelSightings = @("0x000306C3", "0x000306E4", "0x000306F2", "0x000306F4", "0x00040671", "0x000406F1", "0x00050654", "0x00050663", "0x000506E3", "0x000906E9")
-
-    #List of blacklisted Microcode containing Intel Sighting issue from https://kb.vmware.com/s/article/52345
-    $intelSightingsMicrocodeVersion = @("0x00000023", "0x0000042A", "0x0000003B", "0x00000010", "0x0000001B", "0x0B000025", "0x0200003A", "0x07000011", "0x000000C2", "0x0000007C")
+    # Merge of tables from https://kb.vmware.com/s/article/52345 and https://kb.vmware.com/s/article/52085
+    $procSigUcodeTable = @(
+	    [PSCustomObject]@{Name = "Sandy Bridge DT";  procSig = "0x000206a7"; ucodeRevFixed = "0x0000002d"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Sandy Bridge EP";  procSig = "0x000206d7"; ucodeRevFixed = "0x00000713"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Ivy Bridge DT";  procSig = "0x000306a9"; ucodeRevFixed = "0x0000001f"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Ivy Bridge EP";  procSig = "0x000306e4"; ucodeRevFixed = "0x0000042c"; ucodeRevSightings = "0x0000042a"}
+	    [PSCustomObject]@{Name = "Ivy Bridge EX";  procSig = "0x000306e7"; ucodeRevFixed = "0x00000713"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Haswell DT";  procSig = "0x000306c3"; ucodeRevFixed = "0x00000024"; ucodeRevSightings = "0x00000023"}
+	    [PSCustomObject]@{Name = "Haswell EP";  procSig = "0x000306f2"; ucodeRevFixed = "0x0000003c"; ucodeRevSightings = "0x0000003b"}
+	    [PSCustomObject]@{Name = "Haswell EX";  procSig = "0x000306f4"; ucodeRevFixed = "0x00000011"; ucodeRevSightings = "0x00000010"}
+	    [PSCustomObject]@{Name = "Broadwell H";  procSig = "0x00040671"; ucodeRevFixed = "0x0000001d"; ucodeRevSightings = "0x0000001b"}
+	    [PSCustomObject]@{Name = "Broadwell EP/EX";  procSig = "0x000406f1"; ucodeRevFixed = "0x0b00002a"; ucodeRevSightings = "0x0b000025"}
+	    [PSCustomObject]@{Name = "Broadwell DE";  procSig = "0x00050662"; ucodeRevFixed = "0x00000015"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Broadwell DE";  procSig = "0x00050663"; ucodeRevFixed = "0x07000012"; ucodeRevSightings = "0x07000011"}
+	    [PSCustomObject]@{Name = "Broadwell DE";  procSig = "0x00050664"; ucodeRevFixed = "0x0f000011"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Broadwell NS";  procSig = "0x00050665"; ucodeRevFixed = "0x0e000009"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Skylake H/S";  procSig = "0x000506e3"; ucodeRevFixed = "0x000000c2"; ucodeRevSightings = ""} # wasn't actually affected by Sightings, ucode just re-released
+	    [PSCustomObject]@{Name = "Skylake SP";  procSig = "0x00050654"; ucodeRevFixed = "0x02000043"; ucodeRevSightings = "0x0200003A"}
+	    [PSCustomObject]@{Name = "Kaby Lake H/S/X";  procSig = "0x000906e9"; ucodeRevFixed = "0x00000084"; ucodeRevSightings = "0x0000007C"}
+	    [PSCustomObject]@{Name = "Zen EPYC";  procSig = "0x00800f12"; ucodeRevFixed = "0x08001227"; ucodeRevSightings = ""}
+    )
 
     # Remote SSH commands for retrieving current ESXi host microcode version
     $plinkoptions = "-ssh -pw $ESXiPassword"
@@ -208,33 +224,18 @@ Function Verify-ESXiMicrocodePatch {
         $cpuModel = [System.Convert]::ToByte($($cpuidEAXnibble[3] + $cpuidEAXnibble[6]), 2)
         $cpuStepping = [System.Convert]::ToByte($cpuidEAXnibble[7], 2)
 
-        #no need to check the CPU for IntelSightings if we aren't on Intel
-        if ($cpuFamily -eq "6") {
-            $intelSighting = $false
+        # check and compare ucode 
+        $intelSighting = $false
+        $goodUcode = $false
 
-            # More robust validaion as we're checing BOTH CPU type + affected microcode version as outlined in the KB
-            if($IncludeMicrocodeVerCheck) {
-                if( ($intelSightings -contains $cpuSignature) -and ($intelSightingsMicrocodeVersion -contains $microcodeVersion)) {
-                    if ($vmhostAffected -eq $true) {
-                        $intelSighting = "AffectedOncePatched"
-                    }
-                    else {
-                        $intelSighting = $true
-                    }
-                }
-            } else {
-                if( $intelSightings -contains $cpuSignature) {
-                    if ($vmhostAffected -eq $true) {
-                        $intelSighting = "AffectedOncePatched"
-                    }
-                    else {
-                        $intelSighting = $true
-                    }
+        foreach ($cpu in $procSigUcodeTable) {
+            if ($cpuSignature -eq $cpu.procSig) {
+                if ($microcodeVersion -eq $cpu.ucodeRevSightings) {
+                    $intelSighting = $true
+                } elseif ($microcodeVersion -as [int] -ge $cpu.ucodeRevFixed -as [int]) {
+                    $goodUcode = $true
                 }
             }
-        }
-        else {
-            $IntelSighting = "n/a"
         }
 
         $tmp = [pscustomobject] @{
@@ -244,13 +245,15 @@ Function Verify-ESXiMicrocodePatch {
             Model = $cpuModel;
             Stepping = $cpuStepping;
             Microcode = $microcodeVersion;
+            procSig = $cpuSignature;
             IBRSPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPPresent = $STIBPPass;
             HypervisorAssistedGuestAffected = $vmhostAffected;
+            "Good Microcode" = $goodUcode;
             IntelSighting = $intelSighting;
         }
         $results+=$tmp
     }
-    $results | FT
+    $results | FT *
 }
