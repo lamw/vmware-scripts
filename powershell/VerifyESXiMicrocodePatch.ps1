@@ -98,7 +98,7 @@ Function Verify-ESXiMicrocodePatch {
     .DESCRIPTION
         This function helps verify only the ESXi Microcode update has been
         applied as stated per https://kb.vmware.com/s/article/52085
-        
+
         This script can return all ESXi hosts or you can specify
         a vSphere Cluster to limit the scope or an individual ESXi host
     .PARAMETER VMHostName
