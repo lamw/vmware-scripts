@@ -10,7 +10,7 @@ Function Verify-ESXiMicrocodePatchAndVM {
     .DESCRIPTION
         This function helps verify both ESXi Patch and Microcode updates have been
         applied as stated per https://kb.vmware.com/s/article/52085
-        
+
         This script can return all VMs or you can specify
         a vSphere Cluster to limit the scope or an individual VM
     .PARAMETER VMName
