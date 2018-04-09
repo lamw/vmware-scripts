@@ -223,17 +223,27 @@ Function Verify-ESXiMicrocodePatch {
         $cpuFamily = $ExtendedFamily + $Family
         $cpuModel = [System.Convert]::ToByte($($cpuidEAXnibble[3] + $cpuidEAXnibble[6]), 2)
         $cpuStepping = [System.Convert]::ToByte($cpuidEAXnibble[7], 2)
+               
+        
+        $intelSighting = "N/A"
+        $goodUcode = "N/A"
 
-        # check and compare ucode 
-        $intelSighting = $false
-        $goodUcode = $false
+        # check and compare ucode
+        if ($IncludeMicrocodeVerCheck) {
+         
+            $intelSighting = $false
+            $goodUcode = $false
 
-        foreach ($cpu in $procSigUcodeTable) {
-            if ($cpuSignature -eq $cpu.procSig) {
-                if ($microcodeVersion -eq $cpu.ucodeRevSightings) {
-                    $intelSighting = $true
-                } elseif ($microcodeVersion -as [int] -ge $cpu.ucodeRevFixed -as [int]) {
-                    $goodUcode = $true
+            foreach ($cpu in $procSigUcodeTable) {
+                if ($cpuSignature -eq $cpu.procSig) {
+                    if ($microcodeVersion -eq $cpu.ucodeRevSightings) {
+                        $intelSighting = $true
+                    } elseif ($microcodeVersion -as [int] -ge $cpu.ucodeRevFixed -as [int]) {
+                        $goodUcode = $true
+                    }
+                } else {
+                    # CPU is not in procSigUcodeTable, check with BIOS vendor / Intel based procSig or FMS (dec) in output
+                    $goodUcode = "Unknown"
                 }
             }
         }
