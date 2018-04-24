@@ -233,18 +233,21 @@ Function Verify-ESXiMicrocodePatch {
          
             $intelSighting = $false
             $goodUcode = $false
+            $matched = $false
 
             foreach ($cpu in $procSigUcodeTable) {
                 if ($cpuSignature -eq $cpu.procSig) {
+                    $matched = $true
                     if ($microcodeVersion -eq $cpu.ucodeRevSightings) {
                         $intelSighting = $true
                     } elseif ($microcodeVersion -as [int] -ge $cpu.ucodeRevFixed -as [int]) {
                         $goodUcode = $true
                     }
-                } else {
-                    # CPU is not in procSigUcodeTable, check with BIOS vendor / Intel based procSig or FMS (dec) in output
-                    $goodUcode = "Unknown"
                 }
+            } 
+            if (!$matched) {
+                # CPU is not in procSigUcodeTable, check with BIOS vendor / Intel based procSig or FMS (dec) in output
+                $goodUcode = "Unknown"
             }
         }
 
