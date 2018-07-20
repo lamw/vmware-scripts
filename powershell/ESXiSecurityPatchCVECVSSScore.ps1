@@ -7,11 +7,12 @@ Write-Host "Downloading ESXi Metadata Files ..."
 foreach ($esxiVersion in $esxiVersions) {
     $metadataUrl = "https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/esx/vmw/vmw-ESXi-$esxiVersion-metadata.zip"
     $metadataDownloadPath = $pathToStoreMetdataFile + "\" + $esxiVersion + ".zip"
+    $wc = New-Object System.Net.WebClient
     $wc.DownloadFile($metadataUrl,$metadataDownloadPath)
 
     #https://stackoverflow.com/a/41575369
     $zip = [IO.Compression.ZipFile]::OpenRead($metadataDownloadPath)
-    $metadataFileExtractionPath = $pathToStoreMetdataFile + "\$esxVersion.xml"
+    $metadataFileExtractionPath = $pathToStoreMetdataFile + "\$esxiVersion.xml"
     $zip.Entries | where {$_.Name -like 'vmware.xml'} | foreach {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, $metadataFileExtractionPath, $true)}
     $zip.Dispose()
     Remove-Item -Path $metadataDownloadPath -Force
@@ -28,7 +29,7 @@ foreach ($esxiVersion in $esxiVersions) {
         if($bulletin.category -eq "security") {
             $bulletinId = $bulletin.id
             $kbId = ($bulletin.kbUrl).Replace("http://kb.vmware.com/kb/","")
-            
+
             $results = Invoke-WebRequest -Uri https://kb.vmware.com/articleview?docid=$kbId -UseBasicParsing
 
             $cveIds = @()
@@ -37,7 +38,7 @@ foreach ($esxiVersion in $esxiVersions) {
                     $cveIds += ($link.href).Replace("http://cve.mitre.org/cgi-bin/cvename.cgi?name=","")
                 }
             }
-    
+
             if($cveIds) {
                 foreach ($cveId in $cveIds) {
                     # CVE API to retrieve CVE details
