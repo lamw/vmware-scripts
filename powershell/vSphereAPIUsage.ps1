@@ -38,7 +38,7 @@
 
     $duration = $commandDuration.TotalMinutes
     $fileSize = [math]::Round((Get-Item -Path $vpxdLogFile).Length / 1MB,2)
-    Write-host "`nFileName: $vxpdLogFile"
+    Write-host "`nFileName: $vpxdLogFile"
     Write-host "FileSize: $fileSize MB"
     Write-Host "Duration: $duration minutes"
     $results
