@@ -1,12 +1,13 @@
 """
-Generates a library ready to be used as a VCSP endpoint for content library 2016 (vsphere 6.5).
+Generates a library ready to be used as a VCSP endpoint for content library 2016 (vsphere 6.5) and beyond.
 """
 
 __author__ = 'VMware, Inc.'
-__copyright__ = 'Copyright VMware, Inc. All rights reserved.'
+__copyright__ = 'Copyright 2018 VMware, Inc. All rights reserved.'
 
 import argparse
 import boto3
+import datetime
 import hashlib
 import logging
 import json
@@ -15,11 +16,12 @@ import uuid
 import sys
 
 from botocore.client import ClientError
-from datetime import datetime
+from dateutil.tz import tzutc
 
 VCSP_VERSION = 2
 ISO_FORMAT = "%Y-%m-%dT%H:%MZ"
 FORMAT = "json"
+FILE_EXTENSION_CERT = ".cert"
 LIB_FILE = ''.join(("lib", os.extsep, FORMAT))
 ITEMS_FILE = ''.join(("items", os.extsep, FORMAT))
 ITEM_FILE = ''.join(("item", os.extsep, FORMAT))
@@ -49,7 +51,7 @@ def _md5_for_folder(folder):
     return md5.hexdigest()
 
 
-def _make_lib(name, id=uuid.uuid4(), creation=datetime.now(), version=1):
+def _make_lib(name, id=uuid.uuid4(), creation=datetime.datetime.now(), version=1):
     return {
             "vcspVersion": str(VCSP_VERSION),
             "version": str(version),
@@ -66,7 +68,7 @@ def _make_lib(name, id=uuid.uuid4(), creation=datetime.now(), version=1):
 
 
 def _make_item(directory, vcsp_type, name, files, description="", properties={},
-               identifier=uuid.uuid4(), creation=datetime.now(), version=2):
+               identifier=uuid.uuid4(), creation=datetime.datetime.now(), version=2):
     return {
         "created": creation.strftime(ISO_FORMAT),
         "description": description,
@@ -126,7 +128,7 @@ def _dir2item(path, directory, md5_enabled):
     return _make_item(name, vcsp_type, name, files_items, identifier = uuid.uuid4())
 
 
-def _dir2item_s3(s3_client, bucket_name, path, item_name):
+def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
     """
     Generate items jsons for the given item path on s3
 
@@ -139,6 +141,7 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name):
         bucket_name: S3 bucket name
         path: item path on S3 bucket
         item_name: name of the item
+        skip_cert: whether or not to skip cert file
 
     Returns:
         map of item name to item json
@@ -169,10 +172,12 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name):
             continue # skip the item folder and item.json meta data file
 
         size = content['Size']
+        last_modified = content['LastModified']   # sample 'LastModified': datetime.datetime(2018, 7, 23, 16, 24, 3, tzinfo=tzutc())
         file_json = {
             "name": file_name,
             "size": size,
             "etag": content['ETag'].strip('"'),
+            "generationNum": int(last_modified.timestamp()),
             "hrefs": [ href ]
         }
 
@@ -183,6 +188,9 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name):
             item_path = item_name + "/" + child_item_name
             items_jsons[child_item_name] = _make_item(item_path, vcsp_type, child_item_name, [file_json], identifier = uuid.uuid4())
         else:
+            if vcsp_type == VCSP_TYPE_OVF and file_name.endswith(FILE_EXTENSION_CERT) and skip_cert:
+                # skip adding cert file if skip_cert is true
+                continue
             files_items.append(file_json)
     
     if vcsp_type != VCSP_TYPE_ISO:
@@ -196,7 +204,7 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
     lib_items_json_loc = os.path.join(lib_path, ITEMS_FILE)
 
     lib_id = uuid.uuid4()
-    lib_create = datetime.now()
+    lib_create = datetime.datetime.now()
     lib_version = 1
     updating_lib = False
     if os.path.isfile(lib_json_loc):
@@ -207,7 +215,7 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
             if "id" in old_lib:
                 lib_id = old_lib["id"].split(":")[-1]
             if "created" in old_lib:
-                lib_create = datetime.strptime(old_lib["created"], ISO_FORMAT)
+                lib_create = datetime.datetime.strptime(old_lib["created"], ISO_FORMAT)
             if "version" in old_lib:
                 lib_version = old_lib["version"]
                 updating_lib = True
@@ -281,7 +289,7 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
         json.dump(_make_items(items, lib_version), f, indent=2)
 
 
-def make_vcsp_s3(lib_name, lib_path):
+def make_vcsp_s3(lib_name, lib_path, skip_cert):
     """
     lib_path is the library folder path on the bucket with pattern: [bucket-name]/[object-folder-path]
 
@@ -320,7 +328,7 @@ def make_vcsp_s3(lib_name, lib_path):
     lib_items_json_path = lib_folder_path + ITEMS_FILE
 
     lib_id = uuid.uuid4()
-    lib_create = datetime.now()
+    lib_create = datetime.datetime.now()
     lib_version = 1 
     updating_lib = False
     if file_exist_on_s3(s3_client, bucket_name, lib_json_path):
@@ -331,7 +339,7 @@ def make_vcsp_s3(lib_name, lib_path):
             if "id" in old_lib:
                 lib_id = old_lib["id"].split(":")[-1]
             if "created" in old_lib:
-                lib_create = datetime.strptime(old_lib["created"], ISO_FORMAT)
+                lib_create = datetime.datetime.strptime(old_lib["created"], ISO_FORMAT)
             if "version" in old_lib:
                 lib_version = old_lib["version"]
                 updating_lib = True
@@ -360,9 +368,10 @@ def make_vcsp_s3(lib_name, lib_path):
         for child in response['CommonPrefixes']:
             p = child['Prefix']
             item_path = p.split("/")[-2]
-            items_jsons = _dir2item_s3(s3_client, bucket_name, p, item_path)
+            items_jsons = _dir2item_s3(s3_client, bucket_name, p, item_path, skip_cert)
             
             for item_path, items_json in items_jsons.items():
+                items_json["contentVersion"] = '2'       # default to content version 2
                 if item_path not in old_items and updating_lib:
                     changed = True
                 elif item_path in old_items:
@@ -370,6 +379,11 @@ def make_vcsp_s3(lib_name, lib_path):
                     items_json["id"] = old_items[item_path]["id"]
                     items_json["created"] = old_items[item_path]["created"]
                     items_json["version"] = old_items[item_path]["version"]
+                    if "contentVersion" in old_items[item_path]:
+                        items_json["contentVersion"] = old_items[item_path]["contentVersion"]
+                    else:
+                        changed = True
+
                     file_names = set([i["name"] for i in items_json["files"]])
                     old_file_names = set([i["name"] for i in old_items[item_path]["files"]])
                     if file_names != old_file_names:
@@ -385,8 +399,11 @@ def make_vcsp_s3(lib_name, lib_path):
                                 file_changed = True
                                 break
                     if file_changed:
+                        # bump up version and content version
                         item_version = int(items_json["version"])
                         items_json["version"] = str(item_version + 1)
+                        item_content_version = int(items_json["contentVersion"])
+                        items_json["contentVersion"] = str(item_content_version + 1)
                     del old_items[item_path]
                 json_item_file = lib_folder_path + items_json['selfHref']
                 obj = s3.Object(bucket_name, json_item_file)
@@ -451,6 +468,8 @@ def parse_options():
                         help="library path on storage")
     parser.add_argument('--etag', dest='etag',
                         default='true', help="generate etag")
+    parser.add_argument('--skip-cert', dest='skip_cert',
+                        default='true', help="skip OVF cert")
     args = parser.parse_args()
 
     if args.name is None or args.path is None:
@@ -463,7 +482,8 @@ def usage():
     '''
     The usage message for the argument parser.
     '''
-    return """Usage: python make-vcsp-2018.py -n <library-name> -t <storage-type:local or s3, default local> -p <library-storage-path> --etag <true or false, default true>
+    return """Usage: python make-vcsp-2018.py -n <library-name> -t <storage-type:local or s3, default local> -p <library-storage-path> --etag <true or false, default true> 
+                                              --skip-cert <true or fale, default true
 
     Note that s3 requires the following configurations:
     1. ~/.aws/config
@@ -482,16 +502,12 @@ def main():
     storage_type = args.type
     lib_path = args.path
     md5_enabled = args.etag == 'true' or args.etag == 'True'
-
-    # add option: storage_type, default to local, s3 via boto3
-    # or https://github.com/eskil/python-s3,
-    # basic auth option: https://www.yegor256.com/2014/04/21/s3-http-basic-auth.html
-    # https://www.codeprocess.io/http-basic-authentication-with-s3-static-site-extend
+    skip_cert = args.skip_cert == 'true' or args.skip_cert == 'True'
 
     if "local" == storage_type:
         make_vcsp(lib_name, lib_path, md5_enabled)
     elif "s3" == storage_type:
-        make_vcsp_s3(lib_name, lib_path)
+        make_vcsp_s3(lib_name, lib_path, skip_cert)
 
 if __name__ == "__main__":
     main()
