@@ -44,32 +44,38 @@ Function Verify-ESXiMicrocodePatchAndVM {
             $vmvHW = $vm.Config.Version
 
             $vHWPass = $false
-            if($vmvHW -eq "vmx-04" -or $vmvHW -eq "vmx-06" -or $vmvHW -eq "vmx-07" -or $vmvHW -eq "vmx-08") {
-                $vHWPass = "N/A"
-            } elseif($vmvHW -eq "vmx-09" -or $vmvHW -eq "vmx-10" -or $vmvHW -eq "vmx-11" -or $vmvHW -eq "vmx-12" -or $vmvHW -eq "vmx-13") {
-                $vHWPass = $true
-            }
-
             $IBRSPass = $false
             $IBPBPass = $false
             $STIBPPass = $false
-
-            $cpuFeatures = $vm.Runtime.FeatureRequirement
-            foreach ($cpuFeature in $cpuFeatures) {
-                if($cpuFeature.key -eq "cpuid.IBRS") {
-                    $IBRSPass = $true
-                } elseif($cpuFeature.key -eq "cpuid.IBPB") {
-                    $IBPBPass = $true
-                } elseif($cpuFeature.key -eq "cpuid.STIBP") {
-                    $STIBPPass = $true
-                }
-            }
-
             $vmAffected = $true
-            if( ($IBRSPass -eq $true -or $IBPBPass -eq $true -or $STIBPPass -eq $true) -and $vHWPass -eq $true) {
-                $vmAffected = $false
-            } elseif($vHWPass -eq "N/A") {
-                $vmAffected = $vHWPass
+            if ($vmvHW -match 'vmx-[0-9]{2}') {
+              if ( [int]$vmvHW.Split('-')[-1] -gt 8 ) {
+                $vHWPass = $true
+              } else {
+                $vHWPass = "N/A"
+              }
+
+              $cpuFeatures = $vm.Runtime.FeatureRequirement
+              foreach ($cpuFeature in $cpuFeatures) {
+                  if($cpuFeature.key -eq "cpuid.IBRS") {
+                      $IBRSPass = $true
+                  } elseif($cpuFeature.key -eq "cpuid.IBPB") {
+                      $IBPBPass = $true
+                  } elseif($cpuFeature.key -eq "cpuid.STIBP") {
+                      $STIBPPass = $true
+                  }
+              }
+              
+              if( ($IBRSPass -eq $true -or $IBPBPass -eq $true -or $STIBPPass -eq $true) -and $vHWPass -eq $true) {
+                  $vmAffected = $false
+              } elseif($vHWPass -eq "N/A") {
+                  $vmAffected = $vHWPass
+              }
+            } else {
+              $IBRSPass = "N/A"
+              $IBPBPass = "N/A"
+              $STIBPPass = "N/A"
+              $vmAffected = "N/A"
             }
 
             $tmp = [pscustomobject] @{

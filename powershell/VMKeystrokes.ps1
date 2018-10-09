@@ -119,7 +119,7 @@
             $tmp = New-Object VMware.Vim.UsbScanCodeSpecKeyEvent
 
             # Add leftShift modifer for capital letters and/or special characters
-            if( ($character -cmatch "[A-Z]") -or ($character -match "[!|@|#|$|%|^|&|(|)|_|+|{|}|||:|~|<|>|?]") ) {
+            if( ($character -cmatch "[A-Z]") -or ($character -match "[!|@|#|$|%|^|&|(|)|_|+|{|}|||:|~|<|>|?|*]") ) {
                 $modifer = New-Object Vmware.Vim.UsbScanCodeSpecModifierType
                 $modifer.LeftShift = $true
                 $tmp.Modifiers = $modifer
