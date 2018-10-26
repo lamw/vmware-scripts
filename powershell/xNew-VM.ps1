@@ -86,7 +86,7 @@ add-type @"
 
     # Snapshot to clone from
     if($snapshotname) {
-        $snapshot = Get-Snapshot -Server $sourcevc -Name $snapshotname
+        $snapshot = Get-Snapshot -Server $sourcevc -VM $sourcevmname -Name $snapshotname
     }
 
     # Clone Spec
@@ -201,7 +201,7 @@ $destVCConn = Connect-VIServer -Server $destVC -user $destVCUsername -password $
 xNew-VM -sourcevc $sourceVCConn -destvc $destVCConn -sourcevmname $sourcevmname -destvmname `
     $destvmname -switchtype $switchtype -datacenter $datacenter -cluster $cluster -vmhost `
     $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname -foldername `
-    $foldername -poweron $poweron -uppercaseuuid $UppercaseUUID
+    $foldername -poweron $poweron -uppercaseuuid $UppercaseUUID -$snapshotname $snapshotname
 
 # Disconnect from Source/Destination VC
 Disconnect-VIServer -Server $sourceVCConn -Confirm:$false
