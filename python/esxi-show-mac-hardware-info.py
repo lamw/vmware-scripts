@@ -13,7 +13,7 @@ import struct
 import fcntl
 import subprocess
 
-def GetSerialId():
+def GetSerialNumber():
 	return subprocess.check_output('smbiosDump | sed -ne \'/^  System Info:/,/^  [^ ]/ {/^    Serial: "\\(.*\\)"$/ {s//\\1/;p}}\'', shell=True, universal_newlines=True).strip()
 
 def GetModelId():
@@ -40,7 +40,7 @@ def GetSmcRevision():
 	return '%x.%x%x%x' % (s[0], s[1], s[2], (s[3] << 16 | s[4] << 8 | s[5]))
 
 print('\nModel Identifier:', GetModelId())
-print('Serial ID:', GetSerialId())
+print('Serial Number:', GetSerialNumber())
 print('Board ID:', GetBoardId())
 firmwareVer = GetFirmwareVersion()
 print('Boot ROM Version: %s (%s)' % (DisplayFirmwareVersion(firmwareVer), firmwareVer))
