@@ -102,7 +102,7 @@
 		" "="0x2c";
     }
 
-    $vm = Get-View -ViewType VirtualMachine -Filter @{"Name"=$VMName}
+    $vm = Get-View -ViewType VirtualMachine -Filter @{"Name"="^$($VMName)$"}
 
 	# Verify we have a VM or fail
     if(!$vm) {
