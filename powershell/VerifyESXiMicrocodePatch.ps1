@@ -44,32 +44,38 @@ Function Verify-ESXiMicrocodePatchAndVM {
             $vmvHW = $vm.Config.Version
 
             $vHWPass = $false
-            if($vmvHW -eq "vmx-04" -or $vmvHW -eq "vmx-06" -or $vmvHW -eq "vmx-07" -or $vmvHW -eq "vmx-08") {
-                $vHWPass = "N/A"
-            } elseif($vmvHW -eq "vmx-09" -or $vmvHW -eq "vmx-10" -or $vmvHW -eq "vmx-11" -or $vmvHW -eq "vmx-12" -or $vmvHW -eq "vmx-13") {
-                $vHWPass = $true
-            }
-
             $IBRSPass = $false
             $IBPBPass = $false
             $STIBPPass = $false
-
-            $cpuFeatures = $vm.Runtime.FeatureRequirement
-            foreach ($cpuFeature in $cpuFeatures) {
-                if($cpuFeature.key -eq "cpuid.IBRS") {
-                    $IBRSPass = $true
-                } elseif($cpuFeature.key -eq "cpuid.IBPB") {
-                    $IBPBPass = $true
-                } elseif($cpuFeature.key -eq "cpuid.STIBP") {
-                    $STIBPPass = $true
-                }
-            }
-
             $vmAffected = $true
-            if( ($IBRSPass -eq $true -or $IBPBPass -eq $true -or $STIBPPass -eq $true) -and $vHWPass -eq $true) {
-                $vmAffected = $false
-            } elseif($vHWPass -eq "N/A") {
-                $vmAffected = $vHWPass
+            if ($vmvHW -match 'vmx-[0-9]{2}') {
+              if ( [int]$vmvHW.Split('-')[-1] -gt 8 ) {
+                $vHWPass = $true
+              } else {
+                $vHWPass = "N/A"
+              }
+
+              $cpuFeatures = $vm.Runtime.FeatureRequirement
+              foreach ($cpuFeature in $cpuFeatures) {
+                  if($cpuFeature.key -eq "cpuid.IBRS") {
+                      $IBRSPass = $true
+                  } elseif($cpuFeature.key -eq "cpuid.IBPB") {
+                      $IBPBPass = $true
+                  } elseif($cpuFeature.key -eq "cpuid.STIBP") {
+                      $STIBPPass = $true
+                  }
+              }
+              
+              if( ($IBRSPass -eq $true -or $IBPBPass -eq $true -or $STIBPPass -eq $true) -and $vHWPass -eq $true) {
+                  $vmAffected = $false
+              } elseif($vHWPass -eq "N/A") {
+                  $vmAffected = $vHWPass
+              }
+            } else {
+              $IBRSPass = "N/A"
+              $IBPBPass = "N/A"
+              $STIBPPass = "N/A"
+              $vmAffected = "N/A"
             }
 
             $tmp = [pscustomobject] @{
@@ -132,11 +138,27 @@ Function Verify-ESXiMicrocodePatch {
         $vmhosts = Get-View -ViewType HostSystem -Property Name,Config.FeatureCapability,Hardware.CpuFeature,Summary.Hardware,ConfigManager.ServiceSystem
     }
 
-    #List from https://kb.vmware.com/s/article/52345
-    $intelSightings = @("0x000306C3", "0x000306F2", "0x000306F4", "0x00040671", "0x000406F1", "0x000406F1", "0x00050663")
-
-    #List of blacklisted Microcode containing Intel Sighting issue from https://kb.vmware.com/s/article/52345
-    $intelSightingsMicrocodeVersion = @("0x00000023", "0x00000023", "0x0000003B", "0x0000001B", "0x0B000025", "0x07000011")
+    # Merge of tables from https://kb.vmware.com/s/article/52345 and https://kb.vmware.com/s/article/52085
+    $procSigUcodeTable = @(
+	    [PSCustomObject]@{Name = "Sandy Bridge DT";  procSig = "0x000206a7"; ucodeRevFixed = "0x0000002d"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Sandy Bridge EP";  procSig = "0x000206d7"; ucodeRevFixed = "0x00000713"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Ivy Bridge DT";  procSig = "0x000306a9"; ucodeRevFixed = "0x0000001f"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Ivy Bridge EP";  procSig = "0x000306e4"; ucodeRevFixed = "0x0000042c"; ucodeRevSightings = "0x0000042a"}
+	    [PSCustomObject]@{Name = "Ivy Bridge EX";  procSig = "0x000306e7"; ucodeRevFixed = "0x00000713"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Haswell DT";  procSig = "0x000306c3"; ucodeRevFixed = "0x00000024"; ucodeRevSightings = "0x00000023"}
+	    [PSCustomObject]@{Name = "Haswell EP";  procSig = "0x000306f2"; ucodeRevFixed = "0x0000003c"; ucodeRevSightings = "0x0000003b"}
+	    [PSCustomObject]@{Name = "Haswell EX";  procSig = "0x000306f4"; ucodeRevFixed = "0x00000011"; ucodeRevSightings = "0x00000010"}
+	    [PSCustomObject]@{Name = "Broadwell H";  procSig = "0x00040671"; ucodeRevFixed = "0x0000001d"; ucodeRevSightings = "0x0000001b"}
+	    [PSCustomObject]@{Name = "Broadwell EP/EX";  procSig = "0x000406f1"; ucodeRevFixed = "0x0b00002a"; ucodeRevSightings = "0x0b000025"}
+	    [PSCustomObject]@{Name = "Broadwell DE";  procSig = "0x00050662"; ucodeRevFixed = "0x00000015"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Broadwell DE";  procSig = "0x00050663"; ucodeRevFixed = "0x07000012"; ucodeRevSightings = "0x07000011"}
+	    [PSCustomObject]@{Name = "Broadwell DE";  procSig = "0x00050664"; ucodeRevFixed = "0x0f000011"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Broadwell NS";  procSig = "0x00050665"; ucodeRevFixed = "0x0e000009"; ucodeRevSightings = ""}
+	    [PSCustomObject]@{Name = "Skylake H/S";  procSig = "0x000506e3"; ucodeRevFixed = "0x000000c2"; ucodeRevSightings = ""} # wasn't actually affected by Sightings, ucode just re-released
+	    [PSCustomObject]@{Name = "Skylake SP";  procSig = "0x00050654"; ucodeRevFixed = "0x02000043"; ucodeRevSightings = "0x0200003A"}
+	    [PSCustomObject]@{Name = "Kaby Lake H/S/X";  procSig = "0x000906e9"; ucodeRevFixed = "0x00000084"; ucodeRevSightings = "0x0000007C"}
+	    [PSCustomObject]@{Name = "Zen EPYC";  procSig = "0x00800f12"; ucodeRevFixed = "0x08001227"; ucodeRevSightings = ""}
+    )
 
     # Remote SSH commands for retrieving current ESXi host microcode version
     $plinkoptions = "-ssh -pw $ESXiPassword"
@@ -146,7 +168,7 @@ Function Verify-ESXiMicrocodePatch {
     $results = @()
     foreach ($vmhost in $vmhosts | Sort-Object -Property Name) {
         $vmhostDisplayName = $vmhost.Name
-        $cpuModel = $vmhost.Summary.Hardware.CpuModel
+        $cpuModelName = $($vmhost.Summary.Hardware.CpuModel -replace '\s+', ' ')
 
         $IBRSPass = $false
         $IBPBPass = $false
@@ -193,54 +215,64 @@ Function Verify-ESXiMicrocodePatch {
 
         #output from $vmhost.Hardware.CpuFeature is a binary string ':' delimited to nibbles
         #the easiest way I could figure out the hex conversion was to make a byte array
-        $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":","" -Split "(?<=\G\d{8})(?=\d{8})"
-        $cpuSignature = ($cpuidEAX | Foreach-Object {[System.Convert]::ToByte($_, 2)} | Foreach-Object {$_.ToString("X2")}) -Join ""
-        $cpuSignature = "0x" + $cpuSignature
+        $cpuidEAX = ($vmhost.Hardware.CpuFeature | Where-Object {$_.Level -eq 1}).Eax -Replace ":",""
+        $cpuidEAXbyte = $cpuidEAX -Split "(?<=\G\d{8})(?=\d{8})"
+        $cpuidEAXnibble = $cpuidEAX -Split "(?<=\G\d{4})(?=\d{4})"
 
-        $cpuFamily = [System.Convert]::ToByte($cpuidEAX[2], 2).ToString("X2")
-        #$cpuModel = [System.Convert]::ToByte($cpuidEAX[3], 2).ToString("X2")
-        #$cpuStepping = [System.Convert]::ToByte($cpuidEAX[1], 2).ToString("X2")
+        $cpuSignature = "0x" + $(($cpuidEAXbyte | Foreach-Object {[System.Convert]::ToByte($_, 2)} | Foreach-Object {$_.ToString("X2")}) -Join "")
 
-        #no need to check the CPU for IntelSightings if we aren't on Intel
-        if ($cpuFamily -eq "06") {
+        # https://software.intel.com/en-us/articles/intel-architecture-and-processor-identification-with-cpuid-model-and-family-numbers
+        $ExtendedFamily = [System.Convert]::ToInt32($($cpuidEAXnibble[1] + $cpuidEAXnibble[2]), 2)
+        $Family = [System.Convert]::ToInt32($cpuidEAXnibble[5], 2)
+
+        # output now in decimal, not hex!
+        $cpuFamily = $ExtendedFamily + $Family
+        $cpuModel = [System.Convert]::ToByte($($cpuidEAXnibble[3] + $cpuidEAXnibble[6]), 2)
+        $cpuStepping = [System.Convert]::ToByte($cpuidEAXnibble[7], 2)
+               
+        
+        $intelSighting = "N/A"
+        $goodUcode = "N/A"
+
+        # check and compare ucode
+        if ($IncludeMicrocodeVerCheck) {
+         
             $intelSighting = $false
+            $goodUcode = $false
+            $matched = $false
 
-            # More robust validaion as we're checing BOTH CPU type + affected microcode version as outlined in the KB
-            if($IncludeMicrocodeVerCheck) {
-                if( ($intelSightings -contains $cpuSignature) -and ($intelSightingsMicrocodeVersion -contains $microcodeVersion)) {
-                    if ($vmhostAffected -eq $true) {
-                        $intelSighting = "AffectedOncePatched"
-                    }
-                    else {
+            foreach ($cpu in $procSigUcodeTable) {
+                if ($cpuSignature -eq $cpu.procSig) {
+                    $matched = $true
+                    if ($microcodeVersion -eq $cpu.ucodeRevSightings) {
                         $intelSighting = $true
+                    } elseif ($microcodeVersion -as [int] -ge $cpu.ucodeRevFixed -as [int]) {
+                        $goodUcode = $true
                     }
                 }
-            } else {
-                if( $intelSightings -contains $cpuSignature) {
-                    if ($vmhostAffected -eq $true) {
-                        $intelSighting = "AffectedOncePatched"
-                    }
-                    else {
-                        $intelSighting = $true
-                    }
-                }
+            } 
+            if (!$matched) {
+                # CPU is not in procSigUcodeTable, check with BIOS vendor / Intel based procSig or FMS (dec) in output
+                $goodUcode = "Unknown"
             }
-        }
-        else {
-            $IntelSighting = "n/a"
         }
 
         $tmp = [pscustomobject] @{
             VMHost = $vmhostDisplayName;
-            CPU = $cpuModel;
+            "CPU Model Name" = $cpuModelName;
+            Family = $cpuFamily;
+            Model = $cpuModel;
+            Stepping = $cpuStepping;
             Microcode = $microcodeVersion;
+            procSig = $cpuSignature;
             IBRSPresent = $IBRSPass;
             IBPBPresent = $IBPBPass;
             STIBPPresent = $STIBPPass;
             HypervisorAssistedGuestAffected = $vmhostAffected;
+            "Good Microcode" = $goodUcode;
             IntelSighting = $intelSighting;
         }
         $results+=$tmp
     }
-    $results | FT
+    $results | FT *
 }

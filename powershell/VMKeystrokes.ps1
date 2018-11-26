@@ -102,7 +102,7 @@
 		" "="0x2c";
     }
 
-    $vm = Get-View -ViewType VirtualMachine -Filter @{"Name"=$VMName}
+    $vm = Get-View -ViewType VirtualMachine -Filter @{"Name"="^$($VMName)$"}
 
 	# Verify we have a VM or fail
     if(!$vm) {
@@ -119,7 +119,7 @@
             $tmp = New-Object VMware.Vim.UsbScanCodeSpecKeyEvent
 
             # Add leftShift modifer for capital letters and/or special characters
-            if( ($character -cmatch "[A-Z]") -or ($character -match "[!|@|#|$|%|^|&|(|)|_|+|{|}|||:|~|<|>|?]") ) {
+            if( ($character -cmatch "[A-Z]") -or ($character -match "[!|@|#|$|%|^|&|(|)|_|+|{|}|||:|~|<|>|?|*]") ) {
                 $modifer = New-Object Vmware.Vim.UsbScanCodeSpecModifierType
                 $modifer.LeftShift = $true
                 $tmp.Modifiers = $modifer
