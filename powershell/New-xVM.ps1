@@ -92,10 +92,10 @@ function New-xVM {
         [String[]]$VMNetwork,
 
         ## Optional: Name of snapshot on source VM from which to clone the new VM, if any
-        [String]$SnapshotName,
+        [parameter(ParameterSetName="FromVM")][String]$SnapshotName,
 
         ## Convert the vCenter UUID to uppercase for when performing cross vCenter operation? Some vCenters seemingly require the UUID be in uppercase
-        [Boolean]$UppercaseUuid,
+        [Boolean]$UppercaseUuid = $true,
 
         ## Switch: Trust all SSL certificates, valid or otherwise?  Essentially, "SkipCertificateCheck". Note: this sets this behavior for the whole of the current PowerShell session, not just for this command.
         [Alias("SkipCertificateCheck")][Switch]$TrustAllCert,
@@ -123,7 +123,7 @@ function New-xVM {
                         return true;
                     }
                 }
-"@
+    "@
             } ## end if
             ## set the CertificatePolicy to essentially skip cert checking by setting the CheckValidationResult() return to always be $true
             [System.Net.ServicePointManager]::CertificatePolicy = New-Object IDontCarePolicy
@@ -159,7 +159,7 @@ function New-xVM {
         # Dest ResourcePool
         $oDestinationResourcePool = $VMHost | Get-Cluster | Get-ResourcePool -Name $ResourcePool
         ## name to use for destination VM
-        $strDestinationVMName = if ($PSBoundParameters.ContainsKey("DestinationVMName")) {$DestinationVMName} else {$SourceVM.Name}
+        $strDestinationVMName = if ($PSBoundParameters.ContainsKey("DestinationVMName")) {$DestinationVMName} else {$viewSourceMachine.Name}
         # Snapshot to clone from, if any
         if ($PSBoundParameters.ContainsKey("SnapshotName")) {$oSourceSnapshot = $SourceVM | Get-Snapshot -Name $snapshotname}
 
@@ -244,9 +244,9 @@ function New-xVM {
         if($oSourceSnapshot) {$spec.Snapshot = $oSourceSnapshot.Id}
 
         $strShouldProcessMsg_Target = "VMHost '$($VMHost.Name)' in destination vCenter '$($oDestinationVIServer.Name)'"
-        $strShouldProcessMsg_Action = "Create new {0} '$strDestinationVMName' from source {1} '$($SourceVM.Name)' from vCenter '$strSourceVCenter'" -f $(if ($MarkAsTemplate) {"template"} else {"VM"}), $(if ($bCloneFromTemplate) {"template"} else {"VM"})
+        $strShouldProcessMsg_Action = "Create new {0} '$strDestinationVMName' from source {1} '$($viewSourceMachine.Name)' from vCenter '$strSourceVCenter'" -f $(if ($MarkAsTemplate) {"template"} else {"VM"}), $(if ($bCloneFromTemplate) {"template"} else {"VM"})
         if ($PSCmdlet.ShouldProcess($strShouldProcessMsg_Target, $strShouldProcessMsg_Action)) {
-            Write-Verbose -Verbose ("Cloning $($SourceVM.Name) from $strSourceVCenter to $($oDestinationVIServer.Name), creating new {0} named '$strDestinationVMName'" -f $(if ($MarkAsTemplate) {"template"} else {"VM"}))
+            Write-Verbose -Verbose ("Cloning $($viewSourceMachine.Name) from $strSourceVCenter to $($oDestinationVIServer.Name), creating new {0} named '$strDestinationVMName'" -f $(if ($MarkAsTemplate) {"template"} else {"VM"}))
 
             # Issue Cross vCenter clone, get Task MoRef back
             $task = $viewSourceMachine.CloneVM_Task($oDestinationFolder.Id, $strDestinationVMName, $spec)
