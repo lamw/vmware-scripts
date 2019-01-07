@@ -31,6 +31,7 @@ git clone ${GVCB_REPO}
 cd ${GVCB_REPO_DIR}
 GVCB_DATE=$(date --date="$(git log -n1 --format="%cd" --date="iso")" '+%Y-%m-%dT%H:%I:%S')
 GVCB_COMMIT_HASH=$(git log -n1 --format="%H")
+GVCB_SHORT_COMMIT_HASH=$(git log -n1 --format="%h")
 cd /root
 
 # Setting up VIB spec confs
@@ -47,7 +48,7 @@ cat > ${VIB_DESC_FILE} << __GHETTOVCB__
 <vib version="5.0">
   <type>bootbank</type>
   <name>ghettoVCB</name>
-  <version>1.0.0-0.0.0</version>
+  <version>${GVCB_SHORT_COMMIT_HASH}</version>
   <vendor>virtuallyGhetto</vendor>
   <summary>ghettoVCB VM backup and restore script</summary>
   <description>${GVCB_COMMIT_HASH}</description>
@@ -92,6 +93,9 @@ mkdir -p ${GVCB_CONF_DIR}
 cp ${GVCB_REPO_DIR}/*.sh ${GVCB_BIN_DIR}
 cp ${GVCB_REPO_DIR}/*.conf ${GVCB_CONF_DIR}
 cp ${GVCB_REPO_DIR}/*_template ${GVCB_CONF_DIR}
+
+# Ensure config files are writable
+chmod -R +tw ${GVCB_CONF_DIR}
 
 # Create ghettoVCB VIB + offline bundle
 vibauthor -C -t ${GVCB_TEMP_DIR} -v vghetto-ghettoVCB.vib -O vghetto-ghettoVCB-offline-bundle.zip -f
