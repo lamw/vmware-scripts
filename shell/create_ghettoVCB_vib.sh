@@ -31,7 +31,6 @@ git clone ${GVCB_REPO}
 cd ${GVCB_REPO_DIR}
 GVCB_DATE=$(date --date="$(git log -n1 --format="%cd" --date="iso")" '+%Y-%m-%dT%H:%I:%S')
 GVCB_COMMIT_HASH=$(git log -n1 --format="%H")
-GVCB_SHORT_COMMIT_HASH=$(git log -n1 --format="%h")
 cd /root
 
 # Setting up VIB spec confs
@@ -48,7 +47,7 @@ cat > ${VIB_DESC_FILE} << __GHETTOVCB__
 <vib version="5.0">
   <type>bootbank</type>
   <name>ghettoVCB</name>
-  <version>${GVCB_SHORT_COMMIT_HASH}</version>
+  <version>1.0.0-0.0.0</version>
   <vendor>virtuallyGhetto</vendor>
   <summary>ghettoVCB VM backup and restore script</summary>
   <description>${GVCB_COMMIT_HASH}</description>
