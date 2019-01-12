@@ -15,7 +15,7 @@ REFRESH_TOKEN=$1
 ORGID=$2
 SDDCID=$3
 
-RESULTS=$(curl -s -X POST -H "Content-Type: application/json" -H "csp-auth-token: ${REFRESH_TOKEN}" "https://console.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize?refresh_token=${REFRESH_TOKEN}")
+RESULTS=$(curl -s -X POST -H "application/x-www-form-urlencoded" "https://console.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize" -d "refresh_token=$REFRESH_TOKEN")
 CSP_ACCESS_TOKEN=$(echo $RESULTS | jq -r .access_token)
 
 RESULTS=$(curl -s -X GET -H "Content-Type: application/json" -H "csp-auth-token: ${CSP_ACCESS_TOKEN}" "https://vmc.vmware.com/vmc/api/orgs/${ORGID}/sddcs/${SDDCID}")
