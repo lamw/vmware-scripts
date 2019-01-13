@@ -17,13 +17,13 @@ REFRESH_TOKEN=$1
 ORGID=$2
 SDDCID=$3
 
-RESULTS=$(curl -s -X POST -H "Content-Type: application/json" -H "csp-auth-token: ${REFRESH_TOKEN}" "https://console.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize?refresh_token=${REFRESH_TOKEN}")
+RESULTS=$(curl -s -X POST -H "application/x-www-form-urlencoded" "https://console.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize" -d "refresh_token=$REFRESH_TOKEN")
 CSP_ACCESS_TOKEN=$(echo $RESULTS | jq -r .access_token)
 
 curl -s -X GET -H "Content-Type: application/json" -H "csp-auth-token: ${CSP_ACCESS_TOKEN}" -o SDDC_RESULTS "https://vmc.vmware.com/vmc/api/orgs/${ORGID}/sddcs/${SDDCID}"
 
 NSXT_PROXY_URL=$(cat SDDC_RESULTS|jq -r .resource_config.nsx_api_public_endpoint_url)
-NSXT_SEGMENTS_URL="${NSXT_PROXY_URL}/policy/api/v1/infra/networks/cgw/segments"
+NSXT_SEGMENTS_URL="${NSXT_PROXY_URL}/policy/api/v1/infra/tier-1s/cgw/segments"
 
 RESULTS=$(curl -s -X GET -H "Content-Type: application/json" -H "csp-auth-token: ${CSP_ACCESS_TOKEN}" ${NSXT_SEGMENTS_URL})
 echo ${RESULTS} | jq
