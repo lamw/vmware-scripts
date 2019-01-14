@@ -37,20 +37,20 @@ my $apiVersion = $sc->about->version;
 
 print ("vCenterServer: ".color("yellow"). $vim->{service_url}. color('reset').' - '. color('yellow'). $sc->about->fullName . color("reset"). "\n");
 
+my $dvSwitchProperties = {};
+if ($list eq 'health') {
+    $dvSwitchProperties = [ 'name', 'runtime', 'config.host', 'config.healthCheckConfig' ];
+}
+
 if($dvswitch) {
-    if ( $list eq 'health' ) {
-        $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
+    $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
                                         , filter => {'name' => $dvswitch}
-                                        , properties => [ 'name', 'runtime', 'config.host' ]
+                                        , properties => $dvSwitchProperties
                                         );
-    } else {
-        $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
-                                        , filter => {'name' => $dvswitch}
-                                        , properties => {  }
-                                        );
-    }
 } else {
-	$dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch');
+    $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
+                                        , properties => $dvSwitchProperties
+                                        );
 }
 
 foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
@@ -328,6 +328,11 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
                     next;
                 }
                 
+                if ($hostView->name eq 'ffm30vmwzst0112.mhs.msys.net') {
+                    print 'found it';
+                }
+                
+                
                 my $netMgr = undef;
                 my $checkResults = $hostMember->{healthCheckResult};
                 foreach my $checkResult (@{$checkResults}){
@@ -398,8 +403,14 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
                 } # foreach healthCheckResult
             } # if healthCheckResult 
         } # foreach $hostMemberRuntimeInfo
-        if ( ! $foundHealthCheckResults) {
-            print 'Could not find any DVSwitch Health check results.';
+        
+        if ( ! $foundHealthCheckResults ) {
+            my $checkConfigs = $dvs->{'config.healthCheckConfig'};
+            if ( lc ($checkConfigs->[0]->{'enable'}) ) {
+                print '** Could not find any DVSwitch Health check results.'.color('red').' Please reconfigure health check to get new results.'.color('reset');
+            } else {
+                print '** DVSwitch Health check is deactivated. '.color('red').'Please enable and rerun script to collect results.'.color('reset');
+            }
         }
         print "\n";
     } # if --list all|health
