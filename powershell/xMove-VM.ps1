@@ -198,13 +198,13 @@ add-type @"
 
 # Variables that must be defined
 
+$sourceVCCred = Get-Credential -Message "Source vCenter Server Credentials"
+$destVCCred = Get-Credential -Message "Destination vCenter Server Credentials"
+$destVCusername = $destVCCred.GetNetworkCredential().username
+$destVCpassword = $destVCCred.GetNetworkCredential().password
 $vmname = "TinyVM-2"
 $sourceVC = "vcenter60-1.primp-industries.com"
-$sourceVCUsername = "administrator@vghetto.local"
-$sourceVCPassword = "VMware1!"
 $destVC = "vcenter60-3.primp-industries.com"
-$destVCUsername = "administrator@vghetto.local"
-$destVCpassword = "VMware1!"
 $datastorename = "la-datastore1"
 $resourcepool = "WorkloadRP"
 $vmhostname = "vesxi60-5.primp-industries.com"
@@ -215,8 +215,8 @@ $ComputeXVC = 1
 $UppercaseUUID = $false
 
 # Connect to Source/Destination vCenter Server
-$sourceVCConn = Connect-VIServer -Server $sourceVC -user $sourceVCUsername -password $sourceVCPassword
-$destVCConn = Connect-VIServer -Server $destVC -user $destVCUsername -password $destVCpassword
+$sourceVCConn = Connect-VIServer -Server $sourceVC -Credential $sourceVCCred
+$destVCConn = Connect-VIServer -Server $destVC -Credential $destVCCred
 
 xMove-VM -sourcevc $sourceVCConn -destvc $destVCConn -VM $vmname -switchtype $switchtype -switch $switchname -resourcepool $resourcepool -vmhost $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname -xvcType $computeXVC -uppercaseuuid $UppercaseUUID
 
