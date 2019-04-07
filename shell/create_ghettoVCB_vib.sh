@@ -93,6 +93,9 @@ cp ${GVCB_REPO_DIR}/*.sh ${GVCB_BIN_DIR}
 cp ${GVCB_REPO_DIR}/*.conf ${GVCB_CONF_DIR}
 cp ${GVCB_REPO_DIR}/*_template ${GVCB_CONF_DIR}
 
+# Ensure config files are writable
+chmod -R +tw ${GVCB_CONF_DIR}
+
 # Create ghettoVCB VIB + offline bundle
 vibauthor -C -t ${GVCB_TEMP_DIR} -v vghetto-ghettoVCB.vib -O vghetto-ghettoVCB-offline-bundle.zip -f
 

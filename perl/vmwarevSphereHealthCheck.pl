@@ -27,88 +27,88 @@ my @supportedVersion = qw(4.0.0 4.1.0 5.0.0 5.1.0 5.5.0 6.0.0 6.5.0);
 
 my %opts = (
 	cluster => {
-				type => "=s",
-        	help => "The name of a vCenter cluster to query",
-        	required => 0,
-        },
-        datacenter => {
-      		type => "=s",
-        	help => "The name of a vCenter datacenter to query",
-        	required => 0,
-        },
-				hostlist => {
-          type => "=s",
-          help => "File containting list of ESX/ESXi host(s) to query",
-          required => 0,
-        },
-				vmlist => {
-          type => "=s",
-          help => "File containting list of VM(s) to query",
-          required => 0,
-        },
-        type => {
-        	type => "=s",
-        	help => "Type: [vcenter|datacenter|cluster|host]\n",
-        	required => 1,
-        },
-        report => {
-        	type => "=s",
-        	help => "The name of the report to output. Please add \".html\" extension",
-        	required => 0,
-					default => "vmware_health_report.html",
-        },
-        logcount => {
-        	type => "=s",
-        	help => "The number of lines to output from hostd logs",
-        	required => 0,
-					default => 15,
-        },
-        vmperformance => {
-        	type => "=s",
-        	help => "Enable VM Performance gathering [yes|no] (Can potentially double your runtime)",
-        	required => 0,
-        	default => "no",
-        },
-        hostperformance => {
-        	type => "=s",
-        	help => "Enable Host Performance gathering [yes|no] (Can potentially increase your runtime)",
-        	required => 0,
-        	default => "no",
-        },
-        clusterperformance => {
-        	type => "=s",
-        	help => "Enable Cluster Performance gathering [yes|no] (Can potentially increase your runtime)",
-        	required => 0,
-        	default => "no",
-        },
-        email => {
-        	type => "=s",
-        	help => "[yes|no]",
-        	required => 0,
-        	default => "no",
-        },
-				demo => {
-          type => "=s",
-          help => "[yes|no]",
-          required => 0,
-          default => "no",
-        },
-				conf => {
-          type => "=s",
-          help => "File containing Host and VM specific configurations to output",
-          required => 0,
-        },
-				printerfriendly => {
-          type => "=s",
-          help => "Whether the html output will be printer friendly [yes|no]",
-          required => 0,
-					default => "no",
-        },
-				debug  => {
-          type => "=s",
-          help => "Enable/Disable debugging to help William troubleshot [0|1]",
-					required => 0,
-				},
+		type => "=s",
+		help => "The name of a vCenter cluster to query",
+		required => 0,
+	},
+	datacenter => {
+		type => "=s",
+		help => "The name of a vCenter datacenter to query",
+		required => 0,
+	},
+	hostlist => {
+		type => "=s",
+		help => "File containting list of ESX/ESXi host(s) to query",
+		required => 0,
+	},
+	vmlist => {
+		type => "=s",
+		help => "File containting list of VM(s) to query",
+		required => 0,
+	},
+	type => {
+		type => "=s",
+		help => "Type: [vcenter|datacenter|cluster|host]\n",
+		required => 1,
+	},
+	report => {
+		type => "=s",
+		help => "The name of the report to output. Please add \".html\" extension",
+		required => 0,
+		default => "vmware_health_report.html",
+	},
+	logcount => {
+		type => "=s",
+		help => "The number of lines to output from hostd logs",
+		required => 0,
+		default => 15,
+	},
+	vmperformance => {
+		type => "=s",
+		help => "Enable VM Performance gathering [yes|no] (Can potentially double your runtime)",
+		required => 0,
+		default => "no",
+	},
+	hostperformance => {
+		type => "=s",
+		help => "Enable Host Performance gathering [yes|no] (Can potentially increase your runtime)",
+		required => 0,
+		default => "no",
+	},
+	clusterperformance => {
+		type => "=s",
+		help => "Enable Cluster Performance gathering [yes|no] (Can potentially increase your runtime)",
+		required => 0,
+		default => "no",
+	},
+	email => {
+		type => "=s",
+		help => "[yes|no]",
+		required => 0,
+		default => "no",
+	},
+	demo => {
+		type => "=s",
+		help => "[yes|no]",
+		required => 0,
+		default => "no",
+	},
+	conf => {
+		type => "=s",
+		help => "File containing Host and VM specific configurations to output",
+		required => 0,
+	},
+	printerfriendly => {
+		type => "=s",
+		help => "Whether the html output will be printer friendly [yes|no]",
+		required => 0,
+		default => "no",
+	},
+	debug  => {
+		type => "=s",
+		help => "Enable/Disable debugging to help William troubleshoot [0|1]",
+		required => 0,
+	},
 );
 
 # validate options, and connect to the server
@@ -131,9 +131,9 @@ my (@datastore_cluster_jump_tags,@cluster_jump_tags,@host_jump_tags,@vm_jump_tag
 
 
 ###############
-# PROPERTY filters 
+# PROPERTY filters
 ###############
-my $datacenter_properties = [ 'name' ]; 
+my $datacenter_properties = [ 'name' ];
 
 ###############
 # COLORS
@@ -300,8 +300,8 @@ sub emailReport {
 		my $smtp = Net::SMTP->new($EMAIL_HOST ,Hello => $EMAIL_DOMAIN,Timeout => 30,);
 
 		unless($smtp) {
-	                die "Error: Unable to setup connection with email server: \"" . $EMAIL_HOST . "\"!\n";
-        	}
+			die "Error: Unable to setup connection with email server: \"" . $EMAIL_HOST . "\"!\n";
+		}
 
 		open(DATA, $report) || die("Could not open the file");
 		my @report = <DATA>;
@@ -311,27 +311,27 @@ sub emailReport {
 
 		my $boundary = 'frontier';
 
-	        $smtp->mail($EMAIL_FROM);
-        	$smtp->to(@EMAIL_TO);
-	        $smtp->data();
-        	$smtp->datasend('From: '.$EMAIL_FROM."\n");
-	        $smtp->datasend('To: '.@EMAIL_TO."\n");
-        	$smtp->datasend('Subject: VMware vSphere Health Check Report Completed - '.giveMeDate('MDYHMS'). " (" . $system_name . ")\n");
-	        $smtp->datasend("MIME-Version: 1.0\n");
-        	$smtp->datasend("Content-type: multipart/mixed;\n\tboundary=\"$boundary\"\n");
-	        $smtp->datasend("\n");
-	        $smtp->datasend("--$boundary\n");
-        	$smtp->datasend("Content-type: text/plain\n");
-	        $smtp->datasend("Content-Disposition: quoted-printable\n");
-	        $smtp->datasend("\nReport $report is attached!\n");
-	        $smtp->datasend("--$boundary\n");
-	        $smtp->datasend("Content-Type: application/text; name=\"$report\"\n");
-	        $smtp->datasend("Content-Disposition: attachment; filename=\"$report\"\n");
-        	$smtp->datasend("\n");
-   		$smtp->datasend("@report\n");
-	        $smtp->datasend("--$boundary--\n");
-	        $smtp->dataend();
-        	$smtp->quit;
+		$smtp->mail($EMAIL_FROM);
+		$smtp->to(@EMAIL_TO);
+		$smtp->data();
+		$smtp->datasend('From: '.$EMAIL_FROM."\n");
+		$smtp->datasend('To: '.@EMAIL_TO."\n");
+		$smtp->datasend('Subject: VMware vSphere Health Check Report Completed - '.giveMeDate('MDYHMS'). " (" . $system_name . ")\n");
+		$smtp->datasend("MIME-Version: 1.0\n");
+		$smtp->datasend("Content-type: multipart/mixed;\n\tboundary=\"$boundary\"\n");
+		$smtp->datasend("\n");
+		$smtp->datasend("--$boundary\n");
+		$smtp->datasend("Content-type: text/plain\n");
+		$smtp->datasend("Content-Disposition: quoted-printable\n");
+		$smtp->datasend("\nReport $report is attached!\n");
+		$smtp->datasend("--$boundary\n");
+		$smtp->datasend("Content-Type: application/text; name=\"$report\"\n");
+		$smtp->datasend("Content-Disposition: attachment; filename=\"$report\"\n");
+		$smtp->datasend("\n");
+		$smtp->datasend("@report\n");
+		$smtp->datasend("--$boundary--\n");
+		$smtp->dataend();
+		$smtp->quit;
 	}
 }
 
@@ -382,7 +382,7 @@ sub getSystemSummary {
 
 		my $licenses = $licenseMgr->licenses;
 		foreach(@$licenses) {
-		 	if($demo eq "no") {
+			if($demo eq "no") {
 					my $licenseName = $_->name;
 					my $licenseEdition = $_->editionKey;
 					my $licenseKey = $_->licenseKey;
@@ -390,7 +390,7 @@ sub getSystemSummary {
 					my $licenseUsed = int(($_->used ? $_->used : 0));
 					my $licenseTotal = $_->total;
 					my $licenseConsumed = ($licenseTotal - $licenseUsed);
-		 			$summary_start .= "<tr><td>".$licenseName."</td><td>".$licenseEdition."</td><td>".$licenseKey."</td><td>".$licenseCost."</td><td>".$licenseTotal."</td><td>".$licenseUsed."</td><td>".$licenseConsumed."</td></tr>\n";
+					$summary_start .= "<tr><td>".$licenseName."</td><td>".$licenseEdition."</td><td>".$licenseKey."</td><td>".$licenseCost."</td><td>".$licenseTotal."</td><td>".$licenseUsed."</td><td>".$licenseConsumed."</td></tr>\n";
 					my $licenseProperties = $_->properties;
 					if($licenseProperties) {
 						$feature_info_string .= "<tr><th>EDITION w/FEATURES</th><th>EXPIRATION (HOURS)</th><th>EXPIRATION (MINS)</th><th>EXPIRATION DATE</th></tr>\n";
@@ -398,17 +398,17 @@ sub getSystemSummary {
 					}
 					foreach(@$licenseProperties) {
 						if($_->key ne 'feature') {
-		        	if($_->key eq 'expirationHours' ) { $feature_info_string .= "<td>".$_->value."</td>"; }
-		        	if($_->key eq 'expirationMinutes' ) { $feature_info_string .= "<td>".$_->value."</td>"; }
-		        	if($_->key eq 'expirationDate' ) { $feature_info_string .= "<td>".$_->value."</td></tr>\n"; }
+				if($_->key eq 'expirationHours' ) { $feature_info_string .= "<td>".$_->value."</td>"; }
+				if($_->key eq 'expirationMinutes' ) { $feature_info_string .= "<td>".$_->value."</td>"; }
+				if($_->key eq 'expirationDate' ) { $feature_info_string .= "<td>".$_->value."</td></tr>\n"; }
 						} else {
 							my $feature = $_->value;
 							$features .= "<tr><td>".$feature->value."</td></tr>\n";
 						}
 					}
 			} else {
-      	$summary_start .= "<tr><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td></tr>\n";
-    	}
+	$summary_start .= "<tr><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td><td>DEMO_MODE</td></tr>\n";
+	}
 			$feature_string .= $feature_info_string . $features;
 			($features,$feature_info_string) = ("","");
 		}
@@ -441,9 +441,9 @@ sub getSystemSummary {
 		my $authMgr = Vim::get_view (mo_ref => $sc->authorizationManager);
 		my $roleLists = $authMgr->roleList;
 		my %rolemapping;
-	       	foreach(@$roleLists) {
-        	        $rolemapping{$_->roleId} = $_->name;
-        	}
+		foreach(@$roleLists) {
+			$rolemapping{$_->roleId} = $_->name;
+		}
 
 		if($demo eq "no") {
 			eval {
@@ -470,7 +470,7 @@ sub getSystemSummary {
 
 		if($demo eq "no") {
 			my $sessionMgr =  Vim::get_view (mo_ref => $sc->sessionManager);
-                	my $sess_list = $sessionMgr->sessionList;
+			my $sess_list = $sessionMgr->sessionList;
 			foreach(sort {$a->userName cmp $b->userName} @$sess_list) {
 				$summary_start .=  "<tr><td>".$_->userName."</td><td>".$_->fullName."</td><td>".$_->loginTime."</td><td>".$_->lastActiveTime."</td></tr>\n";
 			}
@@ -499,11 +499,11 @@ sub getSystemSummary {
 				$profile_string .= "<tr><td>".$_->name."</td><td>".$profileDescription."</td><td>".$_->createdTime."</td><td>".$_->modifiedTime."</td><td>".(($_->config->enabled) ? "YES" : "NO")."</td><td>".$_->complianceStatus."</td></tr>\n";
 			}
 			if($hasProfile eq 1) {
-                                $summary_start .= "<h3>Host Profile(s):</h3>\n";
-                                $summary_start .= "<table border=\"1\">\n";
-                                $summary_start .= "<tr><th>PROFILE NAME</th><th>DESCRIPTION</th><th>CREATION TIME</th><th>LAST MODIFIED</th><th>ENABLED</th><th>COMPLIANCE STATUS</th></tr>\n";
+				$summary_start .= "<h3>Host Profile(s):</h3>\n";
+				$summary_start .= "<table border=\"1\">\n";
+				$summary_start .= "<tr><th>PROFILE NAME</th><th>DESCRIPTION</th><th>CREATION TIME</th><th>LAST MODIFIED</th><th>ENABLED</th><th>COMPLIANCE STATUS</th></tr>\n";
 				$summary_start .= $profile_string;
-                        }
+			}
 		}
 		$summary_start .= "</table>\n";
 	}
@@ -546,7 +546,7 @@ sub getCluster {
 	if($type eq 'cluster') {
 		print REPORT_OUTPUT "<div id=\"tab2\" class=\"content\">";
 		#please do not touch this, else the jump tags will break
-	        print REPORT_OUTPUT "\n/<!-- insert cluster jump -->/\n";
+		print REPORT_OUTPUT "\n/<!-- insert cluster jump -->/\n";
 		$cluster_count++;
 		&printClusterSummary($cluster_view,$cluster_count,$atype,$aversion);
 		print REPORT_OUTPUT "</div>\n";
@@ -555,25 +555,25 @@ sub getCluster {
 		if($cluster_views) {
 			print REPORT_OUTPUT "<div id=\"tab2\" class=\"content\">";
 			#please do not touch this, else the jump tags will break
-        	        print REPORT_OUTPUT "\n/<!-- insert cluster jump -->/\n";
-                	foreach(sort {$a->name cmp $b->name} @$cluster_views) {
-                		$cluster_count++;
+			print REPORT_OUTPUT "\n/<!-- insert cluster jump -->/\n";
+			foreach(sort {$a->name cmp $b->name} @$cluster_views) {
+				$cluster_count++;
 				if($_->isa("ClusterComputeResource")) {
-                                       &printClusterSummary($_,$cluster_count,$atype,$aversion);
-                                }
-        	        }
+				       &printClusterSummary($_,$cluster_count,$atype,$aversion);
+				}
+			}
 			print REPORT_OUTPUT "</div>\n";
 		}
 	}elsif($type eq 'vcenter') {
 		if($cluster_views) {
 			print REPORT_OUTPUT "<div id=\"tab2\" class=\"content\">";
 			#please do not touch this, else the jump tags will break
-        		print REPORT_OUTPUT "\n/<!-- insert cluster jump -->/\n";
+			print REPORT_OUTPUT "\n/<!-- insert cluster jump -->/\n";
 			foreach(sort {$a->name cmp $b->name} @$cluster_views) {
 				$cluster_count++;
 				if($_->isa("ClusterComputeResource")) {
-                                       &printClusterSummary($_,$cluster_count,$atype,$aversion);
-                                }
+				       &printClusterSummary($_,$cluster_count,$atype,$aversion);
+				}
 			}
 		}
 		print REPORT_OUTPUT "</div>\n";
@@ -594,14 +594,14 @@ sub getDatastoreCluster {
 		$datastore_cluster_count++;
 		&printDatacenterSummary($cluster_parent,$datastore_cluster_count,$atype,$aversion);
 		print REPORT_OUTPUT "</div>\n";
-	} elsif($type eq 'datacenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+	} elsif($type eq 'datacenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
 		print REPORT_OUTPUT "<div id=\"tab7\" class=\"content\">";
-                #please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
+		#please do not touch this, else the jump tags will break
+		print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
 		$datastore_cluster_count++;
-                &printDatacenterSummary($datacenter_view,$datastore_cluster_count,$atype,$aversion);
+		&printDatacenterSummary($datacenter_view,$datastore_cluster_count,$atype,$aversion);
 		print REPORT_OUTPUT "</div>\n";
-	} elsif($type eq 'vcenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+	} elsif($type eq 'vcenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
 		print REPORT_OUTPUT "<div id=\"tab7\" class=\"content\">";
 		#please do not touch this, else the jump tags will break
 		print REPORT_OUTPUT "\n/<!-- insert datastore cluster jump -->/\n";
@@ -624,16 +624,16 @@ sub getHost {
 
 	if($type eq 'host') {
 		#please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
+		print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
 		&printHostSummary($host_view,undef,$cluster_count,$type,$atype,$aversion,$sc);
 	}elsif($type eq 'datacenter') {
 		#please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
+		print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
 		foreach my $cluster(sort {$a->name cmp $b->name} @$cluster_views) {
 			$cluster_count++;
 			my $clusterTag = "host-".$cluster->name."-$cluster_count";
 			my $clusterShortTag = $cluster->name;
-	                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
+			push @host_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
 			print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
 			print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
 			my $hosts = Vim::get_views (mo_ref_array => $cluster->host);
@@ -644,56 +644,56 @@ sub getHost {
 		#please do not touch this, else the jump tags will break
 		print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
 		my $clusterTag = "host-".$cluster_view->name."-$cluster_count";
-                my $clusterShortTag = $cluster_view->name;
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
-                print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
+		my $clusterShortTag = $cluster_view->name;
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
+		print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
 		print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
 		my $hosts = Vim::get_views (mo_ref_array => $cluster_view->host);
 		&printHostSummary($hosts,$cluster_view->name,$cluster_count,$type,$atype,$aversion,$sc);
 	}elsif($type eq 'vcenter') {
 		#please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
+		print REPORT_OUTPUT "\n/<!-- insert host jump -->/\n";
 		foreach my $cluster(sort {$a->name cmp $b->name} @$cluster_views) {
 			$cluster_count++;
 			my $clusterTag = "host-".$cluster->name."-$cluster_count";
-                        my $clusterShortTag = $cluster->name;
-                        push @host_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
+			my $clusterShortTag = $cluster->name;
+			push @host_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
 			print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
-		        print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
+			print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
 
 			my $hosts = Vim::get_views (mo_ref_array => $cluster->host);
 			&printHostSummary($hosts,$cluster->name,$cluster_count,$type,$atype,$aversion,$sc);
-                }
+		}
 	}
 	print REPORT_OUTPUT "</div>\n";
 }
 
 sub getVM {
-        my ($type,$atype,$aversion,$sc) = @_;
+	my ($type,$atype,$aversion,$sc) = @_;
 
-        print REPORT_OUTPUT "<div id=\"tab4\" class=\"content\">\n";
+	print REPORT_OUTPUT "<div id=\"tab4\" class=\"content\">\n";
 
-        my $cluster_count = 0;
+	my $cluster_count = 0;
 
-        if($type eq 'host') {
-                #please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
-                &printVMSummary($host_view,undef,$cluster_count,$type,$atype,$aversion,$sc);
-        }elsif($type eq 'datacenter') {
-                #please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
-                foreach my $cluster(sort {$a->name cmp $b->name} @$cluster_views) {
-                        $cluster_count++;
-                        my $clusterTag = "vm-".$cluster->name."-$cluster_count";
-                        my $clusterShortTag = $cluster->name;
-                        push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
-                        print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
+	if($type eq 'host') {
+		#please do not touch this, else the jump tags will break
+		print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
+		&printVMSummary($host_view,undef,$cluster_count,$type,$atype,$aversion,$sc);
+	}elsif($type eq 'datacenter') {
+		#please do not touch this, else the jump tags will break
+		print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
+		foreach my $cluster(sort {$a->name cmp $b->name} @$cluster_views) {
+			$cluster_count++;
+			my $clusterTag = "vm-".$cluster->name."-$cluster_count";
+			my $clusterShortTag = $cluster->name;
+			push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
+			print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
 			print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
-                        my $hosts = Vim::get_views (mo_ref_array => $cluster->host);
-                        &printVMSummary($hosts,$cluster->name,$cluster_count,$type,$atype,$aversion,$sc);
-                }
-        }elsif($type eq 'cluster') {
-                $cluster_count++;
+			my $hosts = Vim::get_views (mo_ref_array => $cluster->host);
+			&printVMSummary($hosts,$cluster->name,$cluster_count,$type,$atype,$aversion,$sc);
+		}
+	}elsif($type eq 'cluster') {
+		$cluster_count++;
 		#please do not touch this, else the jump tags will break
 		print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
 		my $clusterTag = "vm-".$cluster_view->name."-$cluster_count";
@@ -702,71 +702,71 @@ sub getVM {
 		print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
 		print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
 		my $hosts = Vim::get_views (mo_ref_array => $cluster_view->host);
-                &printVMSummary($hosts,$cluster_view->name,$cluster_count,$type,$atype,$aversion,$sc);
-        }elsif($type eq 'vcenter') {
-                #please do not touch this, else the jump tags will break
-                print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
-                foreach my $cluster(sort {$a->name cmp $b->name} @$cluster_views) {
-                        $cluster_count++;
-                        my $clusterTag = "vm-".$cluster->name."-$cluster_count";
-                        my $clusterShortTag = $cluster->name;
-                        push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
-                        print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
+		&printVMSummary($hosts,$cluster_view->name,$cluster_count,$type,$atype,$aversion,$sc);
+	}elsif($type eq 'vcenter') {
+		#please do not touch this, else the jump tags will break
+		print REPORT_OUTPUT "\n/<!-- insert vm jump -->/\n";
+		foreach my $cluster(sort {$a->name cmp $b->name} @$cluster_views) {
+			$cluster_count++;
+			my $clusterTag = "vm-".$cluster->name."-$cluster_count";
+			my $clusterShortTag = $cluster->name;
+			push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;<a href=\"#$clusterTag\">Cluster: $clusterShortTag</a><br/>\n";
+			print REPORT_OUTPUT "<br/><a name=\"$clusterTag\"></a>\n";
 			print REPORT_OUTPUT "<h2>Cluster: $clusterShortTag</h2>\n";
-                        my $hosts = Vim::get_views (mo_ref_array => $cluster->host);
-                        &printVMSummary($hosts,$cluster->name,$cluster_count,$type,$atype,$aversion,$sc);
-                }
-        }
+			my $hosts = Vim::get_views (mo_ref_array => $cluster->host);
+			&printVMSummary($hosts,$cluster->name,$cluster_count,$type,$atype,$aversion,$sc);
+		}
+	}
 	print REPORT_OUTPUT "</div>\n";
 }
 
 sub getVPXSettings {
-        my ($vpxcheck,$atype,$sc) = @_;
+	my ($vpxcheck,$atype,$sc) = @_;
 
-        if($vpxcheck eq "yes" && $atype eq "VirtualCenter") {
-                my $setting = Vim::get_view(mo_ref => $sc->setting);
-                my $vpxSettings = $setting->setting;
+	if($vpxcheck eq "yes" && $atype eq "VirtualCenter") {
+		my $setting = Vim::get_view(mo_ref => $sc->setting);
+		my $vpxSettings = $setting->setting;
 
-                my $vpxString = "";
-                if($vpxSettings) {
-                        print REPORT_OUTPUT "<div id=\"tab5\" class=\"content\">\n";
-                        print REPORT_OUTPUT "<h2>vCenter VPX Configurations</h2>\n";
-                        print REPORT_OUTPUT "<table border=\"1\">\n";
-                        print REPORT_OUTPUT "<tr><th>KEY</th><th>VALUE</th></tr>\n";
-                        foreach(sort {$a->key cmp $b->key} @$vpxSettings) {
-                                my $key = $_->key;
-                                my $value = $_->value;
-                                if($demo eq "yes" && ($key eq "VirtualCenter.InstanceName" || $key eq "VirtualCenter.DBPassword" || $key eq "VirtualCenter.LDAPAdminPrincipal" || $key eq "VirtualCenter.ManagedIP" || $key eq "VirtualCenter.VimApiUrl" || $key eq "VirtualCenter.VimWebServicesUrl" || $key eq "vpxd.motd" || $key =~ m/config.registry/ || $key =~ m/mail/ || $key =~ m/snmp/)) {
-                                        $value = "DEMO_MODE";
-                                }
-                                $vpxString .= "<tr><td>".$key."</td><td>".$value."</tr>\n";
-                        }
-                        print REPORT_OUTPUT $vpxString;
-                        print REPORT_OUTPUT "</table>\n";
-                        print REPORT_OUTPUT "</div>\n";
-                }
-        }
+		my $vpxString = "";
+		if($vpxSettings) {
+			print REPORT_OUTPUT "<div id=\"tab5\" class=\"content\">\n";
+			print REPORT_OUTPUT "<h2>vCenter VPX Configurations</h2>\n";
+			print REPORT_OUTPUT "<table border=\"1\">\n";
+			print REPORT_OUTPUT "<tr><th>KEY</th><th>VALUE</th></tr>\n";
+			foreach(sort {$a->key cmp $b->key} @$vpxSettings) {
+				my $key = $_->key;
+				my $value = $_->value;
+				if($demo eq "yes" && ($key eq "VirtualCenter.InstanceName" || $key eq "VirtualCenter.DBPassword" || $key eq "VirtualCenter.LDAPAdminPrincipal" || $key eq "VirtualCenter.ManagedIP" || $key eq "VirtualCenter.VimApiUrl" || $key eq "VirtualCenter.VimWebServicesUrl" || $key eq "vpxd.motd" || $key =~ m/config.registry/ || $key =~ m/mail/ || $key =~ m/snmp/)) {
+					$value = "DEMO_MODE";
+				}
+				$vpxString .= "<tr><td>".$key."</td><td>".$value."</tr>\n";
+			}
+			print REPORT_OUTPUT $vpxString;
+			print REPORT_OUTPUT "</table>\n";
+			print REPORT_OUTPUT "</div>\n";
+		}
+	}
 }
 
 sub getVMwareApps {
-        my ($vmwcheck,$atype,$sc) = @_;
+	my ($vmwcheck,$atype,$sc) = @_;
 
-        if($vmwcheck eq "yes" && $atype eq "VirtualCenter") {
+	if($vmwcheck eq "yes" && $atype eq "VirtualCenter") {
 
-                my $vmwAppString = "";
-                if(@vmw_apps) {
-                        print REPORT_OUTPUT "<div id=\"tab6\" class=\"content\">\n";
-                        print REPORT_OUTPUT "<h2>VMware and 3rd Party Applications in a VM</h2>\n";
-                        print REPORT_OUTPUT "<table border=\"1\">\n";
-                        print REPORT_OUTPUT "<tr><th>CLUSTER</th><th>VM NAME</th><th>VMWARE/3RD PARTY APPLICATION</th></tr>\n";
-                        foreach(@vmw_apps) {
-                                $vmwAppString .= $_;
-                        }
-                        print REPORT_OUTPUT $vmwAppString;
-                        print REPORT_OUTPUT "</table>\n";
-                        print REPORT_OUTPUT "</div>\n";
-                }
-        }
+		my $vmwAppString = "";
+		if(@vmw_apps) {
+			print REPORT_OUTPUT "<div id=\"tab6\" class=\"content\">\n";
+			print REPORT_OUTPUT "<h2>VMware and 3rd Party Applications in a VM</h2>\n";
+			print REPORT_OUTPUT "<table border=\"1\">\n";
+			print REPORT_OUTPUT "<tr><th>CLUSTER</th><th>VM NAME</th><th>VMWARE/3RD PARTY APPLICATION</th></tr>\n";
+			foreach(@vmw_apps) {
+				$vmwAppString .= $_;
+			}
+			print REPORT_OUTPUT $vmwAppString;
+			print REPORT_OUTPUT "</table>\n";
+			print REPORT_OUTPUT "</div>\n";
+		}
+	}
 }
 
 sub printVMSummary {
@@ -779,12 +779,12 @@ sub printVMSummary {
 			}
 
 			#skip if host is not accessible
-                        next if($local_host->runtime->connectionState->val ne "connected");
+			next if($local_host->runtime->connectionState->val ne "connected");
 
 			#skip if VM is not in valid list
-                        if($hostlist) {
-                                next if(!$hostlists{$local_host->name});
-                        }
+			if($hostlist) {
+				next if(!$hostlists{$local_host->name});
+			}
 
 			my $vms = Vim::get_views(mo_ref_array => $local_host->vm);
 			foreach my $vm (sort {$a->name cmp $b->name} @$vms) {
@@ -798,15 +798,15 @@ sub printVMSummary {
 				}
 
 				######################
-                                # VM TAG
-                                ######################
-                                if(defined($vm->tag)) {
-                                        my $vmTags = $vm->tag;
-                                        foreach(sort {$a->key cmp $b->key} @$vmTags) {
-                                                my $tagString = "<tr><td>".$cluster_name."</td><td>".$vm->name."</td><td>".$_->key."</td></tr>\n";
-                                                push @vmw_apps, $tagString;
-                                        }
-                                }
+				# VM TAG
+				######################
+				if(defined($vm->tag)) {
+					my $vmTags = $vm->tag;
+					foreach(sort {$a->key cmp $b->key} @$vmTags) {
+						my $tagString = "<tr><td>".$cluster_name."</td><td>".$vm->name."</td><td>".$_->key."</td></tr>\n";
+						push @vmw_apps, $tagString;
+					}
+				}
 				######################
 				# VM STATE
 				######################
@@ -814,49 +814,49 @@ sub printVMSummary {
 					$vmstateString .= "<tr>";
 
 					## ESX/ESXi host ##
-                                        $vmstateString .= "<td>".$host_name."</td>";
+					$vmstateString .= "<td>".$host_name."</td>";
 
-                                        ## DISPLAY NAME ##
-                                        $vmstateString .= "<td>".$vm->name."</td>";
+					## DISPLAY NAME ##
+					$vmstateString .= "<td>".$vm->name."</td>";
 
 					## BOOT TIME ##
-                                        $vmstateString .= "<td>".($vm->runtime->bootTime ? $vm->runtime->bootTime : "N/A")."</td>";
+					$vmstateString .= "<td>".($vm->runtime->bootTime ? $vm->runtime->bootTime : "N/A")."</td>";
 
-                                        if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
-                                                ## UPTIME ##
-                                                $vmstateString .= "<td>".($vm->summary->quickStats->uptimeSeconds ? &getUptime($vm->summary->quickStats->uptimeSeconds) : "N/A")."</td>";
-                                        }
+					if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0')) {
+						## UPTIME ##
+						$vmstateString .= "<td>".($vm->summary->quickStats->uptimeSeconds ? &getUptime($vm->summary->quickStats->uptimeSeconds) : "N/A")."</td>";
+					}
 
 					## ANNOTATION ##
 					$vmstateString .= "<td>" . ($vm->config->annotation ? $vm->config->annotation : "N/A") . "</td>";
 
 					## OVERALL STATUS ##
-                                        my $vm_health = $vm->summary->overallStatus->val;
-                                        if ($vm_health eq 'green') { $vmstateString .= "<td bgcolor=\"$green\">VM is OK</td>"; }
-                                        elsif ($vm_health eq 'red') { $vmstateString .= "<td bgcolor=\"$red\">VM has a problem</td>"; }
-                                        elsif ($vm_health eq 'yellow') { $vmstateString .= "<td bgcolor=\"$yellow\">VM<might have a problem</td>"; }
-                                        else { $vmstateString .="<td bgcolor=\"gray\">UNKNOWN</td>"; }
+					my $vm_health = $vm->summary->overallStatus->val;
+					if ($vm_health eq 'green') { $vmstateString .= "<td bgcolor=\"$green\">VM is OK</td>"; }
+					elsif ($vm_health eq 'red') { $vmstateString .= "<td bgcolor=\"$red\">VM has a problem</td>"; }
+					elsif ($vm_health eq 'yellow') { $vmstateString .= "<td bgcolor=\"$yellow\">VM<might have a problem</td>"; }
+					else { $vmstateString .="<td bgcolor=\"gray\">UNKNOWN</td>"; }
 
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+					if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 						## HA PROTECTION ##
 						if($vm->runtime->dasVmProtection) {
 						$vmstateString .= "<td>".($vm->runtime->dasVmProtection->dasProtected ? "YES" : "NO")."</td>";
 						} else { $vmstateString .= "<td>N/A</td>"; }
 					} else { $vmstateString .= "<td>N/A</td>"; }
 
-                                        if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
-                                                ## APP HEARTBEAT ##
-                                                $vmstateString .= "<td>".($vm->guest->appHeartbeatStatus ? $vm->guest->appHeartbeatStatus : "N/A")."</td>";
-                                        }
+					if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+						## APP HEARTBEAT ##
+						$vmstateString .= "<td>".($vm->guest->appHeartbeatStatus ? $vm->guest->appHeartbeatStatus : "N/A")."</td>";
+					}
 
-                                        ## CONNECTION STATE ##
-                                        $vmstateString .= "<td>".$vm->runtime->connectionState->val."</td>";
+					## CONNECTION STATE ##
+					$vmstateString .= "<td>".$vm->runtime->connectionState->val."</td>";
 
-                                        ## POWER STATE ##
-                                        $vmstateString .= "<td>".$vm->runtime->powerState->val."</td>";
+					## POWER STATE ##
+					$vmstateString .= "<td>".$vm->runtime->powerState->val."</td>";
 
 					## CONSOLIDATION ##
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+					if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 						$vmstateString .= "<td>".($vm->runtime->consolidationNeeded ? "YES" : "NO")."</td>";
 					} else { $vmstateString .= "<td>N/A</td>"; }
 
@@ -875,7 +875,7 @@ sub printVMSummary {
 					$vmconfigString .= "<td>".$vm->name."</td>";
 
 					## VIRTUAL HARDWARE VER ##
-                                        $vmconfigString .= "<td>".$vm->config->version."</td>";
+					$vmconfigString .= "<td>".$vm->config->version."</td>";
 
 					## GUEST HOSTNAME ##
 					$vmconfigString .= "<td>".($vm->guest->hostName ? $vm->guest->hostName : "N/A")."</td>";
@@ -884,7 +884,7 @@ sub printVMSummary {
 					$vmconfigString .= "<td>".($vm->summary->config->uuid ? $vm->summary->config->uuid : "N/A")."</td>";
 
 					## FIRMWARE ##
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+					if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 						$vmconfigString .= "<td>".($vm->config->firmware ? $vm->config->firmware : "N/A")."</td>";
 					} else { $vmconfigString .= "<td>N/A</td>"; }
 
@@ -897,7 +897,7 @@ sub printVMSummary {
 					$vmconfigString .= "<td>".($vm->summary->config->memorySizeMB ? &prettyPrintData($vm->summary->config->memorySizeMB,'M') : "N/A")."</td>";
 
 					## vDISK ##
-                                        $vmconfigString .= "<td>".($vm->summary->config->numVirtualDisks ? $vm->summary->config->numVirtualDisks : "N/A")."</td>";
+					$vmconfigString .= "<td>".($vm->summary->config->numVirtualDisks ? $vm->summary->config->numVirtualDisks : "N/A")."</td>";
 
 					## DISK CAPACITY ##
 					if($vm->summary->storage) {
@@ -936,10 +936,10 @@ sub printVMSummary {
 						$vmstatString .= "<tr>";
 
 						## ESX/ESXi host ##
-        	                                $vmstatString .= "<td>".$host_name."</td>";
+						$vmstatString .= "<td>".$host_name."</td>";
 
-                	                        ## DISPLAY NAME ##
-                        	                $vmstatString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmstatString .= "<td>".$vm->name."</td>";
 
 						## CPU USAGE ##
 						$vmstatString .= "<td>".($vm->summary->quickStats->overallCpuUsage ? &prettyPrintData($vm->summary->quickStats->overallCpuUsage,'MHZ') : "N/A" )."</td>";
@@ -960,7 +960,7 @@ sub printVMSummary {
 						$vmstatString .= "<td>".($vm->summary->quickStats->hostMemoryUsage ? &prettyPrintData($vm->summary->quickStats->hostMemoryUsage,'M') : "N/A")."</td>";
 
 						## INITIAL MEM RESV OVERHEAD + INITIAL MEM SWAP RESV OVERHEAD ##
-						if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0') && $vm->config->initialOverhead) {
+						if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') && $vm->config->initialOverhead) {
 							$vmstatString .= "<td>".($vm->config->initialOverhead->initialMemoryReservation ? &prettyPrintData($vm->config->initialOverhead->initialMemoryReservation,'B') : "N/A")."</td>";
 							$vmstatString .= "<td>".($vm->config->initialOverhead->initialSwapReservation ? &prettyPrintData($vm->config->initialOverhead->initialSwapReservation,'B') : "N/A")."</td>";
 						} else { $vmstatString .= "<td>N/A</td><td>N/A</td>"; }
@@ -971,7 +971,7 @@ sub printVMSummary {
 						## MEM BALLON ##
 						$vmstatString .= "<td>".($vm->summary->quickStats->balloonedMemory ? &prettyPrintData($vm->summary->quickStats->balloonedMemory,'M') : "N/A")."</td>";
 
-						if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+						if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 							## COMPRESSED MEM ##
 							if(defined($vm->summary->quickStats->compressedMemory)) {
 								if($debug) { print "---DEBUG compressedMemory for " . $vm->name . ": \"" . $vm->summary->quickStats->compressedMemory . "\" ---DEBUG\n"; }
@@ -1030,49 +1030,49 @@ sub printVMSummary {
 						#mem
 
 						## RESERVATION ##
-                                                $vmrscString .= "<td>".($memAllocation->reservation ? &prettyPrintData($memAllocation->reservation,'M') : "N/A")."</td>";
+						$vmrscString .= "<td>".($memAllocation->reservation ? &prettyPrintData($memAllocation->reservation,'M') : "N/A")."</td>";
 
-                                                ## LIMIT ##
-                                                $vmrscString .= "<td>".($memAllocation->limit ? &prettyPrintData($memAllocation->limit,'M') : "N/A")."</td>";
+						## LIMIT ##
+						$vmrscString .= "<td>".($memAllocation->limit ? &prettyPrintData($memAllocation->limit,'M') : "N/A")."</td>";
 
-                                                ## SHARES ##
+						## SHARES ##
 
-                                                # SHARES VALUE
-                                                $vmrscString .= "<td>".($memAllocation->shares->shares ? $memAllocation->shares->shares : "N/A")."</td>";
+						# SHARES VALUE
+						$vmrscString .= "<td>".($memAllocation->shares->shares ? $memAllocation->shares->shares : "N/A")."</td>";
 
-                                                # SHARES LEVEL
-                                                $vmrscString .= "<td>".($memAllocation->shares->level->val ? $memAllocation->shares->level->val : "N/A")."</td>";
+						# SHARES LEVEL
+						$vmrscString .= "<td>".($memAllocation->shares->level->val ? $memAllocation->shares->level->val : "N/A")."</td>";
 
-                                                ## EXPAND RESERVATION ##
-                                                $vmrscString .= "<td>".($memAllocation->expandableReservation ? "YES" : "NO")."</td>";
+						## EXPAND RESERVATION ##
+						$vmrscString .= "<td>".($memAllocation->expandableReservation ? "YES" : "NO")."</td>";
 
-                                                ## OVERHEAD LIMIT ##
-                                                $vmrscString .= "<td>".($memAllocation->overheadLimit ? &prettyPrintData($memAllocation->overheadLimit,'M') : "N/A")."</td>";
+						## OVERHEAD LIMIT ##
+						$vmrscString .= "<td>".($memAllocation->overheadLimit ? &prettyPrintData($memAllocation->overheadLimit,'M') : "N/A")."</td>";
 
 						$vmrscString .= "</tr>\n";
 					}
 				}
 				######################
-                                # VM PERFORMANCE
-                                ######################
+				# VM PERFORMANCE
+				######################
 				if($VM_PERFORMANCE eq "yes" || $vmperformance eq "yes") {
 					if($vm->runtime->powerState->val eq 'poweredOn') {
-		                                my $vmperf = &getCpuAndMemPerf($vm);
-        		                        $vmPerfString .= $vmperf;
+						my $vmperf = &getCpuAndMemPerf($vm);
+						$vmPerfString .= $vmperf;
 					}
 				}
 				######################
 				# FT
 				######################
 				if($VM_FT eq "yes") {
-                                        if(!$vm->config->template && defined($vm->summary->config->ftInfo)) {
+					if(!$vm->config->template && defined($vm->summary->config->ftInfo)) {
 						$vmftString .= "<tr>";
 
 						## ESX/ESXi host ##
-                                                $vmftString .= "<td>".$host_name."</td>";
+						$vmftString .= "<td>".$host_name."</td>";
 
-                                                ## DISPLAY NAME ##
-                                                $vmftString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmftString .= "<td>".$vm->name."</td>";
 
 						## FT STATE ##
 						$vmftString .= "<td>".$vm->runtime->faultToleranceState->val."</td>";
@@ -1093,62 +1093,62 @@ sub printVMSummary {
 						$vmftString .= "<td>".$instanceuuids."</td>";
 
 						## FT SECONDARY LATENCY ##
-	                                        $vmftString .= "<td>".($vm->summary->quickStats->ftSecondaryLatency ? $vm->summary->quickStats->ftSecondaryLatency : "N/A")."</td>";
+						$vmftString .= "<td>".($vm->summary->quickStats->ftSecondaryLatency ? $vm->summary->quickStats->ftSecondaryLatency : "N/A")."</td>";
 
 						## FT BW ##
-	                                        $vmftString .= "<td>".($vm->summary->quickStats->ftLogBandwidth ? $vm->summary->quickStats->ftLogBandwidth : "N/A")."</td>";
+						$vmftString .= "<td>".($vm->summary->quickStats->ftLogBandwidth ? $vm->summary->quickStats->ftLogBandwidth : "N/A")."</td>";
 						$vmftString .= "</tr>\n";
 					}
 				}
 				######################
-                                # EZT
-                                ######################
-                                if($VM_EZT eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
-                                        if(!$vm->config->template) {
-                                                my $devices = $vm->config->hardware->device;
-                                                my ($ezt_disk_string,$ezt_size_string,$ezt_label_string) = ("","","");
-                                                my $hasEZT = 0;
-                                                foreach(@$devices) {
-                                                        if($_->isa('VirtualDisk') && $_->backing->isa('VirtualDiskFlatVer2BackingInfo')) {
-                                                                my $diskName = $_->backing->fileName;
-                                                                my $label = ($_->deviceInfo->label ? $_->deviceInfo->label : "N/A");
-                                                                if(!$_->backing->thinProvisioned && defined($_->backing->eagerlyScrub)) {
+				# EZT
+				######################
+				if($VM_EZT eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+					if(!$vm->config->template) {
+						my $devices = $vm->config->hardware->device;
+						my ($ezt_disk_string,$ezt_size_string,$ezt_label_string) = ("","","");
+						my $hasEZT = 0;
+						foreach(@$devices) {
+							if($_->isa('VirtualDisk') && $_->backing->isa('VirtualDiskFlatVer2BackingInfo')) {
+								my $diskName = $_->backing->fileName;
+								my $label = ($_->deviceInfo->label ? $_->deviceInfo->label : "N/A");
+								if(!$_->backing->thinProvisioned && defined($_->backing->eagerlyScrub)) {
 									if($_->backing->eagerlyScrub) {
-                                                                        	$hasEZT = 1;
-	                                                                        $ezt_label_string .= $label."<br/>";
-        	                                                                $ezt_disk_string .= $diskName."<br/>";
-                	                                                        $ezt_size_string .= &prettyPrintData($_->capacityInKB,'K')."<br/>";
+										$hasEZT = 1;
+										$ezt_label_string .= $label."<br/>";
+										$ezt_disk_string .= $diskName."<br/>";
+										$ezt_size_string .= &prettyPrintData($_->capacityInKB,'K')."<br/>";
 									}
-                                                                }
-                                                        }
-                                                }
-                                                if($hasEZT eq 1) {
-                                                        $vmeztString .= "<tr>";
+								}
+							}
+						}
+						if($hasEZT eq 1) {
+							$vmeztString .= "<tr>";
 
-                                                        ## ESX/ESXi host ##
-                                                        $vmeztString .= "<td>".$host_name."</td>";
+							## ESX/ESXi host ##
+							$vmeztString .= "<td>".$host_name."</td>";
 
-                                                        ## DISPLAY NAME ##
-                                                        $vmeztString .= "<td>".$vm->name."</td>";
+							## DISPLAY NAME ##
+							$vmeztString .= "<td>".$vm->name."</td>";
 
-                                                        ## EZT LABEL ##
-                                                        $vmeztString .= "<td>".$ezt_label_string."</td>";
+							## EZT LABEL ##
+							$vmeztString .= "<td>".$ezt_label_string."</td>";
 
-                                                        ## EZT DISKS ##
-                                                        $vmeztString .= "<td>".$ezt_disk_string."</td>";
+							## EZT DISKS ##
+							$vmeztString .= "<td>".$ezt_disk_string."</td>";
 
-                                                        ## EZT DISKS SIZE ##
-                                                        $vmeztString .= "<td>".$ezt_size_string."</td>";
+							## EZT DISKS SIZE ##
+							$vmeztString .= "<td>".$ezt_size_string."</td>";
 
-                                                        $vmeztString .= "</tr>\n";
-                                                }
-                                        }
-                                }
+							$vmeztString .= "</tr>\n";
+						}
+					}
+				}
 				######################
 				# THIN
 				######################
 				if($VM_THIN eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						my $devices = $vm->config->hardware->device;
 						my ($thin_disk_string,$thin_size_string,$thin_label_string) = ("","","");
 						my $hasThin = 0;
@@ -1168,7 +1168,7 @@ sub printVMSummary {
 							$vmthinString .= "<tr>";
 
 							## ESX/ESXi host ##
-	                                                $vmthinString .= "<td>".$host_name."</td>";
+							$vmthinString .= "<td>".$host_name."</td>";
 
 							## DISPLAY NAME ##
 							$vmthinString .= "<td>".$vm->name."</td>";
@@ -1184,8 +1184,8 @@ sub printVMSummary {
 
 							$vmthinString .= "</tr>\n";
 						}
-                                        }
-                                }
+					}
+				}
 				######################
 				# DEVICE
 				######################
@@ -1193,11 +1193,11 @@ sub printVMSummary {
 					if(!$vm->config->template) {
 						$vmdeviceString .= "<tr>";
 
-                                                ## ESX/ESXi host ##
-                                                $vmdeviceString .= "<td>".$host_name."</td>";
+						## ESX/ESXi host ##
+						$vmdeviceString .= "<td>".$host_name."</td>";
 
-                                                ## DISPLAY NAME ##
-                                                $vmdeviceString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmdeviceString .= "<td>".$vm->name."</td>";
 
 						my %deviceMapper = ();
 
@@ -1265,21 +1265,21 @@ sub printVMSummary {
 								$pointingdevice++;
 							}elsif($device->isa('VirtualSCSIPassthrough')) {
 								$scsipassthrough++;
-                                                        }elsif($device->isa('VirtualSerialPort')) {
+							}elsif($device->isa('VirtualSerialPort')) {
 								$serialport++;
-                                                        }elsif($device->isa('VirtualSoundCard')) {
+							}elsif($device->isa('VirtualSoundCard')) {
 								if($device->isa('VirtualEnsoniq1371')) {
 									$ensoniqsoundcard++;
 								}elsif($device->isa('VirtualSoundBlaster16')) {
 									$blastersoundcard++;
 								}
-                                                        }elsif($device->isa('VirtualUSB')) {
+							}elsif($device->isa('VirtualUSB')) {
 								$usb++;
 							}
 						}
 
 						## OS ##
-	                                        $vmdeviceString .= "<td>".($vm->config->guestFullName ? $vm->config->guestFullName : "N/A")."</td>";
+						$vmdeviceString .= "<td>".($vm->config->guestFullName ? $vm->config->guestFullName : "N/A")."</td>";
 
 						## CDROM ##
 						$vmdeviceString .= "<td>".$cdrom."</td>";
@@ -1290,29 +1290,29 @@ sub printVMSummary {
 							$controllerString .= $idecontroller . " x IDE Controller<br/>";
 						}
 						if($pcicontroller != 0) {
-                                                        $controllerString .= $pcicontroller . " x PCI Controller<br/>";
+							$controllerString .= $pcicontroller . " x PCI Controller<br/>";
 						}
 						if($ps2controller != 0) {
-                                                        $controllerString .= $ps2controller . " x PS2 Controller<br/>";
-                                                }
+							$controllerString .= $ps2controller . " x PS2 Controller<br/>";
+						}
 						if($paracontroller != 0) {
-                                                        $controllerString .= $paracontroller . " x PARA-VIRT Controller<br/>";
-                                                }
+							$controllerString .= $paracontroller . " x PARA-VIRT Controller<br/>";
+						}
 						if($buscontroller != 0) {
-                                                        $controllerString .= $buscontroller . " x BUS Controller<br/>";
-                                                }
+							$controllerString .= $buscontroller . " x BUS Controller<br/>";
+						}
 						if($lsicontroller != 0) {
-                                                        $controllerString .= $lsicontroller . " x LSI LOGIC Controller<br/>";
-                                                }
+							$controllerString .= $lsicontroller . " x LSI LOGIC Controller<br/>";
+						}
 						if($lsilogiccontroller != 0) {
-                                                        $controllerString .= $lsilogiccontroller . " x LSI LOGIC SAS Controller<br/>";
-                                                }
+							$controllerString .= $lsilogiccontroller . " x LSI LOGIC SAS Controller<br/>";
+						}
 						if($siocontroller != 0) {
-                                                        $controllerString .= $siocontroller . " x SIO Controller<br/>";
-                                                }
+							$controllerString .= $siocontroller . " x SIO Controller<br/>";
+						}
 						if($usbcontroller != 0) {
-                                                        $controllerString .= $usbcontroller . " x USB Controller<br/>";
-                                                }
+							$controllerString .= $usbcontroller . " x USB Controller<br/>";
+						}
 						if($controllerString eq "") { $controllerString = "N/A"; }
 						$vmdeviceString .= "<td>".$controllerString."</td>";
 
@@ -1326,13 +1326,13 @@ sub printVMSummary {
 						}
 						if($pcnet32ethernet != 0) {
 							$ethString .= $pcnet32ethernet . " x PCNET32<br/>";
-                                                }
+						}
 						if($vmxnet2ethernet != 0) {
 							$ethString .= $vmxnet2ethernet . " x VMXNET2<br/>";
-                                                }
+						}
 						if($vmxnet3ethernet != 0) {
 							$ethString .= $vmxnet3ethernet . " x VMXNET3<br/>";
-                                                }
+						}
 						if($ethString eq "") { $ethString = "N/A"; }
 						$vmdeviceString .= "<td>".$ethString."</td>";
 
@@ -1373,7 +1373,7 @@ sub printVMSummary {
 						}
 						if($blastersoundcard != 0) {
 							$soundString .= $blastersoundcard . " x Soundblaster Sound Card<br/>";
-                                                }
+						}
 						if($soundString eq "") { $soundString = "N/A"; }
 						$vmdeviceString .= "<td>".$soundString."</td>";
 
@@ -1387,14 +1387,14 @@ sub printVMSummary {
 				# VM STORAGE
 				######################
 				if($VM_STORAGE eq "yes") {
-                                        if(!$vm->config->template && $vm->guest->disk) {
-                                                $vmstorageString .= "<tr>";
+					if(!$vm->config->template && $vm->guest->disk) {
+						$vmstorageString .= "<tr>";
 
-                                                ## ESX/ESXi host ##
-                                                $vmstorageString .= "<td>".$host_name."</td>";
+						## ESX/ESXi host ##
+						$vmstorageString .= "<td>".$host_name."</td>";
 
-                                                ## DISPLAY NAME ##
-                                                $vmstorageString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmstorageString .= "<td>".$vm->name."</td>";
 
 						my $vdisks = $vm->guest->disk;
 						my $disk_string = "";
@@ -1407,36 +1407,36 @@ sub printVMSummary {
 							$disk_string .= "<td><table border=\"1\" width=100%><tr><td>$vm_disk_path</td><td>$vm_disk_free</td><td>$vm_disk_cap</td>$perc_string</tr></table></td>";
 						}
 						$vmstorageString .= $disk_string;
-                                                $vmstorageString .= "</tr>\n";
-                                        }
-                                }
+						$vmstorageString .= "</tr>\n";
+					}
+				}
 				######################
-                                # VM NETWORK
-                                ######################
+				# VM NETWORK
+				######################
 				if($VM_NETWORK eq "yes" && $vm->guest->net) {
-                                        if(!$vm->config->template) {
-                                                $vmnetworkString .= "<tr>";
+					if(!$vm->config->template) {
+						$vmnetworkString .= "<tr>";
 
-                                                ## ESX/ESXi host ##
-                                                $vmnetworkString .= "<td>".$host_name."</td>";
+						## ESX/ESXi host ##
+						$vmnetworkString .= "<td>".$host_name."</td>";
 
-                                                ## DISPLAY NAME ##
-                                                $vmnetworkString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmnetworkString .= "<td>".$vm->name."</td>";
 
 						my ($vm_ip_string,$vm_mac_string,$vm_pg_string,$vm_connect_string) = ("","","","");
 
 						my $vnics = $vm->guest->net;
 						foreach(@$vnics) {
 							## IP ADDRESS ##
-							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+							if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 								if($_->ipConfig) {
 									my $ips = $_->ipConfig->ipAddress;
 									foreach(@$ips) {
 										if($demo eq "no") {
-                                                                                        $vm_ip_string .= $_->ipAddress."<br/>";
-                                                                                } else {
-                                                                                        $vm_ip_string .= "demo_mode<br/>";
-                                                                                }
+											$vm_ip_string .= $_->ipAddress."<br/>";
+										} else {
+											$vm_ip_string .= "demo_mode<br/>";
+										}
 									}
 								} else { $vm_ip_string .= "N/A<br/>"; }
 							} else {
@@ -1459,8 +1459,8 @@ sub printVMSummary {
 								if($demo eq "no") {
 									$vm_mac_string .= $_->macAddress."<br/>";
 								} else {
-                                                                        $vm_mac_string .= "demo_mode<br/>";
-                                                                }
+									$vm_mac_string .= "demo_mode<br/>";
+								}
 							} else {
 								$vm_mac_string .= "N/A<br/>";
 							}
@@ -1470,8 +1470,8 @@ sub printVMSummary {
 								if($demo eq "no") {
 									$vm_pg_string .= $_->network."<br/>";
 								} else {
-                                                                        $vm_pg_string .= "demo_mode<br/>";
-                                                                }
+									$vm_pg_string .= "demo_mode<br/>";
+								}
 							} else {
 								$vm_pg_string .=  "N/A<br/>";
 							}
@@ -1480,14 +1480,14 @@ sub printVMSummary {
 							$vm_connect_string .= ($_->connected ? "YES<br/>" : "NO<br/>");
 						}
 						$vmnetworkString .= "<td>".$vm_ip_string."</td><td>".$vm_mac_string."</td><td>".$vm_pg_string."</td><td>".$vm_connect_string."</td>";
-                                                $vmnetworkString .= "</tr>\n";
-                                        }
-                                }
+						$vmnetworkString .= "</tr>\n";
+					}
+				}
 				######################
 				# SNAPSHOT
 				######################
 				if($VM_SNAPSHOT eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						if($vm->snapshot) {
 							&getSnapshotTree($host_name,$vm->name,$vm->snapshot->currentSnapshot,$vm->snapshot->rootSnapshotList);
 							foreach(@vmsnapshots) {
@@ -1495,98 +1495,98 @@ sub printVMSummary {
 							}
 							@vmsnapshots = ();
 						}
-                                        }
-                                }
+					}
+				}
 				######################
 				# CDROM
 				######################
 				if($VM_CDROM eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						my $devices = $vm->config->hardware->device;
-                                                my ($cd_string) = ("");
-                                                my $hasCD = 0;
-                                                foreach(@$devices) {
-                                                        if($_->isa('VirtualCdrom') && $_->connectable->connected) {
+						my ($cd_string) = ("");
+						my $hasCD = 0;
+						foreach(@$devices) {
+							if($_->isa('VirtualCdrom') && $_->connectable->connected) {
 								$hasCD = 1;
 								if($_->deviceInfo->summary) {
 									$cd_string .= $_->deviceInfo->summary."<br/>";
 								} else {
 									$cd_string .= "N/A";
 								}
-                                                        }
-                                                }
-                                                if($hasCD eq 1) {
-                                                        $vmcdString .= "<tr>";
+							}
+						}
+						if($hasCD eq 1) {
+							$vmcdString .= "<tr>";
 
-                                                        ## ESX/ESXi host ##
-                                                        $vmcdString .= "<td>".$host_name."</td>";
+							## ESX/ESXi host ##
+							$vmcdString .= "<td>".$host_name."</td>";
 
-                                                        ## DISPLAY NAME ##
-                                                        $vmcdString .= "<td>".$vm->name."</td>";
+							## DISPLAY NAME ##
+							$vmcdString .= "<td>".$vm->name."</td>";
 
 							## ISO ##
 							$vmcdString .= "<td>".$cd_string."</td>";
 
-                                                        $vmcdString .= "</tr>\n";
-                                                }
+							$vmcdString .= "</tr>\n";
+						}
 
-                                        }
-                                }
+					}
+				}
 				######################
 				# FLOPPY
 				######################
 				if($VM_FLOPPY eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						my $devices = $vm->config->hardware->device;
-                                                my ($flp_string) = ("");
-                                                my $hasFLP = 0;
-                                                foreach(@$devices) {
-                                                        if($_->isa('VirtualFloppy') && $_->connectable->connected) {
-                                                                $hasFLP = 1;
-                                                                if($_->deviceInfo->summary) {
-                                                                        $flp_string .= $_->deviceInfo->summary."<br/>";
-                                                                } else {
-                                                                        $flp_string .= "N/A";
-                                                                }
-                                                        }
-                                                }
-                                                if($hasFLP eq 1) {
-                                                        $vmflpString .= "<tr>";
+						my ($flp_string) = ("");
+						my $hasFLP = 0;
+						foreach(@$devices) {
+							if($_->isa('VirtualFloppy') && $_->connectable->connected) {
+								$hasFLP = 1;
+								if($_->deviceInfo->summary) {
+									$flp_string .= $_->deviceInfo->summary."<br/>";
+								} else {
+									$flp_string .= "N/A";
+								}
+							}
+						}
+						if($hasFLP eq 1) {
+							$vmflpString .= "<tr>";
 
-                                                        ## ESX/ESXi host ##
-                                                        $vmflpString .= "<td>".$host_name."</td>";
+							## ESX/ESXi host ##
+							$vmflpString .= "<td>".$host_name."</td>";
 
-                                                        ## DISPLAY NAME ##
-                                                        $vmflpString .= "<td>".$vm->name."</td>";
+							## DISPLAY NAME ##
+							$vmflpString .= "<td>".$vm->name."</td>";
 
-                                                        ## FLP ##
-                                                        $vmflpString .= "<td>".$flp_string."</td>";
+							## FLP ##
+							$vmflpString .= "<td>".$flp_string."</td>";
 
-                                                        $vmflpString .= "</tr>\n";
-                                                }
-                                        }
-                                }
+							$vmflpString .= "</tr>\n";
+						}
+					}
+				}
 				######################
-                                # TOOLS
-                                ######################
+				# TOOLS
+				######################
 				if($VM_TOOL eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						$vmtoolString .= "<tr>";
 
 						## ESX/ESXi host ##
-                                                $vmtoolString .= "<td>".$host_name."</td>";
+						$vmtoolString .= "<td>".$host_name."</td>";
 
-                                                ## DISPLAY NAME ##
-                                                $vmtoolString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmtoolString .= "<td>".$vm->name."</td>";
 
 						if($vm->guest) {
 							## TOOLS VERSION ##
-                                                        $vmtoolString .= "<td>".($vm->guest->toolsVersion ? $vm->guest->toolsVersion : "N/A")."</td>";
+							$vmtoolString .= "<td>".($vm->guest->toolsVersion ? $vm->guest->toolsVersion : "N/A")."</td>";
 
 							## TOOLS RUNNING STATUS ##
 							$vmtoolString .= "<td>".($vm->guest->toolsRunningStatus ? $vm->guest->toolsRunningStatus : "N/A")."</td>";
 							## TOOLS VERSION STATUS ##
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+							if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 								$vmtoolString .= "<td>".($vm->guest->toolsVersionStatus2 ? $vm->guest->toolsVersionStatus2 : "N/A")."</td>";
 							} else {
 								$vmtoolString .= "<td>".($vm->guest->toolsVersionStatus ? $vm->guest->toolsVersionStatus : "N/A")."</td>";
@@ -1602,61 +1602,61 @@ sub printVMSummary {
 
 							## SYNC TIME ##
 							$vmtoolString .= "<td>".($vm->config->tools->syncTimeWithHost ? "YES" : "NO")."</td>";
-                                                } else {
+						} else {
 							$vmtoolString .= "<td>N/A</td>";
 							$vmtoolString .= "<td>N/A</td>";
 						}
 						$vmtoolString .= "</tr>\n";
-                                        }
-                                }
+					}
+				}
 				######################
 				# RDM
 				######################
 				if($VM_RDM eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						my $devices = $vm->config->hardware->device;
-                                                my $hasRDM = 0;
-                                                foreach(@$devices) {
+						my $hasRDM = 0;
+						foreach(@$devices) {
 							my ($rdm_string) = ("");
-                                                        if($_->isa('VirtualDisk') && ($_->backing->isa('VirtualDiskRawDiskVer2BackingInfo') || $_->backing->isa('VirtualDiskRawDiskMappingVer1BackingInfo'))) {
-                                                                $hasRDM = 1;
+							if($_->isa('VirtualDisk') && ($_->backing->isa('VirtualDiskRawDiskVer2BackingInfo') || $_->backing->isa('VirtualDiskRawDiskMappingVer1BackingInfo'))) {
+								$hasRDM = 1;
 								my $compat_mode = ($_->backing->compatibilityMode ? $_->backing->compatibilityMode : "N/A");
 								my $vmhba = ($_->backing->deviceName ? $_->backing->deviceName : "N/A");
-		                                                my $disk_mode = ($_->backing->diskMode ? $_->backing->diskMode : "N/A");
-                		                                my $lun_uuid = ($_->backing->lunUuid ? $_->backing->lunUuid : "N/A");
-                                		                my $vm_uuid = ($_->backing->uuid ? $_->backing->uuid : "N/A");
-                                                                $rdm_string .= "<td>".$compat_mode."</td><td>".$vmhba."</td><td>".$disk_mode."</td><td>".$lun_uuid."</td><td>".$vm_uuid."</td>";
+								my $disk_mode = ($_->backing->diskMode ? $_->backing->diskMode : "N/A");
+								my $lun_uuid = ($_->backing->lunUuid ? $_->backing->lunUuid : "N/A");
+								my $vm_uuid = ($_->backing->uuid ? $_->backing->uuid : "N/A");
+								$rdm_string .= "<td>".$compat_mode."</td><td>".$vmhba."</td><td>".$disk_mode."</td><td>".$lun_uuid."</td><td>".$vm_uuid."</td>";
 
-                                                #}
-                                                #if($hasRDM eq 1) {
-                                                        $vmrdmString .= "<tr>";
+						#}
+						#if($hasRDM eq 1) {
+							$vmrdmString .= "<tr>";
 
-                                                        ## ESX/ESXi host ##
-                                                        $vmrdmString .= "<td>".$host_name."</td>";
+							## ESX/ESXi host ##
+							$vmrdmString .= "<td>".$host_name."</td>";
 
-                                                        ## DISPLAY NAME ##
-                                                        $vmrdmString .= "<td>".$vm->name."</td>";
+							## DISPLAY NAME ##
+							$vmrdmString .= "<td>".$vm->name."</td>";
 
-                                                        ## RDM ##
-                                                        $vmrdmString .= $rdm_string;
+							## RDM ##
+							$vmrdmString .= $rdm_string;
 
-                                                        $vmrdmString .= "</tr>\n";
-                                                }}
-                                        }
-                                }
+							$vmrdmString .= "</tr>\n";
+						}}
+					}
+				}
 				######################
 				# NPIV
 				######################
 				if($VM_NPIV eq "yes") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						if($vm->config->npivNodeWorldWideName && $vm->config->npivPortWorldWideName) {
-	                                                $vmnpivString .= "<tr>";
+							$vmnpivString .= "<tr>";
 
-        	                                        ## ESX/ESXi host ##
-                	                                $vmnpivString .= "<td>".$host_name."</td>";
+							## ESX/ESXi host ##
+							$vmnpivString .= "<td>".$host_name."</td>";
 
-                        	                        ## DISPLAY NAME ##
-                                	                $vmnpivString .= "<td>".$vm->name."</td>";
+							## DISPLAY NAME ##
+							$vmnpivString .= "<td>".$vm->name."</td>";
 
 							my $nwwns = $vm->config->npivNodeWorldWideName;
 							my $pwwns = $vm->config->npivPortWorldWideName;
@@ -1677,14 +1677,14 @@ sub printVMSummary {
 							$npiv_string .= "</td><td>";
 							foreach(@$pwwns) {
 								my $pwwn = (Math::BigInt->new($_))->as_hex();
-			                                        $pwwn =~ s/^..//;
-                        			                $pwwn = join(':', unpack('A2' x 8, $pwwn));
+								$pwwn =~ s/^..//;
+								$pwwn = join(':', unpack('A2' x 8, $pwwn));
 								if($demo eq "no") {
-                                                			$npiv_string .= "$pwwn<br/>";
-                                        			} else {
+									$npiv_string .= "$pwwn<br/>";
+								} else {
 									$npiv_string .= "XX:XX:XX:XX:XX:XX:XX:XX<br/>";
 								}
-                                                        }
+							}
 							my $npivtype = "";
 							if($type eq "vc") { $npivtype = "Virtual Center"; }
 							elsif($type eq "external") { $npivtype = "External Source"; }
@@ -1692,40 +1692,40 @@ sub printVMSummary {
 							$npiv_string .= "</td><td>".$npivtype."</td><td>".$desirednwwn."</td><td>".$desiredpwwn."</td>";
 
 							$vmnpivString .= $npiv_string;
-        	                                        $vmnpivString .= "</tr>\n";
+							$vmnpivString .= "</tr>\n";
 						}
-                                        }
-                                }
+					}
+				}
 
 
 				if($VM_STATS eq "yesaaaaa") {
-                                        if(!$vm->config->template) {
+					if(!$vm->config->template) {
 						$vmstatString .= "<tr>";
 
 						## ESX/ESXi host ##
-                                                $vmstatString .= "<td>".$host_name."</td>";
+						$vmstatString .= "<td>".$host_name."</td>";
 
-                                                ## DISPLAY NAME ##
-                                                $vmstatString .= "<td>".$vm->name."</td>";
+						## DISPLAY NAME ##
+						$vmstatString .= "<td>".$vm->name."</td>";
 
 
 						$vmstatString .= "</tr>\n";
-                                        }
-                                }
+					}
+				}
 
 				## STOP ###
 			}
 		}
 
 		######################
-                # DLETA
-                ######################
-                if($VM_DELTA eq "yes") {
+		# DLETA
+		######################
+		if($VM_DELTA eq "yes") {
 			foreach(@vmdeltas) {
 				$vmdeltaString .= "<tr>".$_."</tr>\n";
 			}
 			@vmdeltas = ();
-                }
+		}
 		&buildVMReport($cluster_name,$cluster_count,$type,$atype,$aversion);
 	}
 }
@@ -1743,9 +1743,9 @@ sub printHostSummary {
 			next if($local_host->runtime->connectionState->val ne "connected");
 
 			#skip if VM is not in valid list
-	                if($hostlist) {
-        	                next if(!$hostlists{$local_host->name});
-                        }
+			if($hostlist) {
+				next if(!$hostlists{$local_host->name});
+			}
 
 			#capture unique hosts for later use
 			push @hosts_seen,$host_name;
@@ -1764,17 +1764,17 @@ sub printHostSummary {
 				my $additional_vendor_info = "";
 				if($local_host->summary->hardware->otherIdentifyingInfo) {
 					my $add_info = $local_host->summary->hardware->otherIdentifyingInfo;
-        			        foreach (@$add_info) {
-	        	                        $additional_vendor_info .= $_->identifierType->key.": ".$_->identifierValue." ";
-        	        	        }
-	                        	if($additional_vendor_info eq '') {
-        	                        	$additional_vendor_info = "UNKNOWN";
-                	        	}
+					foreach (@$add_info) {
+						$additional_vendor_info .= $_->identifierType->key.": ".$_->identifierValue." ";
+					}
+					if($additional_vendor_info eq '') {
+						$additional_vendor_info = "UNKNOWN";
+					}
 				}
 				$hardwareConfigurationString .= "<td>".$additional_vendor_info."</td>";
 				$hardwareConfigurationString .= "<td>".$local_host->summary->hardware->model."</td>";
 				$hardwareConfigurationString .= "<td>".$local_host->summary->hardware->cpuModel."</td>";
-				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+				if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 					$hardwareConfigurationString .= "<td>".(($local_host->hardware->smcPresent) ? "YES" : "NO")."</td>";
 				} else { $hardwareConfigurationString .= "<td>N/A</td>"; }
 				$hardwareConfigurationString .= "<td>".(($local_host->config->hyperThread->available) ? "YES" : "NO")."</td>";
@@ -1823,14 +1823,14 @@ sub printHostSummary {
 				$mgmtString .= "<td>".$mgmtIp."</td>";
 
 				if($atype eq "VirtualCenter") {
-                                        if($local_host->summary->config->product) {
-                                        	$mgmtString .= "<td>".($local_host->config->adminDisabled ? "YES" : "NO")."</td>";
-                                        }
-                                } else {
+					if($local_host->summary->config->product) {
+						$mgmtString .= "<td>".($local_host->config->adminDisabled ? "YES" : "NO")."</td>";
+					}
+				} else {
 					$mgmtString .= "<td>UNKNOWN</td>";
 				}
 
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						my $systemFile = "";
 						if($local_host->config->systemFile) {
@@ -1861,29 +1861,29 @@ sub printHostSummary {
 			######################
 			if($HOST_STATE eq "yes") {
 				$stateString .= "<tr>";
-                                $stateString .= "<td>".$host_name."</td>";
+				$stateString .= "<td>".$host_name."</td>";
 				my $host_health .= $local_host->overallStatus->val;
 				if ($host_health eq 'green') { $stateString .= "<td bgcolor=\"$green\">HOST is OK</td>"; }
-                		elsif ($host_health eq 'red') { $stateString .= "<td bgcolor=\"$red\">HOST has a problem</td>"; }
-                		elsif ($host_health eq 'yellow') { $stateString .= "<td bgcolor=\"$yellow\">HOST might have a problem</td>"; }
-                		else { $stateString .= "<td bgcolor=\"gray\">UNKNOWN</td>"; }
+				elsif ($host_health eq 'red') { $stateString .= "<td bgcolor=\"$red\">HOST has a problem</td>"; }
+				elsif ($host_health eq 'yellow') { $stateString .= "<td bgcolor=\"$yellow\">HOST might have a problem</td>"; }
+				else { $stateString .= "<td bgcolor=\"gray\">UNKNOWN</td>"; }
 				$stateString .= "<td>".$local_host->runtime->powerState->val."</td>";
 				if($local_host->runtime->bootTime) { $stateString .= "<td>".$local_host->runtime->bootTime."</td>"; }
 				else { $stateString .= "<td>UNKNOWN</td>"; }
 
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
-                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
+				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						if($local_host->summary->quickStats->uptime) {
 							my $uptime = $local_host->summary->quickStats->uptime;
 							$stateString .= "<td>".&getUptime($uptime)."</td>";
 						}
-                                		else { $stateString .= "<td>UNKNOWN</td>"; }
+						else { $stateString .= "<td>UNKNOWN</td>"; }
 					} else {
 						$stateString .= "<td>N/A</td>";
 					}
 				}
 
-				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0') && $atype eq "VirtualCenter") {
+				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') && $atype eq "VirtualCenter") {
 					if($local_host->runtime->dasHostState) {
 						$stateString .= "<td>".$local_host->runtime->dasHostState->state."</td>";
 					} else {
@@ -1896,8 +1896,8 @@ sub printHostSummary {
 				$stateString .= "<td>".$local_host->runtime->connectionState->val."</td>";
 				$stateString .= "<td>".(($local_host->summary->runtime->inMaintenanceMode) ? "YES" : "NO")."</td>";
 
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
-                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
+				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+					if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 						$stateString .= "<td>".(($local_host->runtime->standbyMode) ? $local_host->runtime->standbyMode : "N/A")."</td>";
 					} else {
 						$stateString .= "<td>N/A</td>";
@@ -1925,8 +1925,8 @@ sub printHostSummary {
 								$sensor_health = $_->status->key;
 								if ($sensor_health =~ m/green/i) { $sensor_health_color="<td bgcolor=\"$green\">OK</td>"; }
 								elsif ($sensor_health_color =~ m/red/i) { $sensor_health_color="<td bgcolor=\"$red\">PROBLEM</td>"; }
-                                                        	elsif ($sensor_health_color =~ m/yellow/i) { $sensor_health_color="<td bgcolor=\"$yellow\">WARNING</td>"; }
-                                                        	else { $sensor_health_color="<td bgcolor=\"gray\">UNKNOWN</td>"; }
+								elsif ($sensor_health_color =~ m/yellow/i) { $sensor_health_color="<td bgcolor=\"$yellow\">WARNING</td>"; }
+								else { $sensor_health_color="<td bgcolor=\"gray\">UNKNOWN</td>"; }
 								$healthHardwareString .= "<tr><td>".$_->name."</td>".$sensor_health_color."</tr>\n";
 							}
 						}
@@ -1934,22 +1934,22 @@ sub printHostSummary {
 							$memInfo = $hardwareStatusInfo->memoryStatusInfo;
 							foreach(@$memInfo) {
 								$sensor_health = $_->status->key;
-                                                                if ($sensor_health =~ m/green/i) { $sensor_health_color="<td bgcolor=\"$green\">OK</td>"; }
-                                                                elsif ($sensor_health_color =~ m/red/i) { $sensor_health_color="<td bgcolor=\"$red\">PROBLEM</td>"; }
-                                                                elsif ($sensor_health_color =~ m/yellow/i) { $sensor_health_color="<td bgcolor=\"$yellow\">WARNING</td>"; }
-                                                                else { $sensor_health_color="<td bgcolor=\"gray\">UNKNOWN</td>"; }
-                                                                $healthHardwareString .= "<tr><td>".$_->name."</td>".$sensor_health_color."</tr>\n";
+								if ($sensor_health =~ m/green/i) { $sensor_health_color="<td bgcolor=\"$green\">OK</td>"; }
+								elsif ($sensor_health_color =~ m/red/i) { $sensor_health_color="<td bgcolor=\"$red\">PROBLEM</td>"; }
+								elsif ($sensor_health_color =~ m/yellow/i) { $sensor_health_color="<td bgcolor=\"$yellow\">WARNING</td>"; }
+								else { $sensor_health_color="<td bgcolor=\"gray\">UNKNOWN</td>"; }
+								$healthHardwareString .= "<tr><td>".$_->name."</td>".$sensor_health_color."</tr>\n";
 							}
 						}
 						if($hardwareStatusInfo->storageStatusInfo) {
 							$storageInfo = $hardwareStatusInfo->storageStatusInfo;
 							foreach(@$storageInfo) {
 								$sensor_health = $_->status->key;
-                                                                if ($sensor_health =~ m/green/i) { $sensor_health_color="<td bgcolor=\"$green\">OK</td>"; }
-                                                                elsif ($sensor_health_color =~ m/red/i) { $sensor_health_color="<td bgcolor=\"$red\">PROBLEM</td>"; }
-                                                                elsif ($sensor_health_color =~ m/yellow/i) { $sensor_health_color="<td bgcolor=\"$yellow\">WARNING</td>"; }
-                                                                else { $sensor_health_color="<td bgcolor=\"gray\">UNKNOWN</td>"; }
-                                                                $healthHardwareString .= "<tr><td>".$_->name."</td>".$sensor_health_color."</tr>\n";
+								if ($sensor_health =~ m/green/i) { $sensor_health_color="<td bgcolor=\"$green\">OK</td>"; }
+								elsif ($sensor_health_color =~ m/red/i) { $sensor_health_color="<td bgcolor=\"$red\">PROBLEM</td>"; }
+								elsif ($sensor_health_color =~ m/yellow/i) { $sensor_health_color="<td bgcolor=\"$yellow\">WARNING</td>"; }
+								else { $sensor_health_color="<td bgcolor=\"gray\">UNKNOWN</td>"; }
+								$healthHardwareString .= "<tr><td>".$_->name."</td>".$sensor_health_color."</tr>\n";
 							}
 						}
 					}
@@ -2002,7 +2002,7 @@ sub printHostSummary {
 						$nicString .= "<td>demo_mode</td></tr>\n";
 					}
 				}
-		        }
+			}
 			######################
 			# HBA
 			######################
@@ -2015,7 +2015,7 @@ sub printHostSummary {
 						if($hba->isa("HostFibreChannelHba")) {
 							my $hbaType = "FC";
 							my ($fcfMac,$vnportMac) = ("","");
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+							if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 								if($hba->isa("HostFibreChannelOverEthernetHba")) {
 									$hbaType = "FCoE";
 									$fcfMac = $hba->linkInfo->fcfMac;
@@ -2031,12 +2031,12 @@ sub printHostSummary {
 
 							if($demo eq "yes") {
 								$nwwn = "XX:XX:XX:XX:XX:XX:XX:XX";
-                                                                $pwwn = "XX:XX:XX:XX:XX:XX:XX:XX";
-                                                                $fcfMac = "XX:XX:XX:XX:XX:XX";
-                                                                $vnportMac = "XX:XX:XX:XX:XX:XX";
+								$pwwn = "XX:XX:XX:XX:XX:XX:XX:XX";
+								$fcfMac = "XX:XX:XX:XX:XX:XX";
+								$vnportMac = "XX:XX:XX:XX:XX:XX";
 							}
 							$hbaString .= "<td>".$hbaType."</td><td>".$hba->device."</td><td>".$hba->pci."</td><td>".$hba->model."</td><td>".$hba->driver."</td><td>".$hba->status."</td><td><b>NWWN</b> ".$nwwn."</td><td><b>PWWN</b> ".$pwwn."</td>";
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0') && $hbaType eq "FCoE") {
+							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') && $hbaType eq "FCoE") {
 								$hbaString .= "<td><b><FCFMAC</b> ".$fcfMac."</td><td><b>VNPORTMAC</b> ".$vnportMac."</td>";
 							}
 							$hbaString .= "<td><b>PORT TYPE</b> ".$hba->portType->val."</td><td><b>SPEED</b> ".$hba->speed."</td></td>";
@@ -2054,7 +2054,7 @@ sub printHostSummary {
 			######################
 			# iSCSI
 			######################
-			if($HOST_ISCSI eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+			if($HOST_ISCSI eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
 				my $hbas;
 				eval { $hbas = $local_host->config->storageDevice->hostBusAdapter; };
 				if(!$@) {
@@ -2079,17 +2079,17 @@ sub printHostSummary {
 										$iscsiString .= "<td>".$iscsiPort->vnic->spec->ip->ipAddress."</td>";
 									} else { $iscsiString .= "<td>N/A</td>"; }
 									if($iscsiPort->vnic->spec->ip->subnetMask) {
-                                                                                $iscsiString .= "<td>".$iscsiPort->vnic->spec->ip->subnetMask."</td>";
-                                                                        } else { $iscsiString .= "<td>N/A</td>"; }
+										$iscsiString .= "<td>".$iscsiPort->vnic->spec->ip->subnetMask."</td>";
+									} else { $iscsiString .= "<td>N/A</td>"; }
 									if($iscsiPort->vnic->spec->mac) {
-                                                                                $iscsiString .= "<td>".$iscsiPort->vnic->spec->mac."</td>";
-                                                                        } else { $iscsiString .= "<td>N/A</td>"; }
+										$iscsiString .= "<td>".$iscsiPort->vnic->spec->mac."</td>";
+									} else { $iscsiString .= "<td>N/A</td>"; }
 									if($iscsiPort->vnic->spec->mtu) {
-                                                                                $iscsiString .= "<td>".$iscsiPort->vnic->spec->mtu."</td>";
-                                                                        } else { $iscsiString .= "<td>N/A</td>"; }
+										$iscsiString .= "<td>".$iscsiPort->vnic->spec->mtu."</td>";
+									} else { $iscsiString .= "<td>N/A</td>"; }
 									if(defined($iscsiPort->vnic->spec->tsoEnabled)) {
 										$iscsiString .= "<td>".($iscsiPort->vnic->spec->tsoEnabled ? "YES" : "NO")."</td>";
-                                                                        } else { $iscsiString .= "<td>N/A</td>"; }
+									} else { $iscsiString .= "<td>N/A</td>"; }
 									if($iscsiPort->pnic) {
 										$iscsiString .= "<td>".$iscsiPort->pnic->linkSpeed->speedMb . " (" . ($iscsiPort->pnic->linkSpeed->duplex ? "FULL-DUPLEX" : "HALF-DUPLEX") . ")"."</td>";
 									} else { $iscsiString .= "<td>N/A</td>"; }
@@ -2111,9 +2111,9 @@ sub printHostSummary {
 			if($HOST_CAPABILITY eq "yes") {
 				if($local_host->capability) {
 					$capString .= "<tr>";
-	                                $capString .= "<td>".$host_name."</td>";
+					$capString .= "<td>".$host_name."</td>";
 
-					if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+					if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 						## MAX VMS ##
 						if($local_host->capability->maxHostRunningVms) {
 							$capString .= "<td>".$local_host->capability->maxHostRunningVms."</td>";
@@ -2121,8 +2121,8 @@ sub printHostSummary {
 
 						## MAX VCPU ##
 						if($local_host->capability->maxHostSupportedVcpus) {
-                                                        $capString .= "<td>".$local_host->capability->maxHostSupportedVcpus."</td>";
-                                                } else { $capString .= "<td>N/A</td>"; }
+							$capString .= "<td>".$local_host->capability->maxHostSupportedVcpus."</td>";
+						} else { $capString .= "<td>N/A</td>"; }
 
 						## VMFS VERSION ##
 						if($local_host->capability->supportedVmfsMajorVersion) {
@@ -2146,8 +2146,8 @@ sub printHostSummary {
 					## HV ##
 					$capString .= "<td>".($local_host->capability->virtualExecUsageSupported ? "YES" : "NO")."</td>";
 
-					if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
-	                                        if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
+					if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+						if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 							## STORAGE IORM ##
 							$capString .= "<td>".($local_host->capability->storageIORMSupported ? "YES" : "NO")."</td>";
 
@@ -2167,8 +2167,8 @@ sub printHostSummary {
 					if($local_host->capability->loginBySSLThumbprintSupported) {
 						$capString .= "<td>".($local_host->capability->loginBySSLThumbprintSupported ? "YES" : "NO")."</td>";
 					} else {
-                                                $capString .= "<td>N/A</td>";
-                                        }
+						$capString .= "<td>N/A</td>";
+					}
 
 					$capString .= "</tr>\n";
 				}
@@ -2351,14 +2351,14 @@ sub printHostSummary {
 						my $serviceString = "";
 						foreach(@$services) {
 							$serviceString .= "<tr><td>".$_->label."</td>";
-							if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+							if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 								if($_->sourcePackage) {
 									$serviceString .= "<td>".$_->sourcePackage->sourcePackageName."</td>";
 								} else { $serviceString .= "<td>N/A</td>"; }
 							}
 							$serviceString .= "<td>".$_->policy."</td><td>".(($_->running) ? "YES" : "NO")."</td></tr>";
 						}
-						if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+						if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 							$configString .= "<tr><th>SERVICE(s)</th><td><table border=\"1\" width=100%><tr><th>NAME</th><th>SOURCE PACKAGE</ah><th>POLICY TYPE</th><th>RUNNING</th></tr>".$serviceString."</table></td></tr>\n";
 						} else {
 							$configString .= "<tr><th>SERVICE(s)</th><td><table border=\"1\" width=100%><tr><th>NAME</th><th>POLICY TYPE</th><th>RUNNING</th></tr>".$serviceString."</table></td></tr>\n";
@@ -2375,11 +2375,11 @@ sub printHostSummary {
 						eval { $ntps = $local_host->config->dateTimeInfo->ntpConfig->server; };
 						if(!$@) {
 							my $ntpString = "";
-        	                			if($ntps) {
-                	                			foreach (@$ntps) {
-                        	                			$ntpString .= "$_<br/>";
-	                                			}
-        	                			} else { $ntpString = "NONE CONFIGURED"; }
+							if($ntps) {
+								foreach (@$ntps) {
+									$ntpString .= "$_<br/>";
+								}
+							} else { $ntpString = "NONE CONFIGURED"; }
 							$ntpString = "<tr><td>".$ntpString."</td>";
 							$ntpString .= "<td>".$local_host->config->dateTimeInfo->timeZone->description."</td><td>".$local_host->config->dateTimeInfo->timeZone->gmtOffset."</td><td>".$local_host->config->dateTimeInfo->timeZone->name."</td></tr>";
 							$configString .= "<tr><th>NTP</th><td><table border=\"1\" width=100%><tr><th>NTP SERVERS</th><th>TIME ZONE</th><th>GMT OFFSET</th><th>LOCATION</th></tr>".$ntpString."</table></td></tr>\n";
@@ -2432,27 +2432,27 @@ sub printHostSummary {
 					my $vswitches = $local_host->config->network->vswitch;
 
 					my $vswitchString = "";
-        	                        foreach my $vSwitch(@$vswitches) {
+					foreach my $vSwitch(@$vswitches) {
 						my ($pNicName,$mtu,$cdp_vswitch,$pNicKey) = ("","","","");
-	                                        my $vswitch_name = $vSwitch->name;
+						my $vswitch_name = $vSwitch->name;
 						my $pNics = $vSwitch->pnic;
 
 						foreach (@$pNics) {
-        	        	        	        $pNicKey = $_;
-                			                if ($pNicKey ne "") {
-                                        			$pNics = $netMgr->networkInfo->pnic;
-                                        			foreach my $pNic (@$pNics) {
-                                                			if ($pNic->key eq $pNicKey) {
-                                                        			$pNicName = $pNicName ? ("$pNicName," . $pNic->device) : $pNic->device;
-                                                        			if($cdp_enabled{$pNic->device}) {
-	                                                                		$cdp_vswitch = $cdp_enabled{$pNic->device};
-        	                 		                               	} else {
-                	                        	                        	$cdp_vswitch = "N/A";
-                        	                        	        	}
-                                	                		}
-                                        			}
-                                			}
-	                        		}
+							$pNicKey = $_;
+							if ($pNicKey ne "") {
+								$pNics = $netMgr->networkInfo->pnic;
+								foreach my $pNic (@$pNics) {
+									if ($pNic->key eq $pNicKey) {
+										$pNicName = $pNicName ? ("$pNicName," . $pNic->device) : $pNic->device;
+										if($cdp_enabled{$pNic->device}) {
+											$cdp_vswitch = $cdp_enabled{$pNic->device};
+										} else {
+											$cdp_vswitch = "N/A";
+										}
+									}
+								}
+							}
+						}
 						$mtu = $vSwitch->{mtu} if defined($vSwitch->{mtu});
 						$vswitchString .= "<tr><th>VSWITCH NAME</th><th>NUM OF PORTS</th><th>USED PORTS</th><th>MTU</th><th>UPLINKS</th><th>CDP ENABLED</th></tr><tr><td>".$vSwitch->name."</td><td>".$vSwitch->numPorts."</td><td>".($vSwitch->numPorts - $vSwitch->numPortsAvailable)."</td><td>".$mtu."</td><td>".$pNicName."</td><td>".$cdp_vswitch."</td></tr>\n";
 						$vswitchString .= "<tr><th>PORTGROUP NAME</th><th>VLAN ID</th><th>USED PORTS</th><th colspan=3>UPLINKS</th></tr>\n";
@@ -2466,9 +2466,9 @@ sub printHostSummary {
 							} else {
 								$vswitchString .= "<tr><td>demo_mode</td><td>demo_mode</td><td>".$usedPorts."</td><td colspan=3>".$pNicName."</td></tr>\n";
 							}
-        	                                        $vswitch_portgroup_mappping{$pg->spec->name} = $vswitch_name;
-                	                        }
-                        	        }
+							$vswitch_portgroup_mappping{$pg->spec->name} = $vswitch_name;
+						}
+					}
 					$configString .= "<tr><th>VSWITCH(s)</th><td><table border=\"1\">".$vswitchString."</table></td></tr>\n";
 
 					my $networks = Vim::get_views(mo_ref_array => $local_host->network);
@@ -2505,7 +2505,7 @@ sub printHostSummary {
 								$snmpString .= "</td><td>";
 								my $trap_targets = $snmp_system->configuration->trapTargets;
 								foreach(@$trap_targets) {
-		      	                	                	$snmpString .= "<b>Community:</b> " . $_->community . " <b>Hostname:</b> " . $_->hostName . " <b>Port:</b> " . $_->port . "<br/>\n";
+									$snmpString .= "<b>Community:</b> " . $_->community . " <b>Hostname:</b> " . $_->hostName . " <b>Port:</b> " . $_->port . "<br/>\n";
 								}
 								$snmpString .= "</td></tr>";
 								$configString .= "<tr><th>SNMP</th><td><table border=\"1\" width=100%><tr><th>SNMP PORT</th><th>RO COMMUNITIES</th><th>TRAP TARGETS</th></tr>".$snmpString."</table></td></tr>\n";
@@ -2521,12 +2521,12 @@ sub printHostSummary {
 					if($local_host->config->firewall) {
 						my $fw_sys = $local_host->config->firewall;
 						my $fw_rules = $fw_sys->ruleset;
-		        	                my $fw_known_string = "";
-                			        my $fw_rule_string = "";
-		                        	foreach my $rule ( sort{$a->label cmp $b->label}@$fw_rules) {
-                	        	        	if($rule->enabled) {
+						my $fw_known_string = "";
+						my $fw_rule_string = "";
+						foreach my $rule ( sort{$a->label cmp $b->label}@$fw_rules) {
+							if($rule->enabled) {
 								my ($allowedIPs) = ("");
-								if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0'|| $aversion eq '6.5.0')) {
+								if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 									if(defined($rule->allowedHosts)) {
 										if($rule->allowedHosts->allIp) {
 											$allowedIPs = "all";
@@ -2546,14 +2546,14 @@ sub printHostSummary {
 									if($_->endPort) {
 										$fwPort .= "-" . $_->endPort;
 									}
-									if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+									if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 										$fwPortType = $_->portType ? uc($_->portType->val) : "N/A";
 									}
 									$fwProto = $_->protocol;
 									$fw_known_string .= "<tr><td>".$rule->label."</td><td>".$fwDirection."</td><td>".$fwPortType."</td><td>".$fwPort."</td><td>".$fwProto."</td><td>".$allowedIPs."</td></tr>\n";
 								}
-                                			}
-                        			}
+							}
+						}
 						$configString .= "<tr><th>FIREWALL<br/> KNOWN SERVICES ENABLED</th><td><table border=\"1\" width=100%><tr><th>LABEL</th><th>DIRECTION</th><th>PORT TYPE</th><th>PORT</th><th>PROTOCOL</th><th>ALLOWED IPS</th>".$fw_known_string."</table></td></tr>\n";
 
 						my $defaultPolicy = "<tr><td>".($fw_sys->defaultPolicy->incomingBlocked ? "YES" : "NO")."</td><td>".($fw_sys->defaultPolicy->outgoingBlocked ? "YES" : "NO")."</td></tr>\n";
@@ -2573,9 +2573,9 @@ sub printHostSummary {
 				}
 
 				######################
-	                        # FEATURE VERSION
-        	                ######################
-                	        if($HOST_FEATURE_VERSION eq "yes" && $hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
+				# FEATURE VERSION
+				######################
+				if($HOST_FEATURE_VERSION eq "yes" && $hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 					if($local_host->summary->config->featureVersion) {
 						my $featurever = $local_host->summary->config->featureVersion;
 						my $featureString = "";
@@ -2584,7 +2584,7 @@ sub printHostSummary {
 						}
 						$configString .= "<tr><th>FEATURE VERSION</th><td><table border=\"1\" width=100%><tr><th>FEATURE</th><th>VERSION</th></tr>".$featureString."</table></td></tr>\n";
 					}
-                        	}
+				}
 
 				$configString .= "</table>\n";
 			}
@@ -2614,8 +2614,8 @@ sub printHostSummary {
 					if($key eq "NFS.HeartbeatMaxFailures") { $nfsHMF = $value; }
 					if($key eq "VMkernel.Boot.techSupportMode") { $vmkernelBSM = $value; }
 					if($key eq "VMFS3.HardwareAcceleratedLocking") { $vmfs3HAL = $value; }
-                                        if($key eq "DataMover.HardwareAcceleratedMove") { $dataMHAM = $value; }
-                                        if($key eq "DataMover.HardwareAcceleratedInit") { $dataMHAI = $value; }
+					if($key eq "DataMover.HardwareAcceleratedMove") { $dataMHAM = $value; }
+					if($key eq "DataMover.HardwareAcceleratedInit") { $dataMHAI = $value; }
 				}
 				$advString .= "<tr>";
 				$advString .= "<td>".$host_name."</td>";
@@ -2632,8 +2632,8 @@ sub printHostSummary {
 				$advString .= "<td>".$nfsHMF."</td>";
 				$advString .= "<td>".$vmkernelBSM."</td>";
 				$advString .= "<td>".$vmfs3HAL."</td>";
-                                $advString .= "<td>".$dataMHAM."</td>";
-                                $advString .= "<td>".$dataMHAI."</td>";
+				$advString .= "<td>".$dataMHAM."</td>";
+				$advString .= "<td>".$dataMHAI."</td>";
 				$advString .= "</tr>\n";
 			}
 			######################
@@ -2649,9 +2649,9 @@ sub printHostSummary {
 						$agentDSName = $agentDSNameTmp->{'name'};
 					}
 					if($hostAgentMgr->configInfo->agentVmNetwork) {
-                                                my $agentNetNameTmp = Vim::get_view(mo_ref => $hostAgentMgr->configInfo->agentVmNetwork, properties => ['name']);
+						my $agentNetNameTmp = Vim::get_view(mo_ref => $hostAgentMgr->configInfo->agentVmNetwork, properties => ['name']);
 						$agentNetName = $agentNetNameTmp->{'name'};
-                                        }
+					}
 
 					if($agentDSName ne "N/A" && $agentNetName ne "N/A") {
 						$agentString .= "<tr>";
@@ -2773,8 +2773,8 @@ sub printHostSummary {
 				}
 			}
 			######################
-                        # LUN
-                        ######################
+			# LUN
+			######################
 			if($HOST_LUN eq "yes") {
 				my $ss = Vim::get_view(mo_ref => $local_host->configManager->storageSystem);
 				my $fsmount = $ss->fileSystemVolumeInfo->mountInfo;
@@ -2797,13 +2797,13 @@ sub printHostSummary {
 									$vendor = $lun->vendor;
 									$model = $lun->model;
 									$queuedepth = $lun->queueDepth;
-									if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                                                                                if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
-                                                                                        $vStorageSupport = ($lun->vStorageSupport ? $lun->vStorageSupport : "N/A");
-                                                                                } else {
-                                                                                        $vStorageSupport = "N/A"
-                                                                                }
-                                                                        }
+									if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+										if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
+											$vStorageSupport = ($lun->vStorageSupport ? $lun->vStorageSupport : "N/A");
+										} else {
+											$vStorageSupport = "N/A"
+										}
+									}
 									$states = $lun->operationalState;
 									last;
 								}
@@ -2818,8 +2818,8 @@ sub printHostSummary {
 							foreach (@$states) {
 								$state_string .= $_." ";
 							}
-							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-		                                                if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
+							if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+								if($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
 									$lun_row .= "<td>".$vStorageSupport."</td>";
 								} else {
 									$lun_row .= "<td>N/A</td>";
@@ -2832,8 +2832,8 @@ sub printHostSummary {
 				}
 			}
 			######################
-                        # DATASTORE
-                        ######################
+			# DATASTORE
+			######################
 			if($HOST_DATASTORE eq "yes") {
 				my $ds_views = Vim::get_views (mo_ref_array => $local_host->datastore);
 				my $ctr = 0;
@@ -2860,9 +2860,9 @@ sub printHostSummary {
 
 							my $vmsInDS = Vim::get_views(mo_ref_array => $ds->vm,properties => ['name']);
 
-							if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+							if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 								my ($iormEnable,$iormThres,$dsMaintMode,$iormAggDisable,$iormStatsCollEnable) = ("N/A","N/A","N/A","N/A","N/A");
-                                                                if(($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') && $ds->summary->type eq 'VMFS') {
+								if(($hostAPIVersion eq '4.1.0' || $hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') && $ds->summary->type eq 'VMFS') {
 									$iormEnable = ($ds->iormConfiguration->enabled ? "YES" : "NO");
 									$iormThres = ($ds->iormConfiguration->congestionThreshold ? $ds->iormConfiguration->congestionThreshold . " ms" : "N/A");
 									if($hostAPIVersion eq '5.0.0' || $hostAPIVersion eq '5.1.0' || $hostAPIVersion eq '5.5.0') {
@@ -2883,8 +2883,8 @@ sub printHostSummary {
 				}
 			}
 			######################
-                        # PORTGROUP
-                        ######################
+			# PORTGROUP
+			######################
 			if($HOST_PORTGROUP eq "yes") {
 				my $portgroup_views = Vim::get_views (mo_ref_array => $local_host->network);
 				foreach my $portgroup (sort {$a->summary->name cmp $b->summary->name} @$portgroup_views) {
@@ -2893,13 +2893,13 @@ sub printHostSummary {
 						push @hosts_in_portgroups,$host_name;
 
 						#logic to figure out which hosts can not see this portgroup
-        		                        my @intersection = ();
-                        		        my @difference = ();
-		                                my %count = ();
-                		                foreach my $element (@hosts_in_portgroups, @hosts_seen) { $count{$element}++ }
-                                		foreach my $element (keys %count) {
-                                        		push @{ $count{$element} > 1 ? \@intersection : \@difference }, $element;
-                                		}
+						my @intersection = ();
+						my @difference = ();
+						my %count = ();
+						foreach my $element (@hosts_in_portgroups, @hosts_seen) { $count{$element}++ }
+						foreach my $element (keys %count) {
+							push @{ $count{$element} > 1 ? \@intersection : \@difference }, $element;
+						}
 						if(@difference) {
 							my $hosts_not_accessible = "";
 							foreach (@difference) {
@@ -2920,7 +2920,7 @@ sub printHostSummary {
 			######################
 			# CACHE
 			######################
-			if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+			if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
 				my $cacheMgr;
 				eval { $cacheMgr = Vim::get_view (mo_ref => $local_host->configManager->cacheConfigurationManager); };
 				if(!$@) {
@@ -2938,15 +2938,15 @@ sub printHostSummary {
 				}
 			}
 			######################
-                        # MULTIPATH
-                        ######################
+			# MULTIPATH
+			######################
 			if($HOST_MULTIPATH eq "yes") {
 				my $storageSys;
 				eval { $storageSys = Vim::get_view (mo_ref => $local_host->configManager->storageSystem); };
 				if(!$@) {
-			                my $luns = $storageSys->storageDeviceInfo->scsiLun;
-                			my $hbas = $storageSys->storageDeviceInfo->hostBusAdapter;
-                			my $mpLuns = $storageSys->storageDeviceInfo->multipathInfo->lun;
+					my $luns = $storageSys->storageDeviceInfo->scsiLun;
+					my $hbas = $storageSys->storageDeviceInfo->hostBusAdapter;
+					my $mpLuns = $storageSys->storageDeviceInfo->multipathInfo->lun;
 
 					$multipathString .= "\n<table border=\"1\"><tr><th colspan=3>".$local_host->name."</th></tr>";
 
@@ -2991,9 +2991,9 @@ sub printHostSummary {
 				}
 			}
 			######################
-                        # LOG
-                        ######################
-                        if($HOST_LOG eq "yes") {
+			# LOG
+			######################
+			if($HOST_LOG eq "yes") {
 				my $logKey = "hostd";
 				my ($diagMgr,$logData);
 				eval { $diagMgr = Vim::get_view(mo_ref => $sc->diagnosticManager); };
@@ -3039,7 +3039,7 @@ sub printHostSummary {
 			#logic to check which hosts can see all luns
 			while ( my ($uuid, $value) = each(%luns) ) {
 				my @pairs = split(',',$value);
-		                my $pair_count = @pairs;
+				my $pair_count = @pairs;
 				my @hosts_to_luns = ();
 				for (my $x=0;$x < $pair_count;$x++) {
 					(my $hostname,my $vmhba) = split('_',$pairs[$x],2);
@@ -3070,9 +3070,9 @@ sub printHostSummary {
 			}
 
 			foreach my $lun ( sort keys %lun_row_info ) {
-                		my $value = $lun_row_info{$lun};
-                		$lunString .= "<tr><td>".$lun."</td>".$value."</tr>\n";
-        		}
+				my $value = $lun_row_info{$lun};
+				$lunString .= "<tr><td>".$lun."</td>".$value."</tr>\n";
+			}
 			(%luns,%lun_row_info) = ();
 		}
 		if($HOST_DATASTORE eq "yes") {
@@ -3103,7 +3103,7 @@ sub printHostSummary {
 				if($print_string eq '') {
 					$print_string = "<td bgcolor=\"#66FF99\">Accessible by all hosts in this cluster</td>";
 				} else {
-                                        $print_string = "<td bgcolor=\"#FF6666\">".$print_string."</td>";
+					$print_string = "<td bgcolor=\"#FF6666\">".$print_string."</td>";
 				}
 				$datastore_row_info{$ds} .= $print_string;
 				@hosts_to_datastores = ();
@@ -3130,22 +3130,22 @@ sub printHostSummary {
 		## Executed outside of the hosts ##
 
 		######################
-                # TASK
-                ######################
-                if($HOST_TASK eq "yes") {
-	                my $taskMgr;
-                        eval { $taskMgr = Vim::get_view(mo_ref => $sc->taskManager); };
-                        if(!$@) {
-        	                my $tasks = Vim::get_views(mo_ref_array => $taskMgr->recentTask);
-                                foreach(@$tasks) {
-                	                my $progress = $_->info->progress;
-                                        if(!defined($progress)) {
-                        	                $progress = "COMPLETED";
-                                        }
-                                        $taskString .= "<tr><td>".$_->info->descriptionId."</td><td>".$_->info->queueTime."</td><td>".($_->info->startTime ? $_->info->startTime : "N/A")."</td><td>".($_->info->completeTime ? $_->info->completeTime : "N/A")."</td><td>".$progress."</td><td>".$_->info->state->val."</td></tr>\n";
-                                }
-                        }
-                }
+		# TASK
+		######################
+		if($HOST_TASK eq "yes") {
+			my $taskMgr;
+			eval { $taskMgr = Vim::get_view(mo_ref => $sc->taskManager); };
+			if(!$@) {
+				my $tasks = Vim::get_views(mo_ref_array => $taskMgr->recentTask);
+				foreach(@$tasks) {
+					my $progress = $_->info->progress;
+					if(!defined($progress)) {
+						$progress = "COMPLETED";
+					}
+					$taskString .= "<tr><td>".$_->info->descriptionId."</td><td>".$_->info->queueTime."</td><td>".($_->info->startTime ? $_->info->startTime : "N/A")."</td><td>".($_->info->completeTime ? $_->info->completeTime : "N/A")."</td><td>".$progress."</td><td>".$_->info->state->val."</td></tr>\n";
+				}
+			}
+		}
 
 		@hosts_seen = ();
 		@datastores_seen = ();
@@ -3155,181 +3155,181 @@ sub printHostSummary {
 }
 
 sub buildHostReport {
-        my ($cluster_name,$cluster_count,$type,$atype,$aversion) = @_;
+	my ($cluster_name,$cluster_count,$type,$atype,$aversion) = @_;
 
-        my ($hostTag,$hostTagShort,$table_host_conf) = ("","","");
+	my ($hostTag,$hostTagShort,$table_host_conf) = ("","","");
 
 	if($HOST_STATE eq "yes" && $stateString ne "") {
-                $hostTag = "ESX/ESXi State-$cluster_count";
-                $hostTagShort = "ESX/ESXi State";
-
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-
-                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                        $table_host_conf .= "<tr><th>HOSTNAME</th><th>OVERALL STATUS</th><th>POWER STATE</th><th>BOOT TIME</th><th>UPTIME</th><th>HA STATE</th><th>CONNECTION STATE</th><th>MAINTENANCE MODE</th><th>STANDBY MODE</th><th>VMOTION ENABLED</th><th>VERSION</th></tr>\n";
-                } else {
-                        $table_host_conf .= "<tr><th>HOSTNAME</th><th>OVERALL STATUS</th><th>POWER STATE</th><th>BOOT TIME</th><th>CONNECTION STATE</th><th>MAINTENANCE MODE</th><th>VMOTION ENABLED</th><th>VERSION</th></tr>\n";
-                }
-
-                $table_host_conf .= $stateString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$stateString) = ("","");
-        }
-	if($HOST_MGMT eq "yes" && $mgmtString ne "") {
-                $hostTag = "ESX/ESXi Management Info-$cluster_count";
-                $hostTagShort = "ESX/ESXi Management Info";
-
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                        $table_host_conf .= "<tr><th>HOSTNAME</th><th>vCenter</th><th>LOCKDOWN MODE ENABLED</th><th>COS VMDK</th><th>UUID</th><th>SERVICE CONSOLE MEM</th></tr>\n";
-                } else {
-                        $table_host_conf .= "<tr><th>HOSTNAME</th><th>vCenter</th><th>LOCKDOWN MODE ENABLED</th><th>UUID</th><th>SERVICE CONSOLE MEM</th></tr>\n";
-                }
-
-                $table_host_conf .= $mgmtString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$mgmtString) = ("","");
-        }
-        if($HOST_HARDWARE_CONFIGURATION eq "yes" && $hardwareConfigurationString ne "") {
-		$hostTag = "ESX/ESXi Hardware Configuration-$cluster_count";
-        	$hostTagShort = "ESX/ESXi Hardware Configuration";
+		$hostTag = "ESX/ESXi State-$cluster_count";
+		$hostTagShort = "ESX/ESXi State";
 
 		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-        	$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-	        $table_host_conf .= "<table border=\"1\">\n";
-		if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+			$table_host_conf .= "<tr><th>HOSTNAME</th><th>OVERALL STATUS</th><th>POWER STATE</th><th>BOOT TIME</th><th>UPTIME</th><th>HA STATE</th><th>CONNECTION STATE</th><th>MAINTENANCE MODE</th><th>STANDBY MODE</th><th>VMOTION ENABLED</th><th>VERSION</th></tr>\n";
+		} else {
+			$table_host_conf .= "<tr><th>HOSTNAME</th><th>OVERALL STATUS</th><th>POWER STATE</th><th>BOOT TIME</th><th>CONNECTION STATE</th><th>MAINTENANCE MODE</th><th>VMOTION ENABLED</th><th>VERSION</th></tr>\n";
+		}
+
+		$table_host_conf .= $stateString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$stateString) = ("","");
+	}
+	if($HOST_MGMT eq "yes" && $mgmtString ne "") {
+		$hostTag = "ESX/ESXi Management Info-$cluster_count";
+		$hostTagShort = "ESX/ESXi Management Info";
+
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+			$table_host_conf .= "<tr><th>HOSTNAME</th><th>vCenter</th><th>LOCKDOWN MODE ENABLED</th><th>COS VMDK</th><th>UUID</th><th>SERVICE CONSOLE MEM</th></tr>\n";
+		} else {
+			$table_host_conf .= "<tr><th>HOSTNAME</th><th>vCenter</th><th>LOCKDOWN MODE ENABLED</th><th>UUID</th><th>SERVICE CONSOLE MEM</th></tr>\n";
+		}
+
+		$table_host_conf .= $mgmtString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$mgmtString) = ("","");
+	}
+	if($HOST_HARDWARE_CONFIGURATION eq "yes" && $hardwareConfigurationString ne "") {
+		$hostTag = "ESX/ESXi Hardware Configuration-$cluster_count";
+		$hostTagShort = "ESX/ESXi Hardware Configuration";
+
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 			$table_host_conf .= "<tr><th>HOSTNAME</th><th>VENDOR</th><th>ADDITIONAL VENDOR INFO</th><th>MODEL</th><th>CPU INFO</th><th>SMC PRESENT</th><th>HT AVAILABLE</th><th>CPU SPEED</th><th>CPU USAGE</th><th>PROCESSOR SOCKETS</th><th>CORES PER SOCKET</th><th>LOGICAL CORES</th><th>MEMORY</th><th>MEMORY USAGE</th><th>NIC(s)</th><th>HBA(s)</th></tr>\n";
 		} else {
-        		$table_host_conf .= "<tr><th>HOSTNAME</th><th>VENDOR</th><th>ADDITIONAL VENDOR INFO</th><th>MODEL</th><th>CPU INFO</th><th>HT AVAILABLE</th><th>CPU SPEED</th><th>CPU USAGE</th><th>PROCESSOR SOCKETS</th><th>CORES PER SOCKET</th><th>LOGICAL CORES</th><th>MEMORY</th><th>MEMORY USAGE</th><th>NIC(s)</th><th>HBA(s)</th></tr>\n";
+			$table_host_conf .= "<tr><th>HOSTNAME</th><th>VENDOR</th><th>ADDITIONAL VENDOR INFO</th><th>MODEL</th><th>CPU INFO</th><th>HT AVAILABLE</th><th>CPU SPEED</th><th>CPU USAGE</th><th>PROCESSOR SOCKETS</th><th>CORES PER SOCKET</th><th>LOGICAL CORES</th><th>MEMORY</th><th>MEMORY USAGE</th><th>NIC(s)</th><th>HBA(s)</th></tr>\n";
 		}
 
 		$table_host_conf .= $hardwareConfigurationString;
 		$table_host_conf .= "</table>\n";
-        	$hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$hardwareConfigurationString) = ("","");
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$hardwareConfigurationString) = ("","");
 	}
 	if($HOST_HEALTH eq "yes" && $healthHardwareString ne "") {
 		$hostTag = "ESX/ESXi Health Hardware Status-$cluster_count";
-                $hostTagShort = "ESX/ESXi Health Hardware Status";
+		$hostTagShort = "ESX/ESXi Health Hardware Status";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>COMPONENT</th><th>STATUS</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>COMPONENT</th><th>STATUS</th></tr>\n";
 
 		$table_host_conf .= $healthHardwareString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$healthHardwareString) = ("","");
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$healthHardwareString) = ("","");
 	}
 	if($HOST_HEALTH eq "yes" && $healthSoftwareString ne "") {
 		$hostTag = "ESX/ESXi Health Software Status-$cluster_count";
-                $hostTagShort = "ESX/ESXi Health Software Status";
+		$hostTagShort = "ESX/ESXi Health Software Status";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<a href=\"javascript:showHide('div$cluster_count')\">Click here for more detail info</a>\n";
-                $table_host_conf .= "<div id=\"div$cluster_count\" style=\"display:none;thin solid;\">\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>SENSOR NAME</th><th>READING</th><th>STATUS</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<a href=\"javascript:showHide('div$cluster_count')\">Click here for more detail info</a>\n";
+		$table_host_conf .= "<div id=\"div$cluster_count\" style=\"display:none;thin solid;\">\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>SENSOR NAME</th><th>READING</th><th>STATUS</th></tr>\n";
 
 		$table_host_conf .= $healthSoftwareString;
 		$table_host_conf .= "</table>\n";
 		$table_host_conf .= "</div>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$healthSoftwareString) = ("","");
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$healthSoftwareString) = ("","");
 	}
 	if($HOST_PERFORMANCE eq "yes" || $hostperformance eq "yes" && $hostPerfString ne "") {
 		$hostTag = "ESX/ESXi Performance-$cluster_count";
-                $hostTagShort = "ESX/ESXi Performance";
+		$hostTagShort = "ESX/ESXi Performance";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th>cpu.usagemhz.average</th><th>cpu.usage.average</th><th>mem.active.average</th><th>mem.usage.average</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th>cpu.usagemhz.average</th><th>cpu.usage.average</th><th>mem.active.average</th><th>mem.usage.average</th></tr>\n";
 
 		$table_host_conf .= $hostPerfString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$hostPerfString) = ("","");
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$hostPerfString) = ("","");
 	}
 	if($HOST_NIC eq "yes" && $nicString ne "") {
-                $hostTag = "ESX/ESXi NIC(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi NIC(s)";
+		$hostTag = "ESX/ESXi NIC(s)-$cluster_count";
+		$hostTagShort = "ESX/ESXi NIC(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th>DEVICE</th><th>PCI</th><th>DRIVER</th><th>DUPLEX</th><th>SPEED</th><th>WOL ENABLED</th><th>MAC</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th>DEVICE</th><th>PCI</th><th>DRIVER</th><th>DUPLEX</th><th>SPEED</th><th>WOL ENABLED</th><th>MAC</th></tr>\n";
 
 		$table_host_conf .= $nicString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$nicString) = ("","");
-        }
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$nicString) = ("","");
+	}
 	if($HOST_HBA eq "yes" && $hbaString ne "") {
-                $hostTag = "ESX/ESXi HBA(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi HBA(s)";
+		$hostTag = "ESX/ESXi HBA(s)-$cluster_count";
+		$hostTagShort = "ESX/ESXi HBA(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th>HBA TYPE</th><th>DEVICE</th><th>PCI</th><th>MODEL</th><th>DRIVER</th><th>STATUS</th><th>ADDITIONAL INFO</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th>HBA TYPE</th><th>DEVICE</th><th>PCI</th><th>MODEL</th><th>DRIVER</th><th>STATUS</th><th>ADDITIONAL INFO</th></tr>\n";
 
 		$table_host_conf .= $hbaString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$hbaString) = ("","");
-        }
-	if($HOST_ISCSI eq "yes" && $iscsiString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                $hostTag = "ESX/ESXi iSCSI-$cluster_count";
-                $hostTagShort = "ESX/ESXi iSCSI";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$hbaString) = ("","");
+	}
+	if($HOST_ISCSI eq "yes" && $iscsiString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+		$hostTag = "ESX/ESXi iSCSI-$cluster_count";
+		$hostTagShort = "ESX/ESXi iSCSI";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th>VNIC</th><th>IP ADDRESS</th><th>NETMASK</th><th>MAC ADDRESS</th><th>MTU</th><th>TSO ENABLED</th><th>SPEED</th></th><th>PNIC</th><th>PORTGROUP</th><th>VSWITCH</th><th>SWITCH UUID</th><th>PATH STATUS</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th>VNIC</th><th>IP ADDRESS</th><th>NETMASK</th><th>MAC ADDRESS</th><th>MTU</th><th>TSO ENABLED</th><th>SPEED</th></th><th>PNIC</th><th>PORTGROUP</th><th>VSWITCH</th><th>SWITCH UUID</th><th>PATH STATUS</th></tr>\n";
 
-                $table_host_conf .= $iscsiString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$iscsiString) = ("","");
-        }
+		$table_host_conf .= $iscsiString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$iscsiString) = ("","");
+	}
 	if($HOST_CAPABILITY eq "yes" && $capString ne "") {
 		$hostTag = "ESX/ESXi Capabilitie(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi Capabilitie(s)";
+		$hostTagShort = "ESX/ESXi Capabilitie(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
 		$table_host_conf .= "<table border=\"1\">\n";
 
-		if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+		if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 			$table_host_conf .= "<tr><th>HOST</th><th>MAX RUNNING VMS SUPPORT</th><th>MAX VCPUS SUPPORT</th><th>VMFS VERSIONS SUPPORT</th><th>FT SUPPORT</th><th>IPMI SUPPORT</th><th>TPM SUPPORT</th><th>HV SUPPORT</th><th>IORM SUPPORT</th><th>DIRECTPATH G2 SUPPORT</th><th>STORAGE HW ACCELERATION SUPPORT</th><th>SSL THUMBPRINT AUTH SUPPORT</th></tr>\n";
 		} elsif($aversion eq '4.1.0') {
 			$table_host_conf .= "<tr><th>HOST</th><th>FT SUPPORT</th><th>IPMI SUPPORT</th><th>TPM SUPPORT</th><th>HV SUPPORT</th><th>IORM SUPPORT</th><th>DIRECTPATH G2 SUPPORT</th><th>STORAGE HW ACCELERATION SUPPORT</th><th>SSL THUMBPRINT AUTH SUPPORT</th></tr>\n";
@@ -3337,278 +3337,278 @@ sub buildHostReport {
 			$table_host_conf .= "<tr><th>HOST</th><th>FT SUPPORT</th><th>IPMI SUPPORT</th><th>TPM SUPPORT</th><th>HV SUPPORT</th><th>SSL THUMBPRINT AUTH SUPPORT</th></tr>\n";
 		}
 
-                $table_host_conf .= $capString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$capString) = ("","");
+		$table_host_conf .= $capString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$capString) = ("","");
 	}
 	if($HOST_CONFIGURATION eq "yes" && $configString ne "") {
 		$hostTag = "ESX/ESXi Configuration(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi Configuration(s)";
+		$hostTagShort = "ESX/ESXi Configuration(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
 
 		$table_host_conf .= $configString;
 		#$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$configString) = ("","");
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$configString) = ("","");
 	}
 	if($HOST_ADVOPT eq "yes" && $advString ne "") {
 		$hostTag = "ESX/ESXi Advanced Options-$cluster_count";
-                $hostTagShort = "ESX/ESXi Advanced Options";
+		$hostTagShort = "ESX/ESXi Advanced Options";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0') ) {
-                        $table_host_conf .= "<tr><th>HOST</th><th>Disk.UseDeviceReset</th><th>Disk.UseLunReset</th><th>Disk.SchedNumReqOutstanding</th><th>Sc
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+			$table_host_conf .= "<tr><th>HOST</th><th>Disk.UseDeviceReset</th><th>Disk.UseLunReset</th><th>Disk.SchedNumReqOutstanding</th><th>Sc
 si.ConflictRetries</th><th>NFS.MaxVolumes</th><th>SendBufferSize</th><th>ReceiveBufferSize</th><th>Net.TcpipHeapSize</th><th>NFS.HeartbeatFrequency</th><th>N
 FS.HeartbeatTimeout</th><th>NFS.HeartbeatMaxFailures</th><th>VMkernel.Boot.techSupportMode</th><th>VMFS3.HardwareAcceleratedLocking</th><th>DataMover.Hardwar
 eAcceleratedMove</th><th>DataMover.HardwareAcceleratedInit</th></tr>\n";
-                } else {
-                        $table_host_conf .= "<tr><th>HOST</th><th>Disk.UseDeviceReset</th><th>Disk.UseLunReset</th><th>Disk.SchedNumReqOutstanding</th><th>Sc
+		} else {
+			$table_host_conf .= "<tr><th>HOST</th><th>Disk.UseDeviceReset</th><th>Disk.UseLunReset</th><th>Disk.SchedNumReqOutstanding</th><th>Sc
 si.ConflictRetries</th><th>NFS.MaxVolumes</th><th>SendBufferSize</th><th>ReceiveBufferSize</th><th>Net.TcpipHeapSize</th><th>NFS.HeartbeatFrequency</th><th>N
 FS.HeartbeatTimeout</th><th>NFS.HeartbeatMaxFailures</th><th>VMkernel.Boot.techSupportMode</th></tr>\n";
-                }
+		}
 
-                $table_host_conf .= $advString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$advString) = ("","");
+		$table_host_conf .= $advString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$advString) = ("","");
 	}
-	if($HOST_ADVOPT eq "yes" && $agentString ne "" && $atype eq "VirtualCenter"  && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                $hostTag = "ESX/ESXi Host Agent Settings-$cluster_count";
-                $hostTagShort = "ESX/ESXi Host Agent Settings";
+	if($HOST_ADVOPT eq "yes" && $agentString ne "" && $atype eq "VirtualCenter"  && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+		$hostTag = "ESX/ESXi Host Agent Settings-$cluster_count";
+		$hostTagShort = "ESX/ESXi Host Agent Settings";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
 		$table_host_conf .= "<tr><th>HOST</th><th>AGENT VM DATASTORE</th><th>AGENT VM NETWORK</th></tr>\n";
-                $table_host_conf .= $agentString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$agentString) = ("","");
-        }
+		$table_host_conf .= $agentString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$agentString) = ("","");
+	}
 	if($HOST_NUMA eq "yes" && $numaString ne "") {
 		$hostTag = "ESX/ESXi NUMA-$cluster_count";
-                $hostTagShort = "ESX/ESXi NUMA";
+		$hostTagShort = "ESX/ESXi NUMA";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th># NODES</th><th>TYPE</th><th>NUMA NODE INFO</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th># NODES</th><th>TYPE</th><th>NUMA NODE INFO</th></tr>\n";
 
 		$table_host_conf .= $numaString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$numaString) = ("","");
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$numaString) = ("","");
 	}
 	if($HOST_CDP eq "yes" && $cdpString ne "") {
-                $hostTag = "ESX/ESXi CDP-$cluster_count";
-                $hostTagShort = "ESX/ESXi CDP";
+		$hostTag = "ESX/ESXi CDP-$cluster_count";
+		$hostTagShort = "ESX/ESXi CDP";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th>DEVICE</th><th>MGMT ADDRESS</th><th>DEVICE ADDRESS</th><th>IP PREFIX</th><th>LOCATION</th><th>SYSTEM NAME</th><th>SYSTEM VERSION</th><th>SYSTEM OID</th><th>PLATFORM</th><th>DEVICE ID</th><th>CDP VER</th><th>FULL DUPLEX</th><th>MTU</th><th>TIMEOUT</th><th>TTL</th><th>VLAN ID</th><th>SAMPLES</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th>DEVICE</th><th>MGMT ADDRESS</th><th>DEVICE ADDRESS</th><th>IP PREFIX</th><th>LOCATION</th><th>SYSTEM NAME</th><th>SYSTEM VERSION</th><th>SYSTEM OID</th><th>PLATFORM</th><th>DEVICE ID</th><th>CDP VER</th><th>FULL DUPLEX</th><th>MTU</th><th>TIMEOUT</th><th>TTL</th><th>VLAN ID</th><th>SAMPLES</th></tr>\n";
 
 		$table_host_conf .= $cdpString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$cdpString) = ("","");
-        }
-        if($HOST_DVS eq "yes" && $atype eq "VirtualCenter" && $dvsString ne "") {
-                $hostTag = "ESX/ESXi Distributed vSwitch-$cluster_count";
-                $hostTagShort = "ESX/ESXi Distributed vSwitch";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$cdpString) = ("","");
+	}
+	if($HOST_DVS eq "yes" && $atype eq "VirtualCenter" && $dvsString ne "") {
+		$hostTag = "ESX/ESXi Distributed vSwitch-$cluster_count";
+		$hostTagShort = "ESX/ESXi Distributed vSwitch";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>NAME</th><th>DESCRIPTION</th><th>CONTACT INFO</th><th>VENDOR</th><th>VERSION</th><th>UUID</th><th>BUILD</th><th>
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>NAME</th><th>DESCRIPTION</th><th>CONTACT INFO</th><th>VENDOR</th><th>VERSION</th><th>UUID</th><th>BUILD</th><th>
 BUNDLE ID</th><th>BUNDLE BUILD</th><th>BUNDLE URL</th><th>FORWARDING CLASS</th><th>PORTS</th></tr>\n";
 
 		$table_host_conf .= $dvsString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$numaString) = ("","");
-        }
-        if($HOST_LUN eq "yes" && $lunString) {
-                $hostTag = "ESX/ESXi LUN(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi LUN(s)";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$numaString) = ("","");
+	}
+	if($HOST_LUN eq "yes" && $lunString) {
+		$hostTag = "ESX/ESXi LUN(s)-$cluster_count";
+		$hostTagShort = "ESX/ESXi LUN(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 			$table_host_conf .= "<tr><th>VOLUME UUID</th><th>DATASTORE</th><th>DISK_NAME</th><th>DEVICE_NAME</th><th>QUEUE DEPTH</th><th>vSTORAGE SUPPORT</th><th>STATUS</th><th>VENDOR</th><th>MODEL</th><th>HOST(s) NOT ACCESSIBLE TO LUN</tr>\n";
 		} else {
-                	$table_host_conf .= "<tr><th>VOLUME UUID</th><th>DATASTORE</th><th>DISK_NAME</th><th>DEVICE_NAME</th><th>QUEUE DEPTH</th><th>STATUS</th><th>VENDOR</th><th>MODEL</th><th>HOST(s) NOT ACCESSIBLE TO LUN</tr>\n";
+			$table_host_conf .= "<tr><th>VOLUME UUID</th><th>DATASTORE</th><th>DISK_NAME</th><th>DEVICE_NAME</th><th>QUEUE DEPTH</th><th>STATUS</th><th>VENDOR</th><th>MODEL</th><th>HOST(s) NOT ACCESSIBLE TO LUN</tr>\n";
 		}
 
 		$table_host_conf .= $lunString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$lunString) = ("","");
-        }
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$lunString) = ("","");
+	}
 	if($HOST_DATASTORE eq "yes" && $datastoreString ne "") {
-                $hostTag = "ESX/ESXi Datastore(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi Datastore(s)";
+		$hostTag = "ESX/ESXi Datastore(s)-$cluster_count";
+		$hostTagShort = "ESX/ESXi Datastore(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\"><tr><td bgcolor=\"#CCCCCC\"><b>COLOR LEGEND</b></td><td bgcolor=\"$yellow\"><b>YELLOW < $YELLOW_WARN %</b></td><td bgcolor=\"$orange\"><b>ORANGE < $ORANGE_WARN %</b></td><td bgcolor=\"$red\"><b>RED < $RED_WARN %</b></td></tr></table>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\"><tr><td bgcolor=\"#CCCCCC\"><b>COLOR LEGEND</b></td><td bgcolor=\"$yellow\"><b>YELLOW < $YELLOW_WARN %</b></td><td bgcolor=\"$orange\"><b>ORANGE < $ORANGE_WARN %</b></td><td bgcolor=\"$red\"><b>RED < $RED_WARN %</b></td></tr></table>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 			$table_host_conf .= "<tr><th>DATASTORE</th><th># OF VMS</th><th>CAPACITY</th><th>CONSUMED</th><th>FREE</th><th>% FREE</th><th>BLOCK SIZE</th><th>VERSION</th><th>DS TYPE</th><th>MAINTENANCE MODE</th><th>IORM ENABLED</th><th>CONGESTION THRESHOLD</th><th>STATS AGGREGATION DIABLED</th><th>STATS COLLECTION ENABLED</th><th>HOST(s) NOT ACCESSIBLE TO DATASTORE</tr>\n";
 		} else {
-	                $table_host_conf .= "<tr><th>DATASTORE</th><th># OF VMS</th><th>CAPACITY</th><th>CONSUMED</th><th>FREE</th><th>% FREE</th><th>BLOCK SIZE</th><th>VERSION</th><th>DS TYPE</th><th>HOST(s) NOT ACCESSIBLE TO DATASTORE</tr>\n";
+			$table_host_conf .= "<tr><th>DATASTORE</th><th># OF VMS</th><th>CAPACITY</th><th>CONSUMED</th><th>FREE</th><th>% FREE</th><th>BLOCK SIZE</th><th>VERSION</th><th>DS TYPE</th><th>HOST(s) NOT ACCESSIBLE TO DATASTORE</tr>\n";
 		}
 
 		$table_host_conf .= $datastoreString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$datastoreString) = ("","");
-        }
-	if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                $hostTag = "ESX/ESXi Cache Configuration-$cluster_count";
-                $hostTagShort = "ESX/ESXi Cache Configuration";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$datastoreString) = ("","");
+	}
+	if($HOST_CACHE eq "yes" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+		$hostTag = "ESX/ESXi Cache Configuration-$cluster_count";
+		$hostTagShort = "ESX/ESXi Cache Configuration";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>HOST</th><th>CACHE DATASTORE</th><th>SWAPSIZE</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>HOST</th><th>CACHE DATASTORE</th><th>SWAPSIZE</th></tr>\n";
 
-                $table_host_conf .= $cacheString;
-                $table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$cacheString) = ("","");
-        }
-        if($HOST_PORTGROUP eq "yes" && $portgroupString ne "") {
-                $hostTag = "ESX/ESXi Portgroup(s)-$cluster_count";
-                $hostTagShort = "ESX/ESXi Portgroup(s)";
+		$table_host_conf .= $cacheString;
+		$table_host_conf .= "</table>\n";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$cacheString) = ("","");
+	}
+	if($HOST_PORTGROUP eq "yes" && $portgroupString ne "") {
+		$hostTag = "ESX/ESXi Portgroup(s)-$cluster_count";
+		$hostTagShort = "ESX/ESXi Portgroup(s)";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>PORTGROUP</th><th>HOST(s) NOT ACCESSIBLE TO PORTGROUP</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>PORTGROUP</th><th>HOST(s) NOT ACCESSIBLE TO PORTGROUP</th></tr>\n";
 
 		$table_host_conf .= $portgroupString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$portgroupString) = ("","");
-        }
-        if($HOST_MULTIPATH eq "yes" && $multipathString ne "") {
-                $hostTag = "ESX/ESXi Multipathing-$cluster_count";
-                $hostTagShort = "ESX/ESXi Multipathing";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$portgroupString) = ("","");
+	}
+	if($HOST_MULTIPATH eq "yes" && $multipathString ne "") {
+		$hostTag = "ESX/ESXi Multipathing-$cluster_count";
+		$hostTagShort = "ESX/ESXi Multipathing";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
 ###DEBUG
-                #$table_host_conf .= "<table border=\"1\">\n";
+		#$table_host_conf .= "<table border=\"1\">\n";
 
 		$table_host_conf .= $multipathString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$multipathString) = ("","");
-        }
-        if($HOST_LOG eq "yes" && $logString ne "") {
-                $hostTag = "ESX/ESXi Hostd Logs-$cluster_count - Last $logcount lines";
-                $hostTagShort = "ESX/ESXi Hostd Logs - Last $logcount lines";
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$multipathString) = ("","");
+	}
+	if($HOST_LOG eq "yes" && $logString ne "") {
+		$hostTag = "ESX/ESXi Hostd Logs-$cluster_count - Last $logcount lines";
+		$hostTagShort = "ESX/ESXi Hostd Logs - Last $logcount lines";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
 
 		$table_host_conf .= $logString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$logString) = ("","");
-        }
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$logString) = ("","");
+	}
 	if($HOST_TASK eq "yes" && $taskString ne "") {
-                $hostTag = "ESX/ESXi Recent Tasks-$cluster_count";
-                $hostTagShort = "ESX/ESXi Recent Tasks";
+		$hostTag = "ESX/ESXi Recent Tasks-$cluster_count";
+		$hostTagShort = "ESX/ESXi Recent Tasks";
 
-                push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @host_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_host_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_host_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_host_conf .= "<table border=\"1\">\n";
-                $table_host_conf .= "<tr><th>DESCRIPTION</th><th>QUEUE TIME</th><th>START TIME</th><th>COMPLETION TIME</th><th>PROGRESS</th><th>STATE</th></tr>\n";
+		$table_host_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_host_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_host_conf .= "<table border=\"1\">\n";
+		$table_host_conf .= "<tr><th>DESCRIPTION</th><th>QUEUE TIME</th><th>START TIME</th><th>COMPLETION TIME</th><th>PROGRESS</th><th>STATE</th></tr>\n";
 
 		$table_host_conf .= $taskString;
 		$table_host_conf .= "</table>\n";
-                $hostString .= "<br/>".$table_host_conf;
-                ($table_host_conf,$numaString) = ("","");
-        }
+		$hostString .= "<br/>".$table_host_conf;
+		($table_host_conf,$numaString) = ("","");
+	}
 
 	print REPORT_OUTPUT $hostString;
-        $hostString = "";
+	$hostString = "";
 }
 
 sub buildVMReport {
-        my ($cluster_name,$cluster_count,$type,$atype,$aversion) = @_;
-        my ($hostTag,$hostTagShort,$table_vm_conf) = ("","","");
+	my ($cluster_name,$cluster_count,$type,$atype,$aversion) = @_;
+	my ($hostTag,$hostTagShort,$table_vm_conf) = ("","","");
 
 	if($VM_STATE eq "yes" && $vmstateString ne "") {
-                $hostTag = "VM State-$cluster_count";
-                $hostTagShort = "VM State";
+		$hostTag = "VM State-$cluster_count";
+		$hostTagShort = "VM State";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 
-                if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                        $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>BOOTTIME</th><th>UPTIME</th><th>NOTES</th><th>OVERALL STATUS</th><th>HA PROTECTED</th><th>APP HEARTBEAT</th><th>CONNECTION STATE</th><th>POWER STATE</th><th>CONSOLIDATION NEEDED</th></tr>\n";
-                } else {
-                    $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>NOTES</th><th>BOOTTIME</th><th>OVERALL STATUS</th><th>CONNECTION STATE</th><th>POWER STATE</th></tr>\n";
-                }
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
+			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>BOOTTIME</th><th>UPTIME</th><th>NOTES</th><th>OVERALL STATUS</th><th>HA PROTECTED</th><th>APP HEARTBEAT</th><th>CONNECTION STATE</th><th>POWER STATE</th><th>CONSOLIDATION NEEDED</th></tr>\n";
+		} else {
+		    $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>NOTES</th><th>BOOTTIME</th><th>OVERALL STATUS</th><th>CONNECTION STATE</th><th>POWER STATE</th></tr>\n";
+		}
 
-                $table_vm_conf .= $vmstateString;
-                $table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmstateString) = ("","");
-        }
+		$table_vm_conf .= $vmstateString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmstateString) = ("","");
+	}
 	if($VM_CONFIG eq "yes" && $vmconfigString ne "") {
-                $hostTag = "VM Configuration-$cluster_count";
-                $hostTagShort = "VM Configuration";
+		$hostTag = "VM Configuration-$cluster_count";
+		$hostTagShort = "VM Configuration";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>vHW</th><th>HOSTNAME</th><th>UUID</th><th>FIRMWARE</th><th>OS</th><th># of vCPU</th><th>vMEM</th><th># of vDISK</th><th>vDISK</th><th># of vNIC</th><th>CPU RESERV</th><th>MEM RESERV</th><th>IS TEMPLATE</th></tr>\n";
 		} else {
 		    $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>vHW</th><th>HOSTNAME</th><th>UUID</th><th>OS</th><th># of vCPU</th><th>vMEM</th><th># of vDISK</th><th>vDISK</th><th># of vNIC</th><th>CPU RESERV</th><th>MEM RESERV</th><th>IS TEMPLATE</th></tr>\n";
@@ -3616,20 +3616,20 @@ sub buildVMReport {
 
 		$table_vm_conf .= $vmconfigString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmconfigString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmconfigString) = ("","");
+	}
 	if($VM_STATS eq "yes" && $vmstatString ne "") {
 		$hostTag = "VM Statistics-$cluster_count";
-                $hostTagShort = "VM Statistics";
+		$hostTagShort = "VM Statistics";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 
-		if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+		if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>CPU USAGE</th><th>MEM USAGE</th><th>MAX CPU USAGE</th><th>MAX MEM USAGE</th><th>ACTIVE MEM</th><th>HOST CONSUMED MEM</th><th>INITIAL MEM RESV OVERHEAD</th><th>INITIAL MEM SWAP RESV OVERHEAD</th><th>MEM OVERHEAD</th><th>MEM BALLON</th><th>COMPRESSED MEM</th></tr>\n";
 		} else {
 			$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>CPU USAGE</th><th>MEM USAGE</th><th>MAX CPU USAGE</th><th>MAX MEM USAGE</th><th>ACTIVE MEM</th><th>HOST CONSUMED MEM</th><th>MEM OVERHEAD</th><th>MEM BALLON</th></tr>\n";
@@ -3637,274 +3637,290 @@ sub buildVMReport {
 
 		$table_vm_conf .= $vmstatString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmstatString) = ("","");
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmstatString) = ("","");
 	}
 	if($VM_RESOURCE_ALLOCATION eq "yes" && $vmrscString ne "") {
 		$hostTag = "VM Resource Allocation-$cluster_count";
-                $hostTagShort = "VM Resource Allocation";
-
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LAST MODIFIED</th><th>CPU RESERVATION</th><th>CPU LIMITS</th><th>CPU SHARE</th><th>CPU SHARE LEVEL</th><th>CPU EXPANDABLE RESERVATION</th><th>CPU OVERHEAD LIMIT</th><th>MEM RESERVATION</th><th>MEM LIMITS</th><th>MEM SHARE</th><th>MEM SHARE LEVEL</th><th>MEM EXPANDABLE RESERVATION</th><th>MEM OVERHEAD LIMIT</th></tr>\n";
-
-                $table_vm_conf .= $vmrscString;
-                $table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmrscString) = ("","");
-	}
-	if($VM_PERFORMANCE eq "yes" || $vmperformance eq "yes" && $vmPerfString ne "") {
-		$hostTag = "VM Performance-$cluster_count";
-                $hostTagShort = "VM Performance";
-
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>VM</th><th>cpu.usagemhz.average</th><th>cpu.usage.average</th><th>cpu.ready.summation</th><th>mem.active.average</th><th>mem.usage.average</th><th>cpu.vmmemctl.average</th</tr>\n";
-
-		$table_vm_conf .= $vmPerfString;
-		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmPerfString) = ("","");
-	}
-	if($VM_FT eq "yes" && $vmftString ne "") {
-		$hostTag = "VM Fault Tolerance-$cluster_count";
-                $hostTagShort = "VM Fault Tolerance";
+		$hostTagShort = "VM Resource Allocation";
 
 		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LAST MODIFIED</th><th>CPU RESERVATION</th><th>CPU LIMITS</th><th>CPU SHARE</th><th>CPU SHARE LEVEL</th><th>CPU EXPANDABLE RESERVATION</th><th>CPU OVERHEAD LIMIT</th><th>MEM RESERVATION</th><th>MEM LIMITS</th><th>MEM SHARE</th><th>MEM SHARE LEVEL</th><th>MEM EXPANDABLE RESERVATION</th><th>MEM OVERHEAD LIMIT</th></tr>\n";
+
+		$table_vm_conf .= $vmrscString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmrscString) = ("","");
+	}
+	if($VM_PERFORMANCE eq "yes" || $vmperformance eq "yes" && $vmPerfString ne "") {
+		$hostTag = "VM Performance-$cluster_count";
+		$hostTagShort = "VM Performance";
+
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>VM</th><th>cpu.usagemhz.average</th><th>cpu.usage.average</th><th>cpu.ready.summation</th><th>mem.active.average</th><th>mem.usage.average</th><th>cpu.vmmemctl.average</th</tr>\n";
+
+		$table_vm_conf .= $vmPerfString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmPerfString) = ("","");
+	}
+	if($VM_FT eq "yes" && $vmftString ne "") {
+		$hostTag = "VM Fault Tolerance-$cluster_count";
+		$hostTagShort = "VM Fault Tolerance";
+
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>FT STATE</th><th>ROLE</th><th>INSTANCE UUIDS</th><th>FT SECONDARY LATENCY</th><th>FT BANDWIDTH</th></tr>\n";
 
 		$table_vm_conf .= $vmftString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmftString) = ("","");
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmftString) = ("","");
 	}
-	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                $hostTag = "VM Eagerzeroed Thick (EZT) Provisioned-$cluster_count";
-                $hostTagShort = "VM Eagerzeroed Thick (EZT) Provisioned";
+	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+		$hostTag = "VM Eagerzeroed Thick (EZT) Provisioned-$cluster_count";
+		$hostTagShort = "VM Eagerzeroed Thick (EZT) Provisioned";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LABEL</th><th>EZT VMDK(s)</th><th>CAPACITY</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LABEL</th><th>EZT VMDK(s)</th><th>CAPACITY</th></tr>\n";
 
-                $table_vm_conf .= $vmeztString;
-                $table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmeztString) = ("","");
-        }
+		$table_vm_conf .= $vmeztString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmeztString) = ("","");
+	}
+	if($VM_EZT eq "yes" && $vmeztString ne "" && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+		$hostTag = "VM Eagerzeroed Thick (EZT) Provisioned-$cluster_count";
+		$hostTagShort = "VM Eagerzeroed Thick (EZT) Provisioned";
+
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LABEL</th><th>EZT VMDK(s)</th><th>CAPACITY</th></tr>\n";
+
+		$table_vm_conf .= $vmeztString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmeztString) = ("","");
+	}
 	if($VM_THIN eq "yes" && $vmthinString ne "") {
-                $hostTag = "VM Thin Provisioned-$cluster_count";
-                $hostTagShort = "VM Thin Provisioned";
+		$hostTag = "VM Thin Provisioned-$cluster_count";
+		$hostTagShort = "VM Thin Provisioned";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LABEL</th><th>THIN VMDK(s)</th><th>CAPACITY</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>LABEL</th><th>THIN VMDK(s)</th><th>CAPACITY</th></tr>\n";
 
 		$table_vm_conf .= $vmthinString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmthinString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmthinString) = ("","");
+	}
 	if($VM_DEVICE eq "yes" && $vmdeviceString ne "") {
-                $hostTag = "VM Device(s)-$cluster_count";
-                $hostTagShort = "VM Device(s)";
+		$hostTag = "VM Device(s)-$cluster_count";
+		$hostTagShort = "VM Device(s)";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>OS</th><th>CDROM</th><th>CONTROLLER</th><th>DISK</th><th>ETHERNET CARD</th><th>FLOPPY</th><th>KEYBOARD</th><th>VIDEO CARD</th><th>VMCI</th><th>VMIROM</th><th>PARALLEL PORT</th><th>PCI PASSTHROUGH</th><th>POINTING DEVICE</th><th>SCSI PASSTHROUGH</th><th>SERIAL PORT</th><th>SOUND CARD</th><th>USB</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>OS</th><th>CDROM</th><th>CONTROLLER</th><th>DISK</th><th>ETHERNET CARD</th><th>FLOPPY</th><th>KEYBOARD</th><th>VIDEO CARD</th><th>VMCI</th><th>VMIROM</th><th>PARALLEL PORT</th><th>PCI PASSTHROUGH</th><th>POINTING DEVICE</th><th>SCSI PASSTHROUGH</th><th>SERIAL PORT</th><th>SOUND CARD</th><th>USB</th></tr>\n";
 
-                $table_vm_conf .= $vmdeviceString;
-                $table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmdeviceString) = ("","");
-        }
+		$table_vm_conf .= $vmdeviceString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmdeviceString) = ("","");
+	}
 	if($VM_STORAGE eq "yes" && $vmstorageString ne "") {
 		$hostTag = "VM Storage-$cluster_count";
-                $hostTagShort = "VM Storage";
+		$hostTagShort = "VM Storage";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
 		$table_vm_conf .= "<table border=\"1\"><tr><td bgcolor=\"#CCCCCC\"><b>COLOR LEGEND</b></td><td bgcolor=\"$yellow\"><b>YELLOW < $YELLOW_WARN %</b></td><td bgcolor=\"$orange\"><b>ORANGE < $ORANGE_WARN %</b></td><td bgcolor=\"$red\"><b>RED < $RED_WARN %</b></td></tr></table>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th><table border=\"1\"><tr><td><b>DISK INFO</b></td><td><b>FREE SPACE</b></td><td><b>CAPACITY</b></td><td><b>% FREE</b></td></tr></table></th></tr>\n";
 
 		$table_vm_conf .= $vmstorageString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmstorageString) = ("","");
-        }
-        if($VM_NETWORK eq "yes" && $vmnetworkString ne "") {
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmstorageString) = ("","");
+	}
+	if($VM_NETWORK eq "yes" && $vmnetworkString ne "") {
 		$hostTag = "VM Network-$cluster_count";
-                $hostTagShort = "VM Network";
+		$hostTagShort = "VM Network";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>IP ADDRESS(s)</th><th>MAC ADDRESS(s)</th><th>PORTGROUP(s)</th><th>CONNECTED</th></tr>\n";
 
 		$table_vm_conf .= $vmnetworkString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmnetworkString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmnetworkString) = ("","");
+	}
 	if($VM_SNAPSHOT eq "yes" && $vmsnapString ne "") {
-                $hostTag = "VM Snapshots-$cluster_count";
-                $hostTagShort = "VM Snapshots";
+		$hostTag = "VM Snapshots-$cluster_count";
+		$hostTagShort = "VM Snapshots";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>SNAPSHOT NAME</th><th>SNAPSHOT DESC</th><th>CREATED</th><th>STATE</th><th>QUIESCED</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>SNAPSHOT NAME</th><th>SNAPSHOT DESC</th><th>CREATED</th><th>STATE</th><th>QUIESCED</th></tr>\n";
 
 		$table_vm_conf .= $vmsnapString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmsnapString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmsnapString) = ("","");
+	}
 	if($VM_DELTA eq "yes" && $vmdeltaString ne "") {
 		$hostTag = "VM Deltas-$cluster_count";
-                $hostTagShort = "VM Deltas";
+		$hostTagShort = "VM Deltas";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
 		$table_vm_conf .= "<table border=\"1\"><tr><td bgcolor=\"#CCCCCC\"><b>COLOR LEGEND</b></td><td bgcolor=\"$yellow\"><b>YELLOW > $SNAPSHOT_YELLOW_WARN days</b></td><td bgcolor=\"$orange\"><b>ORANGE > $SNAPSHOT_ORANGE_WARN days</b></td><td bgcolor=\"$red\"><b>RED > $SNAPSHOT_RED_WARN days</b></td></tr></table>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 		$table_vm_conf .= "<tr><th>DATASTORE</th><th>VM DELTA</th><th>AGE</th><th>SIZE</th><th>CREATED</th></tr>\n";
 
 		$table_vm_conf .= $vmdeltaString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmdeltaString) = ("","");
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmdeltaString) = ("","");
 	}
 	if($VM_CDROM eq "yes" && $vmcdString ne "") {
-                $hostTag = "VM Mounted CD-ROM-$cluster_count";
-                $hostTagShort = "VM Mounted CD-ROM";
+		$hostTag = "VM Mounted CD-ROM-$cluster_count";
+		$hostTagShort = "VM Mounted CD-ROM";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>ISO</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>ISO</th></tr>\n";
 
 		$table_vm_conf .= $vmcdString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmcdString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmcdString) = ("","");
+	}
 	if($VM_FLOPPY eq "yes" && $vmflpString ne "") {
-                $hostTag = "VM Mounted Floppy-$cluster_count";
-                $hostTagShort = "VM Mounted Floppy";
+		$hostTag = "VM Mounted Floppy-$cluster_count";
+		$hostTagShort = "VM Mounted Floppy";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>IMG</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>IMG</th></tr>\n";
 
 		$table_vm_conf .= $vmflpString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmflpString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmflpString) = ("","");
+	}
 	if($VM_TOOL eq "yes" && $vmtoolString) {
-                $hostTag = "VM VMware Tools-$cluster_count";
-                $hostTagShort = "VM VMware Tools";
+		$hostTag = "VM VMware Tools-$cluster_count";
+		$hostTagShort = "VM VMware Tools";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
 		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>VERSION</th><th>RUNNING STATUS</th><th>VERSION STATUS</th><th>UPGRADE POLICY</th><th>SYNC TIME W/HOST</th></tr>\n";
 
 		$table_vm_conf .= $vmtoolString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmtoolString) = ("","");
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmtoolString) = ("","");
 	}
 	if($VM_RDM eq "yes" && $vmrdmString ne "") {
-                $hostTag = "VM RDMs-$cluster_count";
-                $hostTagShort = "VM RDMs";
+		$hostTag = "VM RDMs-$cluster_count";
+		$hostTagShort = "VM RDMs";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>COMPAT MODE</th><th>DEVICE</th><th>DISK MODE</th><th>LUN UUID</th><th>VIRTUAL DISK UUID</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>COMPAT MODE</th><th>DEVICE</th><th>DISK MODE</th><th>LUN UUID</th><th>VIRTUAL DISK UUID</th></tr>\n";
 
 		$table_vm_conf .= $vmrdmString;
 		$table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmrdmString) = ("","");
-        }
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmrdmString) = ("","");
+	}
 	if($VM_NPIV eq "yes" && $vmnpivString ne "") {
-                $hostTag = "VM NPIV-$cluster_count";
-                $hostTagShort = "VM NPIV";
+		$hostTag = "VM NPIV-$cluster_count";
+		$hostTagShort = "VM NPIV";
 
-                push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @vm_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
-                $table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
-                $table_vm_conf .= "<table border=\"1\">\n";
-                $table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>NODE WWN</th><th>PORT WWN</th><th>GENERATED FROM</th><th>DESIRED NODE WWN</th><th>DESIRED PORT WWN</th></tr>\n";
+		$table_vm_conf .= "<a name=\"$hostTag\"></a>\n";
+		$table_vm_conf .= "<h3>$hostTagShort:</h3>\n";
+		$table_vm_conf .= "<table border=\"1\">\n";
+		$table_vm_conf .= "<tr><th>HOST</th><th>VM</th><th>NODE WWN</th><th>PORT WWN</th><th>GENERATED FROM</th><th>DESIRED NODE WWN</th><th>DESIRED PORT WWN</th></tr>\n";
 
-                $table_vm_conf .= $vmnpivString;
-                $table_vm_conf .= "</table>\n";
-                $vmString .= "<br/>".$table_vm_conf;
-                ($table_vm_conf,$vmnpivString) = ("","");
-        }
+		$table_vm_conf .= $vmnpivString;
+		$table_vm_conf .= "</table>\n";
+		$vmString .= "<br/>".$table_vm_conf;
+		($table_vm_conf,$vmnpivString) = ("","");
+	}
 
 	print REPORT_OUTPUT $vmString;
-        $vmString = "";
+	$vmString = "";
 }
 
 sub printClusterSummary {
 	my ($local_cluster,$cluster_count,$atype,$aversion) = @_;
 
 	my $cluster_name = $local_cluster->name;
-        my $cluster_health = $local_cluster->overallStatus->val;
-        my $cluster_host_cnt = $local_cluster->summary->numHosts;
-        my $cluster_avail_host = $local_cluster->summary->numEffectiveHosts;
-        my $cluster_cpu_cnt = prettyPrintData($local_cluster->summary->totalCpu,'MHZ');
-        my $cluster_mem_cnt = prettyPrintData($local_cluster->summary->totalMemory,'B');
-        my $cluster_avail_cpu = prettyPrintData($local_cluster->summary->effectiveCpu,'MHZ');
-        my $cluster_avail_mem = prettyPrintData($local_cluster->summary->effectiveMemory,'M');
-        my $cluster_drs = $local_cluster->configuration->drsConfig->enabled;
-        my $cluster_ha = $local_cluster->configuration->dasConfig->enabled;
-        my $cluster_dpm = $local_cluster->configurationEx->dpmConfigInfo->enabled;
-        my $cluster_vm_mon = $local_cluster->configuration->dasConfig->vmMonitoring;
-        my $cluster_host_mon = $local_cluster->configuration->dasConfig->hostMonitoring;
+	my $cluster_health = $local_cluster->overallStatus->val;
+	my $cluster_host_cnt = $local_cluster->summary->numHosts;
+	my $cluster_avail_host = $local_cluster->summary->numEffectiveHosts;
+	my $cluster_cpu_cnt = prettyPrintData($local_cluster->summary->totalCpu,'MHZ');
+	my $cluster_mem_cnt = prettyPrintData($local_cluster->summary->totalMemory,'B');
+	my $cluster_avail_cpu = prettyPrintData($local_cluster->summary->effectiveCpu,'MHZ');
+	my $cluster_avail_mem = prettyPrintData($local_cluster->summary->effectiveMemory,'M');
+	my $cluster_drs = $local_cluster->configuration->drsConfig->enabled;
+	my $cluster_ha = $local_cluster->configuration->dasConfig->enabled;
+	my $cluster_dpm = $local_cluster->configurationEx->dpmConfigInfo->enabled;
+	my $cluster_vm_mon = $local_cluster->configuration->dasConfig->vmMonitoring;
+	my $cluster_host_mon = $local_cluster->configuration->dasConfig->hostMonitoring;
 	my $vmotions = $local_cluster->summary->numVmotions;
-        my ($mem_perc_string,$cpu_perc_string,$evc,$spbm,$hbDSPolicy) = ("","","DISABLED","N/A","N/A");
+	my ($mem_perc_string,$cpu_perc_string,$evc,$spbm,$hbDSPolicy) = ("","","DISABLED","N/A","N/A");
 	my $curr_bal = ($local_cluster->summary->currentBalance ? ($local_cluster->summary->currentBalance/1000) : "N/A");
 	my $tar_bal = ($local_cluster->summary->targetBalance ? ($local_cluster->summary->targetBalance/1000) : "N/A");
 
@@ -3912,7 +3928,7 @@ sub printClusterSummary {
 		$evc = $local_cluster->summary->currentEVCModeKey;
 	}
 
-	if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+	if($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 		if(defined($local_cluster->configurationEx->spbmEnabled)) {
 			$spbm = $local_cluster->configurationEx->spbmEnabled ? "YES" : "NO";
 		}
@@ -3922,8 +3938,8 @@ sub printClusterSummary {
 	}
 
 	###########################
-        # CLUSTER SUMMARY
-        ###########################
+	# CLUSTER SUMMARY
+	###########################
 
 	push @cluster_jump_tags,"CL<a href=\"#$cluster_name\">Cluster: $cluster_name</a><br/>\n";
 
@@ -3932,15 +3948,15 @@ sub printClusterSummary {
 	my ($hostTag,$hostTagShort) = ("","");
 
 	###########################
-        # SUMMARY
-        ###########################
-        if($CLUSTER_SUMMARY eq "yes") {
+	# SUMMARY
+	###########################
+	if($CLUSTER_SUMMARY eq "yes") {
 		$hostTag = "Cluster Summary-$cluster_name";
 		$hostTagShort = "Cluster Summary";
 		push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $cluster_start .= "<a name=\"$hostTag\"></a>\n";
-                $cluster_start .= "<h3>Cluster Summary:</h3>\n";
+		$cluster_start .= "<a name=\"$hostTag\"></a>\n";
+		$cluster_start .= "<h3>Cluster Summary:</h3>\n";
 		$cluster_start .= "<table border=\"1\">\n";
 		$cluster_start .= "<tr><th>CLUSTER HEALTH</th><th>AVAILABLE HOST(s)</th><th># OF VMS</th><th>VM-TO-HOST RATIO</th><th>CURRENT BALANCE</th><th>TARGET BALANCE</th><th>AVAILABLE CPU</th><th>AVAILABLE MEM</th><th>DRS ENABLED</th><th>HA ENABLED</th><th>DPM ENABLED</th><th>EVC ENABLED</th><th>SPBM ENABLED</th><th># OF vMOTIONS</th></tr>\n";
 
@@ -3962,14 +3978,14 @@ sub printClusterSummary {
 
 		$cluster_start .= "<tr>";
 		if($cluster_health eq 'gray' ) { $cluster_start .= "<td bgcolor=gray>UNKNOWN"; }
-	        if($cluster_health eq 'green' ) { $cluster_start .= "<td bgcolor=$green>CLUSTER OK"; }
-        	if($cluster_health eq 'red' ) { $cluster_start .= "<td bgcolor=red>CLUSTER HAS PROBLEM"; }
-	        if($cluster_health eq 'yellow' ) { $cluster_start .= "<td bgcolor=yellow>CLUSTER MIGHT HAVE PROBLEM"; }
+		if($cluster_health eq 'green' ) { $cluster_start .= "<td bgcolor=$green>CLUSTER OK"; }
+		if($cluster_health eq 'red' ) { $cluster_start .= "<td bgcolor=red>CLUSTER HAS PROBLEM"; }
+		if($cluster_health eq 'yellow' ) { $cluster_start .= "<td bgcolor=yellow>CLUSTER MIGHT HAVE PROBLEM"; }
 		$cluster_start .= "<td>".$cluster_avail_host."/".$cluster_host_cnt."</td>";
 		$cluster_start .= "<td>".$num_of_vms."</td>";
 		$cluster_start .= "<td>".$vm_host_ratio."</td>";
 		$cluster_start .= "<td>".$curr_bal."</td>";
-                $cluster_start .= "<td>".$tar_bal."</td>";
+		$cluster_start .= "<td>".$tar_bal."</td>";
 		$cluster_start .= "<td>".$cluster_avail_cpu."</td>";
 		$cluster_start .= "<td>".$cluster_avail_mem."</td>";
 		$cluster_start .= "<td>".(($cluster_drs) ? "YES" : "NO")."</td>";
@@ -3990,50 +4006,50 @@ sub printClusterSummary {
 	}
 
 	###########################
-        # PRINT HA INFO
-        ###########################
+	# PRINT HA INFO
+	###########################
 	if($cluster_ha && $CLUSTER_HA eq "yes") {
 		$hostTag = "HA Configurations-$cluster_name";
-                $hostTagShort = "HA Configurations";
+		$hostTagShort = "HA Configurations";
 
-                push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $cluster_start .= "<a name=\"$hostTag\"></a>\n";
+		$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 		$cluster_start .= "<h3>HA Configurations</h3>\n";
 		$cluster_start .= "<table border=\"1\">\n";
 		$cluster_start .= "<tr><th>FAILOVER LEVEL</th><th>ADMISSION CONTROL ENABLED</th><th>ISOLATION RESPONSE</th><th>RESTART PRIORITY</th><th>VM MONITORING</th><th>HOST MONITORING</th><th>HB DATASTORE POLICY</tr>\n";
 
 		if(defined($local_cluster->configuration->dasConfig->admissionControlPolicy)) {
-                        my $admissionControlPolicy = $local_cluster->configuration->dasConfig->admissionControlPolicy;
-                        if($admissionControlPolicy->isa('ClusterFailoverHostAdmissionControlPolicy')) {
-                                if($admissionControlPolicy->failoverHosts) {
-                                        my $failoverHosts = $admissionControlPolicy->failoverHosts;
-                                        my $failoverHostString = "";
-                                        foreach(@$failoverHosts) {
-                                                my $fhost = Vim::get_view(mo_ref => $_, properties => ['name']);
-                                                $failoverHostString .= $fhost->{'name'} . "<br/>";
-                                        }
-                                        $cluster_start .= "<td>".$failoverHostString."</td>";
-                                } else {
-                                        $cluster_start .= "<td>N/A</td>";
-                                }
-                        }elsif($admissionControlPolicy->isa('ClusterFailoverLevelAdmissionControlPolicy')) {
-                                $cluster_start .= "<td>".$admissionControlPolicy->failoverLevel."</td>";
-                        }elsif($admissionControlPolicy->isa('ClusterFailoverResourcesAdmissionControlPolicy')) {
-                                $cluster_start .= "<td>".$admissionControlPolicy->cpuFailoverResourcesPercent."% CPU -- ".$admissionControlPolicy->memoryFailoverResourcesPercent." %MEM "."</td>";
-                        } else {
-                                $cluster_start .= "<td>N/A</td>";
-                        }
-                } else {
-                        $cluster_start .= "<td>N/A</td>";
-                }
-                $cluster_start .= "<td>".(($local_cluster->configuration->dasConfig->admissionControlEnabled) ? "YES" : "NO")."</td>";
-                $cluster_start .= "<td>".$local_cluster->configuration->dasConfig->defaultVmSettings->isolationResponse."</td>";
-                $cluster_start .= "<td>".$local_cluster->configuration->dasConfig->defaultVmSettings->restartPriority."</td>";
-                $cluster_start .= "<td>".$cluster_vm_mon."</td>";
-                $cluster_start .= "<td>".$cluster_host_mon."</td>";
+			my $admissionControlPolicy = $local_cluster->configuration->dasConfig->admissionControlPolicy;
+			if($admissionControlPolicy->isa('ClusterFailoverHostAdmissionControlPolicy')) {
+				if($admissionControlPolicy->failoverHosts) {
+					my $failoverHosts = $admissionControlPolicy->failoverHosts;
+					my $failoverHostString = "";
+					foreach(@$failoverHosts) {
+						my $fhost = Vim::get_view(mo_ref => $_, properties => ['name']);
+						$failoverHostString .= $fhost->{'name'} . "<br/>";
+					}
+					$cluster_start .= "<td>".$failoverHostString."</td>";
+				} else {
+					$cluster_start .= "<td>N/A</td>";
+				}
+			}elsif($admissionControlPolicy->isa('ClusterFailoverLevelAdmissionControlPolicy')) {
+				$cluster_start .= "<td>".$admissionControlPolicy->failoverLevel."</td>";
+			}elsif($admissionControlPolicy->isa('ClusterFailoverResourcesAdmissionControlPolicy')) {
+				$cluster_start .= "<td>".$admissionControlPolicy->cpuFailoverResourcesPercent."% CPU -- ".$admissionControlPolicy->memoryFailoverResourcesPercent." %MEM "."</td>";
+			} else {
+				$cluster_start .= "<td>N/A</td>";
+			}
+		} else {
+			$cluster_start .= "<td>N/A</td>";
+		}
+		$cluster_start .= "<td>".(($local_cluster->configuration->dasConfig->admissionControlEnabled) ? "YES" : "NO")."</td>";
+		$cluster_start .= "<td>".$local_cluster->configuration->dasConfig->defaultVmSettings->isolationResponse."</td>";
+		$cluster_start .= "<td>".$local_cluster->configuration->dasConfig->defaultVmSettings->restartPriority."</td>";
+		$cluster_start .= "<td>".$cluster_vm_mon."</td>";
+		$cluster_start .= "<td>".$cluster_host_mon."</td>";
 		$cluster_start .= "<td>".$hbDSPolicy."</td>";
-                $cluster_start .= "</table>\n";
+		$cluster_start .= "</table>\n";
 
 		my $haAdvInfo;
 		eval { $haAdvInfo = $local_cluster->RetrieveDasAdvancedRuntimeInfo(); };
@@ -4047,50 +4063,50 @@ sub printClusterSummary {
 				$cluster_start .= "<tr><th>SLOT SIZE</th><th>TOTAL SLOTS IN CLUSTER</th><th>USED SLOTS</th><th>AVAILABLE SLOTS</th><th>TOTAL POWERED ON VMS</th><th>TOTAL HOSTS</th><th>TOTAL GOOD HOSTS</th></tr>\n";
 
 				if($haAdvInfo->isa('ClusterDasFailoverLevelAdvancedRuntimeInfo')) {
-                                        $cluster_start .= "<td>".($haAdvInfo->slotInfo->cpuMHz ? $haAdvInfo->slotInfo->cpuMHz : "N/A"). " MHz -- ".($haAdvInfo->slotInfo->numVcpus ? $haAdvInfo->slotInfo->numVcpus : "N/A"). " vCPUs -- ".($haAdvInfo->slotInfo->memoryMB ? $haAdvInfo->slotInfo->memoryMB : "N/A")." MB</td>";
-                                        $cluster_start .= "<td>".$haAdvInfo->totalSlots."</td>";
-                                        $cluster_start .= "<td>".$haAdvInfo->usedSlots."</td>";
-                                        $cluster_start .= "<td>".$haAdvInfo->unreservedSlots."</td>";
-                                        $cluster_start .= "<td>".$haAdvInfo->totalVms."</td>";
-                                        $cluster_start .= "<td>".$haAdvInfo->totalHosts."</td>";
-                                        $cluster_start .= "<td>".$haAdvInfo->totalGoodHosts."</td>";
-                                } else {
-                                        $cluster_start .= "<td>N/A</td>";
-                                        $cluster_start .= "<td>N/A</td>";
-                                        $cluster_start .= "<td>N/A</td>";
-                                        $cluster_start .= "<td>N/A</td>";
-                                        $cluster_start .= "<td>N/A</td>";
-                                        $cluster_start .= "<td>N/A</td>";
-                                        $cluster_start .= "<td>N/A</td>";
-                                }
-                                $cluster_start .= "</table>\n";
+					$cluster_start .= "<td>".($haAdvInfo->slotInfo->cpuMHz ? $haAdvInfo->slotInfo->cpuMHz : "N/A"). " MHz -- ".($haAdvInfo->slotInfo->numVcpus ? $haAdvInfo->slotInfo->numVcpus : "N/A"). " vCPUs -- ".($haAdvInfo->slotInfo->memoryMB ? $haAdvInfo->slotInfo->memoryMB : "N/A")." MB</td>";
+					$cluster_start .= "<td>".$haAdvInfo->totalSlots."</td>";
+					$cluster_start .= "<td>".$haAdvInfo->usedSlots."</td>";
+					$cluster_start .= "<td>".$haAdvInfo->unreservedSlots."</td>";
+					$cluster_start .= "<td>".$haAdvInfo->totalVms."</td>";
+					$cluster_start .= "<td>".$haAdvInfo->totalHosts."</td>";
+					$cluster_start .= "<td>".$haAdvInfo->totalGoodHosts."</td>";
+				} else {
+					$cluster_start .= "<td>N/A</td>";
+					$cluster_start .= "<td>N/A</td>";
+					$cluster_start .= "<td>N/A</td>";
+					$cluster_start .= "<td>N/A</td>";
+					$cluster_start .= "<td>N/A</td>";
+					$cluster_start .= "<td>N/A</td>";
+					$cluster_start .= "<td>N/A</td>";
+				}
+				$cluster_start .= "</table>\n";
 
 				## HA HEARTBEAT DATASTORE ##
-				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0') && $haAdvInfo->heartbeatDatastoreInfo) {
+				if(($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') && $haAdvInfo->heartbeatDatastoreInfo) {
 					my $hahbInfo = $haAdvInfo->heartbeatDatastoreInfo;
 
 					$hostTag = "Heartbeat Datastores-$cluster_name";
-                                        $hostTagShort = "Heartbeat Datastores";
+					$hostTagShort = "Heartbeat Datastores";
 
-                                        push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+					push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                                        $cluster_start .= "<a name=\"$hostTag\"></a>\n";
-                                        $cluster_start .= "<h3>Heartbeat Datastores</h3>\n";
-                                        $cluster_start .= "<table border=\"1\">\n";
-                                        $cluster_start .= "<tr><th>DATASTORE</th><th>HOSTS MOUNTED</th></tr>\n";
+					$cluster_start .= "<a name=\"$hostTag\"></a>\n";
+					$cluster_start .= "<h3>Heartbeat Datastores</h3>\n";
+					$cluster_start .= "<table border=\"1\">\n";
+					$cluster_start .= "<tr><th>DATASTORE</th><th>HOSTS MOUNTED</th></tr>\n";
 
-                                        foreach(@$hahbInfo) {
-                                                my $hbDSName = Vim::get_view(mo_ref => $_->datastore, properties => ['name']);
-                                                my $hbHostMount = Vim::get_views(mo_ref_array=> $_->hosts, properties => ['name']);
+					foreach(@$hahbInfo) {
+						my $hbDSName = Vim::get_view(mo_ref => $_->datastore, properties => ['name']);
+						my $hbHostMount = Vim::get_views(mo_ref_array=> $_->hosts, properties => ['name']);
 						$cluster_start .= "<tr><td>".$hbDSName->{'name'}."</td><td>".@$hbHostMount."</td></tr>";
-                                        }
-                                        $cluster_start .= "</table>\n";
+					}
+					$cluster_start .= "</table>\n";
 				}
 
 				## HA HOSTS INFO ##
 				if($haAdvInfo->dasHostInfo && $haAdvInfo->dasHostInfo->hostDasState) {
 					$cluster_start .= "<h3>HA Host Info</h3>\n";
-                        		$cluster_start .= "<table border=\"1\">\n";
+					$cluster_start .= "<table border=\"1\">\n";
 					$cluster_start .= "<tr><th>HA PRIMARY HOSTS</th><th>HA SECONDARY HOSTS</th><th>NODE STATES</th></tr>\n";
 
 					my ($nodeStates,$primHosts,$secondHosts,$dasstring) = ("","","","");
@@ -4142,21 +4158,21 @@ sub printClusterSummary {
 
 					$cluster_start .= "</table>\n";
 					%primary = ();
-                                }
+				}
 
-                                if($local_cluster->configIssue) {
-                                        my $clusterConfigIssues = $local_cluster->configIssue;
-                                        foreach(@$clusterConfigIssues) {
-                                                my $issue = $local_cluster->name . ";" . ($_->fullFormattedMessage ? $_->fullFormattedMessage : "N/A");
-                                                push @configIssues, $issue;
-                                        }
-                                }
+				if($local_cluster->configIssue) {
+					my $clusterConfigIssues = $local_cluster->configIssue;
+					foreach(@$clusterConfigIssues) {
+						my $issue = $local_cluster->name . ";" . ($_->fullFormattedMessage ? $_->fullFormattedMessage : "N/A");
+						push @configIssues, $issue;
+					}
+				}
 
 				## HA CONFIGURATION ISSUE##
 				if(@configIssues) {
 					$cluster_start .= "<h3>HA Configuration Issues</h3>\n";
-                                        $cluster_start .= "<table border=\"1\">\n";
-                                        $cluster_start .= "<tr><th>ENTITY</th><th>HA ISSUE</th></tr>\n";
+					$cluster_start .= "<table border=\"1\">\n";
+					$cluster_start .= "<tr><th>ENTITY</th><th>HA ISSUE</th></tr>\n";
 
 					foreach(@configIssues) {
 						my ($configIssueEntity,$configIssueMsg) = split(';',$_);
@@ -4168,8 +4184,8 @@ sub printClusterSummary {
 				## HA ADV OPTIONS ##
 				if($local_cluster->configurationEx->dasConfig->option) {
 					$cluster_start .= "<h3>HA Advanced Configurations</h3>\n";
-                        		$cluster_start .= "<table border=\"1\">\n";
-                        		$cluster_start .= "<tr><th>ATTRIBUTE</th><th>VALUE</th></tr>\n";
+					$cluster_start .= "<table border=\"1\">\n";
+					$cluster_start .= "<tr><th>ATTRIBUTE</th><th>VALUE</th></tr>\n";
 
 					my $haadv_string = "";
 
@@ -4186,15 +4202,15 @@ sub printClusterSummary {
 	}
 
 	###########################
-        # PRINT DRS INFO
-        ###########################
-        if($cluster_drs && $CLUSTER_DRS eq "yes") {
+	# PRINT DRS INFO
+	###########################
+	if($cluster_drs && $CLUSTER_DRS eq "yes") {
 		$hostTag = "DRS Configurations-$cluster_name";
-                $hostTagShort = "DRS Configurations";
+		$hostTagShort = "DRS Configurations";
 
-                push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $cluster_start .= "<a name=\"$hostTag\"></a>\n";
+		$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 		$cluster_start .= "<h3>DRS Configurations</h3>\n";
 		$cluster_start .= "<table border=\"1\">\n";
 		$cluster_start .= "<tr><th>DRS BEHAVIOR</th><th>VMOTION RATE</th></tr>\n";
@@ -4204,34 +4220,34 @@ sub printClusterSummary {
 		$cluster_start .= "</tr></table>\n";
 
 		## DRS ADV OPTIONS ##
-             	if($local_cluster->configurationEx->drsConfig->option) {
-                       	$cluster_start .= "<h3>DRS Advanced Configurations</h3>\n";
-                       	$cluster_start .= "<table border=\"1\">\n";
-                       	$cluster_start .= "<tr><th>ATTRIBUTE</th><th>VALUE</th></tr>\n";
+		if($local_cluster->configurationEx->drsConfig->option) {
+			$cluster_start .= "<h3>DRS Advanced Configurations</h3>\n";
+			$cluster_start .= "<table border=\"1\">\n";
+			$cluster_start .= "<tr><th>ATTRIBUTE</th><th>VALUE</th></tr>\n";
 
-                       	my $drsadv_string = "";
+			my $drsadv_string = "";
 
-	                my $advHAOptions = $local_cluster->configurationEx->drsConfig->option;
-               	        foreach(@$advHAOptions) {
-                       		$drsadv_string .= "<tr><td>".$_->key."</td><td>".$_->value."</td></tr>\n";
-                       	}
-	                $cluster_start .= $drsadv_string;
-               	        $cluster_start .= "</table>\n";
-                }
+			my $advHAOptions = $local_cluster->configurationEx->drsConfig->option;
+			foreach(@$advHAOptions) {
+				$drsadv_string .= "<tr><td>".$_->key."</td><td>".$_->value."</td></tr>\n";
+			}
+			$cluster_start .= $drsadv_string;
+			$cluster_start .= "</table>\n";
+		}
 	}
 
 	###########################
-        # PRINT DPM INFO
-        ###########################
-        if($cluster_dpm && $CLUSTER_DPM eq "yes") {
+	# PRINT DPM INFO
+	###########################
+	if($cluster_dpm && $CLUSTER_DPM eq "yes") {
 		$hostTag = "DPM Configurations-$cluster_name";
-                $hostTagShort = "DPM Configurations";
+		$hostTagShort = "DPM Configurations";
 
-                push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                $cluster_start .= "<a name=\"$hostTag\"></a>\n";
+		$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 		$cluster_start .= "<h3>DPM Configurations</h3>\n";
-                $cluster_start .= "<table border=\"1\">\n";
+		$cluster_start .= "<table border=\"1\">\n";
 		$cluster_start .= "<tr><th>DPM BEHAVIOR</th></tr><tr>\n";
 
 		$cluster_start .= "<td>".$local_cluster->configurationEx->dpmConfigInfo->defaultDpmBehavior->val."</td>";
@@ -4246,14 +4262,14 @@ sub printClusterSummary {
 			my $rules = $local_cluster->configurationEx->rule;
 
 			$hostTag = "Affinity Rules-$cluster_name";
-	                $hostTagShort = "Affinity Rules";
+			$hostTagShort = "Affinity Rules";
 
-        	        push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+			push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                	$cluster_start .= "<a name=\"$hostTag\"></a>\n";
+			$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 			$cluster_start .= "<h3>Affinity Rules:</h3>\n";
 			$cluster_start .= "<table border=\"1\">\n";
-			if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+			if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 				$cluster_start .= "<tr><th>RULE NAME</th><th>RULE TYPE</th><th>ENABLED</th><th>VM(s)</th><th>COMPLIANT</th><th>MANDATORY</th><th>USER CREATED</th></tr>\n";
 			} else {
 				$cluster_start .= "<tr><th>RULE NAME</th><th>RULE TYPE</th><th>ENABLED</th><th>VM(s)</th></tr>\n";
@@ -4261,12 +4277,12 @@ sub printClusterSummary {
 
 			foreach(sort {$a->name cmp $b->name} @$rules) {
 				my $rule = $_;
-                	        my $is_enabled = $rule->enabled;
-	                        my $rule_name = $rule->name;
-        	                my $rule_type = "CLUSTER-RULE";
+				my $is_enabled = $rule->enabled;
+				my $rule_name = $rule->name;
+				my $rule_type = "CLUSTER-RULE";
 				my $compliant;
 
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 					if($rule->inCompliance) {
 						$compliant = "<td bgcolor=\"$green\">YES</td>";
 					} else {
@@ -4274,18 +4290,18 @@ sub printClusterSummary {
 					}
 				}
 
-                	        if(ref($rule) eq 'ClusterAffinityRuleSpec') {
-                        	        $rule_type = "AFFINITY";
-	                        }
-        	                elsif (ref($rule) eq 'ClusterAntiAffinityRuleSpec') {
-                	                $rule_type = "ANTI-AFFINITY";
-                        	}
+				if(ref($rule) eq 'ClusterAffinityRuleSpec') {
+					$rule_type = "AFFINITY";
+				}
+				elsif (ref($rule) eq 'ClusterAntiAffinityRuleSpec') {
+					$rule_type = "ANTI-AFFINITY";
+				}
 				my $listOfVMs = Vim::get_views(mo_ref_array => $_->{'vm'}, properties => ['name']);
 				my $listOfVmsString = "";
 				foreach(@$listOfVMs) {
 					$listOfVmsString .= $_->{'name'}."<br/>";
 				}
-				if($aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+				if($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0') {
 					$cluster_start .= "<tr><td>".$rule_name."</td><td>".$rule_type."</td><td>".(($is_enabled) ? "YES" : "NO")."</td><td>".$listOfVmsString."</td>".$compliant."<td>".($rule->mandatory ? "YES" : "NO")."</td><td>".($rule->userCreated ? "YES" : "NO")."</td></tr>\n";
 				} else {
 					$cluster_start .= "<tr><td>".$rule_name."</td><td>".$rule_type."</td><td>".(($is_enabled) ? "YES" : "NO")."</td><td>".$listOfVmsString."</td></tr>\n";
@@ -4296,19 +4312,19 @@ sub printClusterSummary {
 	}
 
 	###########################
-        # AFFINITY GROUP RULES
-        ###########################
-	if($CLUSTER_GROUP eq "yes" && $aversion eq '4.1.0' || ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
+	# AFFINITY GROUP RULES
+	###########################
+	if($CLUSTER_GROUP eq "yes" && ($aversion eq '4.1.0' || $aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
 		if($local_cluster->configurationEx->group) {
-                        my $groups = $local_cluster->configurationEx->group;
+			my $groups = $local_cluster->configurationEx->group;
 
-                        $hostTag = "Affinity Group Rules-$cluster_name";
-                        $hostTagShort = "Affinity Group Rules";
+			$hostTag = "Affinity Group Rules-$cluster_name";
+			$hostTagShort = "Affinity Group Rules";
 
-                        push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+			push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                        $cluster_start .= "<a name=\"$hostTag\"></a>\n";
-                        $cluster_start .= "<h3>Affinity Group Rules:</h3>\n";
+			$cluster_start .= "<a name=\"$hostTag\"></a>\n";
+			$cluster_start .= "<h3>Affinity Group Rules:</h3>\n";
 			my ($drsHostsGroupString,$drsVMGroupString) = ("","");
 
 			foreach(sort {$a->name cmp $b->name} @$groups) {
@@ -4316,15 +4332,15 @@ sub printClusterSummary {
 					my $listOfHosts = Vim::get_views(mo_ref_array => $_->host, properties => ['name']);
 					my $listOfHostsString = "";
 					foreach(@$listOfHosts) {
-        	                                $listOfHostsString .= $_->{'name'}."<br/>";
-	                                }
+						$listOfHostsString .= $_->{'name'}."<br/>";
+					}
 					$drsHostsGroupString .= "<tr><td>".$_->name."</td><td>".$listOfHostsString."</td></tr>\n";
 				}elsif($_->isa('ClusterVmGroup')) {
 					my $listOfVms = Vim::get_views(mo_ref_array => $_->vm, properties => ['name']);
-                                        my $listOfVmsString = "";
-                                        foreach(@$listOfVms) {
-                                                $listOfVmsString .= $_->{'name'}."<br/>";
-                                        }
+					my $listOfVmsString = "";
+					foreach(@$listOfVms) {
+						$listOfVmsString .= $_->{'name'}."<br/>";
+					}
 					$drsVMGroupString .= "<tr><td>".$_->name."</td><td>".$listOfVmsString."</td></tr>\n";
 				}
 			}
@@ -4339,12 +4355,12 @@ sub printClusterSummary {
 
 			#VM GROUP
 			if($drsVMGroupString ne "") {
-                	        $cluster_start .= "<table border=\"1\">\n";
-        	                $cluster_start .= "<tr><th>RULE NAME</th><th>VM(s)</th></tr>\n";
+				$cluster_start .= "<table border=\"1\">\n";
+				$cluster_start .= "<tr><th>RULE NAME</th><th>VM(s)</th></tr>\n";
 				$cluster_start .= $drsVMGroupString;
-                        	$cluster_start .= "</table><br/>\n";
+				$cluster_start .= "</table><br/>\n";
 			}
-                }
+		}
 
 	}
 
@@ -4361,34 +4377,34 @@ sub printClusterSummary {
 			my $rp = Vim::get_view(mo_ref => $_);
 
 			if($rp->isa('VirtualApp')) {
-	        	        my $vapp_name = $rp->name;
-        	                my $anno = ($rp->vAppConfig->annotation ? $rp->vAppConfig->annotation : "N/A");
+				my $vapp_name = $rp->name;
+				my $anno = ($rp->vAppConfig->annotation ? $rp->vAppConfig->annotation : "N/A");
 
-	                        my $ec = $rp->vAppConfig->entityConfig;
-        	                my $vm_vapp_string = "";
-                	        foreach(@$ec) {
-                                        my $order = $_->startOrder;
-	                                my $tag = $_->tag;
-        		                $vm_vapp_string .= "<tr><td>".$tag."</td><td>".$order."</td></tr>\n";
-                                }
-                       	        $vapp_string .= "<tr><th colspan=2>".$vapp_name."</th><tr>\n";
-                               	$vapp_string .= "<tr><th>VM</th><th>START ORDER</th></tr>\n";
-	                        $vapp_string .= $vm_vapp_string."</tr>\n";
-        	        } else {
-                                my $rp_name = $rp->name;
-	                        my $rp_status = $rp->summary->runtime->overallStatus->val;
-        	                if($rp_status eq 'gray') { $rp_status = "<td bgcolor=\"gray\">UNKNOWN</td>"; }
-                                elsif($rp_status eq 'green') { $rp_status = "<td bgcolor=\"$green\">GREEN</td>";  }
-	                        elsif($rp_status eq 'red') { $rp_status = "<td bgcolor=\"$red\">RED</td>"; }
-        	                elsif($rp_status eq 'yellow') { $rp_status = "<td bcolor=\"$yellow\">YELLOW</td>"; }
-                                my $rp_cpu_use = prettyPrintData($rp->summary->runtime->cpu->overallUsage,'MHZ');
-                   	        my $rp_cpu_max = prettyPrintData($rp->summary->runtime->cpu->maxUsage,'MHZ');
-	                        my $rp_cpu_lim = prettyPrintData($rp->summary->config->cpuAllocation->limit,'MHZ');
-        	                my $rp_cpu_rsv = prettyPrintData($rp->summary->config->cpuAllocation->reservation,'MHZ');
-                                my $rp_mem_use = prettyPrintData($rp->summary->runtime->memory->overallUsage,'B');
-                     	        my $rp_mem_max = prettyPrintData($rp->summary->runtime->memory->maxUsage,'B');
-	                        my $rp_mem_lim = prettyPrintData($rp->summary->config->cpuAllocation->limit,'M');
-        	                my $rp_mem_rsv = prettyPrintData($rp->summary->config->cpuAllocation->reservation,'M');
+				my $ec = $rp->vAppConfig->entityConfig;
+				my $vm_vapp_string = "";
+				foreach(@$ec) {
+					my $order = $_->startOrder;
+					my $tag = $_->tag;
+					$vm_vapp_string .= "<tr><td>".$tag."</td><td>".$order."</td></tr>\n";
+				}
+				$vapp_string .= "<tr><th colspan=2>".$vapp_name."</th><tr>\n";
+				$vapp_string .= "<tr><th>VM</th><th>START ORDER</th></tr>\n";
+				$vapp_string .= $vm_vapp_string."</tr>\n";
+			} else {
+				my $rp_name = $rp->name;
+				my $rp_status = $rp->summary->runtime->overallStatus->val;
+				if($rp_status eq 'gray') { $rp_status = "<td bgcolor=\"gray\">UNKNOWN</td>"; }
+				elsif($rp_status eq 'green') { $rp_status = "<td bgcolor=\"$green\">GREEN</td>";  }
+				elsif($rp_status eq 'red') { $rp_status = "<td bgcolor=\"$red\">RED</td>"; }
+				elsif($rp_status eq 'yellow') { $rp_status = "<td bcolor=\"$yellow\">YELLOW</td>"; }
+				my $rp_cpu_use = prettyPrintData($rp->summary->runtime->cpu->overallUsage,'MHZ');
+				my $rp_cpu_max = prettyPrintData($rp->summary->runtime->cpu->maxUsage,'MHZ');
+				my $rp_cpu_lim = prettyPrintData($rp->summary->config->cpuAllocation->limit,'MHZ');
+				my $rp_cpu_rsv = prettyPrintData($rp->summary->config->cpuAllocation->reservation,'MHZ');
+				my $rp_mem_use = prettyPrintData($rp->summary->runtime->memory->overallUsage,'B');
+				my $rp_mem_max = prettyPrintData($rp->summary->runtime->memory->maxUsage,'B');
+				my $rp_mem_lim = prettyPrintData($rp->summary->config->cpuAllocation->limit,'M');
+				my $rp_mem_rsv = prettyPrintData($rp->summary->config->cpuAllocation->reservation,'M');
 				my ($rp_cpu_shares,$rp_mem_shares) = ("N/A","N/A");
 				if($rp->summary->config->cpuAllocation) {
 					$rp_cpu_shares = ($rp->summary->config->cpuAllocation->shares->shares ? $rp->summary->config->cpuAllocation->shares->shares : "N/A");
@@ -4410,9 +4426,9 @@ sub printClusterSummary {
 				}
 				if($vmInRp != 0 && $rp_mem_shares ne "N/A") {
 					$memUnitsPerVM = floor($rp_mem_shares/$vmInRp);
-                                }
+				}
 
-                                $resource_pool_string .= "<tr><td>".$rp_name."</td>";
+				$resource_pool_string .= "<tr><td>".$rp_name."</td>";
 				$resource_pool_string .= $rp_status;
 				$resource_pool_string .= "<td>".$vmInRp."</td>";
 				$resource_pool_string .= "<td>".$rp_cpu_shares."</td>";
@@ -4427,18 +4443,18 @@ sub printClusterSummary {
 				$resource_pool_string .= "<td>".$rp_cpu_max."</td>";
 				$resource_pool_string .= "<td>".$rp_mem_use."</td>";
 				$resource_pool_string .= "<td>".$rp_mem_max."</td></tr>\n";
-                       	}
+			}
 		}
 	}
 
 	if($CLUSTER_RP eq "yes") {
 		if($resource_pool_string ne "") {
 			$hostTag = "Resource Pool(s)-$cluster_name";
-                	$hostTagShort = "Resource Pool(s)";
+			$hostTagShort = "Resource Pool(s)";
 
-        	        push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+			push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-	                $cluster_start .= "<a name=\"$hostTag\"></a>\n";
+			$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 			$cluster_start .= "<h3>Resource Pool(s):</h3>\n";
 			$cluster_start .= "<table border=\"1\">\n";
 			$cluster_start .= "<tr><th>POOL NAME</th><th>STATUS</th><th># of VM(s)</th><th>CPU SHARES</th><th>CPU UNITS PER/VM</th><th>MEM SHARES</th><th>MEM UNITS PER/VM</th><th>CPU LIMIT</th><th>CPU RESERVATION</th><th>MEM LIMIT</th><th>MEM RESERVATION</th><th>CPU USAGE</th><th>CPU MAX</th><th>MEM USAGE</th><th>MEM MAX</th></tr>\n";
@@ -4454,13 +4470,13 @@ sub printClusterSummary {
 	if($CLUSTER_VAPP eq "yes") {
 		if($vapp_string ne "") {
 			$hostTag = "vApp(s)-$cluster_name";
-                        $hostTagShort = "vApp(s)";
+			$hostTagShort = "vApp(s)";
 
-                        push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+			push @cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
 
-                        $cluster_start .= "<a name=\"$hostTag\"></a>\n";
+			$cluster_start .= "<a name=\"$hostTag\"></a>\n";
 			$cluster_start .= "<h3>vApp(s):</h3>\n";
-                	$cluster_start .= "<table border=\"1\">\n";
+			$cluster_start .= "<table border=\"1\">\n";
 
 			$cluster_start .= $vapp_string;
 			$cluster_start .= "</table>\n";
@@ -4512,11 +4528,11 @@ sub printClusterSummary {
 		}
 	}
 
-        print REPORT_OUTPUT "<br/>".$cluster_start;
+	print REPORT_OUTPUT "<br/>".$cluster_start;
 }
 
 sub printDatacenterSummary {
-        my ($local_datacenter,$dc_count,$atype,$aversion) = @_;
+	my ($local_datacenter,$dc_count,$atype,$aversion) = @_;
 
 	my $datacenter_name = $local_datacenter->name;
 
@@ -4552,16 +4568,17 @@ sub printDatacenterSummary {
 			if(defined($pod->summary)) {
 				my @podDatastores = ();
 				my ($podDSCount,$podVMCount) = (0,0);
-				foreach my $ds ( @{$pod->childEntity} ) {
-		                        my $child_view = Vim::get_view(mo_ref => $ds);
+				# If a pod has no datastores, childEntity will be undef, so force an empty array.
+				foreach my $ds ( defined($pod->childEntity) ? @{$pod->childEntity} : () ) {
+					my $child_view = Vim::get_view(mo_ref => $ds);
 
-                		        if($child_view->isa("Datastore")) {
-                                		push @podDatastores, $child_view;
+					if($child_view->isa("Datastore")) {
+						push @podDatastores, $child_view;
 						my $vmsperds = Vim::get_views(mo_ref_array => $child_view->vm, properties => ['name']);
 						$podVMCount += @$vmsperds;
 						$podDSCount++;
-                        		}
-                		}
+					}
+				}
 
 				# find the largest datastore
 				my $largestDatastoreSize = 0;
@@ -4584,11 +4601,11 @@ sub printDatacenterSummary {
 	###############
 	if($DATASTORE_CLUSTER_POD_CONFIG eq "yes" && @$storagePods gt 0) {
 		$hostTag = "Datastore Cluster Pod Config-$datacenter_name";
-                $hostTagShort = "Datastore Cluster Pod Config";
-                push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-                $datacenter_start .= "<a name=\"$hostTag\"></a>\n";
-                $datacenter_start .= "<h3>Datastore Cluster Pod Config:</h3>\n";
-                $datacenter_start .= "<table border=\"1\">\n";
+		$hostTagShort = "Datastore Cluster Pod Config";
+		push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		$datacenter_start .= "<a name=\"$hostTag\"></a>\n";
+		$datacenter_start .= "<h3>Datastore Cluster Pod Config:</h3>\n";
+		$datacenter_start .= "<table border=\"1\">\n";
 		$datacenter_start .= "<tr><th>STORAGE POD NAME</th><th>SDRS ENABLED</th><th>IO BALANCE ENABLED</th><th>IO BALANCE LATENCY THRESHOLD</th><th>IO LOAD BALANCE THRESHOLD</th><th>IO BALANCE INTERVAL</th><th>LOAD BALANCE SPACE UTILIZATION DIFFERENCE</th><th>SPACE UTILIZATION THRESHOLD</th><th>ENABLE INTRA-VM AFFINITY</th><th>DEFAULT VM BEHAVIOR</th></tr>\n";
 
 		foreach my $pod (@$storagePods) {
@@ -4631,16 +4648,16 @@ sub printDatacenterSummary {
 	# POD ADV OPTIONS
 	##################
 	if($DATASTORE_CLUSTER_POD_ADV_CONFIG eq "yes" && @$storagePods gt 0) {
-                $hostTag = "Datastore Cluster Pod Advanced Configurations-$datacenter_name";
-                $hostTagShort = "Datastore Cluster Pod Advanced Configurations";
-                push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-                $datacenter_start .= "<a name=\"$hostTag\"></a>\n";
-                $datacenter_start .= "<h3>Datastore Cluster Pod Advanced Configurations:</h3>\n";
-                $datacenter_start .= "<table border=\"1\">\n";
-                $datacenter_start .= "<tr><th>STORAGE POD NAME</th><th>ADVANCED CONFIGURATIONS</th>\n";
+		$hostTag = "Datastore Cluster Pod Advanced Configurations-$datacenter_name";
+		$hostTagShort = "Datastore Cluster Pod Advanced Configurations";
+		push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		$datacenter_start .= "<a name=\"$hostTag\"></a>\n";
+		$datacenter_start .= "<h3>Datastore Cluster Pod Advanced Configurations:</h3>\n";
+		$datacenter_start .= "<table border=\"1\">\n";
+		$datacenter_start .= "<tr><th>STORAGE POD NAME</th><th>ADVANCED CONFIGURATIONS</th>\n";
 
 		foreach my $pod (@$storagePods) {
-                        if(defined($pod->podStorageDrsEntry)) {
+			if(defined($pod->podStorageDrsEntry)) {
 				my $podConfig = $pod->podStorageDrsEntry->storageDrsConfig->podConfig;
 				if($podConfig->option) {
 					my $podrules_string = "";
@@ -4658,35 +4675,36 @@ sub printDatacenterSummary {
 	}
 
 	##################
-        # POD STORAGE
-        ##################
+	# POD STORAGE
+	##################
 	if($DATASTORE_CLUSTER_POD_STORAGE eq "yes" && @$storagePods gt 0) {
 		$hostTag = "Datastore Cluster Pod Storage-$datacenter_name";
-                $hostTagShort = "Datastore Cluster Pod Storage";
-                push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-                $datacenter_start .= "<a name=\"$hostTag\"></a>\n";
-                $datacenter_start .= "<h3>Datastore Cluster Pod Storage:</h3>\n";
-                $datacenter_start .= "<table border=\"1\">\n";
-                $datacenter_start .= "<tr><th>STORAGE POD NAME</th><th>DATASTORES</th><th>MAINTENANCE MODE</th>\n";
+		$hostTagShort = "Datastore Cluster Pod Storage";
+		push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		$datacenter_start .= "<a name=\"$hostTag\"></a>\n";
+		$datacenter_start .= "<h3>Datastore Cluster Pod Storage:</h3>\n";
+		$datacenter_start .= "<table border=\"1\">\n";
+		$datacenter_start .= "<tr><th>STORAGE POD NAME</th><th>DATASTORES</th><th>MAINTENANCE MODE</th>\n";
 
 		foreach my $pod (@$storagePods) {
-                        if(defined($pod->summary)) {
+			if(defined($pod->summary)) {
 				my @podDatastores = ();
-                                my $podDSCount = 0;
-                                foreach my $ds ( @{$pod->childEntity} ) {
-                                        my $child_view = Vim::get_view(mo_ref => $ds, properties => ['name','summary.maintenanceMode']);
+				my $podDSCount = 0;
+				# If a pod has no datastores, childEntity will be undef, so force an empty array.
+				foreach my $ds ( defined($pod->childEntity) ? @{$pod->childEntity} : () ) {
+					my $child_view = Vim::get_view(mo_ref => $ds, properties => ['name','summary.maintenanceMode']);
 
-                                        if($child_view->isa("Datastore")) {
-                                                push @podDatastores, $child_view;
-                                        }
-                                }
+					if($child_view->isa("Datastore")) {
+						push @podDatastores, $child_view;
+					}
+				}
 
 				my ($podDSString,$podDSMMString) = ("","");
-                                foreach(@podDatastores) {
+				foreach(@podDatastores) {
 					$podDSString .= $_->{'name'} . "<br>";
 					$podDSMMString .= $_->{'summary.maintenanceMode'} . "<br>";
-                                }
-                                $datacenter_start .= "<tr><td>" . $pod->name . "</td><td>" . $podDSString . "</td><td>" . $podDSMMString . "</td></tr>\n";
+				}
+				$datacenter_start .= "<tr><td>" . $pod->name . "</td><td>" . $podDSString . "</td><td>" . $podDSMMString . "</td></tr>\n";
 			}
 		}
 		$datacenter_start .= "</table>\n";
@@ -4697,12 +4715,12 @@ sub printDatacenterSummary {
 	##############
 	if($DVS_SUMMARY eq "yes" && @$dvs gt 0) {
 		$hostTag = "DVS Summary-$datacenter_name";
-                $hostTagShort = "DVS Summary";
-                push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-                $datacenter_start .= "<a name=\"$hostTag\"></a>\n";
-                $datacenter_start .= "<h3>DVS Summary:</h3>\n";
-                $datacenter_start .= "<table border=\"1\">\n";
-                $datacenter_start .= "<tr><th>DVS NAME</th><th># OF PORTS</th><th>VENDOR</th><th>VERSION</th><th>BUILD</th><th>UUID</th></tr>\n";
+		$hostTagShort = "DVS Summary";
+		push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		$datacenter_start .= "<a name=\"$hostTag\"></a>\n";
+		$datacenter_start .= "<h3>DVS Summary:</h3>\n";
+		$datacenter_start .= "<table border=\"1\">\n";
+		$datacenter_start .= "<tr><th>DVS NAME</th><th># OF PORTS</th><th>VENDOR</th><th>VERSION</th><th>BUILD</th><th>UUID</th></tr>\n";
 
 		foreach my $dvSwitch (@$dvs) {
 			$datacenter_start .= "<tr>";
@@ -4721,12 +4739,12 @@ sub printDatacenterSummary {
 	#################
 	if($DVS_CAPABILITY && @$dvs gt 0) {
 		$hostTag = "DVS Capability-$datacenter_name";
-                $hostTagShort = "DVS Capability";
-                push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-                $datacenter_start .= "<a name=\"$hostTag\"></a>\n";
-                $datacenter_start .= "<h3>DVS Capability:</h3>\n";
-                $datacenter_start .= "<table border=\"1\">\n";
-                $datacenter_start .= "<tr><th>DVS NAME</th><th>NIOC SUPPORT</th><th>QOS SUPPORT</th><th>DIRECT PATH GEN2 SUPPORT</th><th>DEFINE NETWORK RSC POOLS SUPPORT</th><th>NETWORK RSC POOL HIGH SHARE VAL</th><th>NIC TEAMING POLICY</th></tr>";
+		$hostTagShort = "DVS Capability";
+		push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		$datacenter_start .= "<a name=\"$hostTag\"></a>\n";
+		$datacenter_start .= "<h3>DVS Capability:</h3>\n";
+		$datacenter_start .= "<table border=\"1\">\n";
+		$datacenter_start .= "<tr><th>DVS NAME</th><th>NIOC SUPPORT</th><th>QOS SUPPORT</th><th>DIRECT PATH GEN2 SUPPORT</th><th>DEFINE NETWORK RSC POOLS SUPPORT</th><th>NETWORK RSC POOL HIGH SHARE VAL</th><th>NIC TEAMING POLICY</th></tr>";
 
 		my ($niocSup,$qosSup,$defNetRscPoolSup,$netRscPoolShareVal,$dp2Sup,$nicTeam) = ("N/A","N/A","N/A","N/A","N/A","N/A",);
 
@@ -4753,21 +4771,21 @@ sub printDatacenterSummary {
 		$datacenter_start .= "</table>\n";
 	}
 	##############
-        # DVS CONFIG
-        ##############
-        if($DVS_CONFIG eq "yes" && @$dvs gt 0) {
-                $hostTag = "DVS Config-$datacenter_name";
-                $hostTagShort = "DVS Config";
-                push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
-                $datacenter_start .= "<a name=\"$hostTag\"></a>\n";
-                $datacenter_start .= "<h3>DVS Config:</h3>\n";
-                $datacenter_start .= "<table border=\"1\">\n";
-                $datacenter_start .= "<tr><th>DVS NAME</th><th>SWITCH ADDRESS</th><th>MAX PORTS</th><th>STANDALONE PORTS</th><th>MTU</th><th>NIOC ENABLED</th><th>LDP OPERATION</th><th>LDP PROTOCOL</th><th>ACTIVE FLOW TIMEOUT</th><th>IDLE FLOW TIMEOUT</th><th>INTERNAL FLOW ONLY</th><th>SAMPLE RATE</th><th>EXT KEY</th><th>CONFIG VERSION</th><th>DESCRIPTION</th><th>CREATE TIME</th></tr>\n";
+	# DVS CONFIG
+	##############
+	if($DVS_CONFIG eq "yes" && @$dvs gt 0) {
+		$hostTag = "DVS Config-$datacenter_name";
+		$hostTagShort = "DVS Config";
+		push @datastore_cluster_jump_tags,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$hostTag\">$hostTagShort</a><br/>\n";
+		$datacenter_start .= "<a name=\"$hostTag\"></a>\n";
+		$datacenter_start .= "<h3>DVS Config:</h3>\n";
+		$datacenter_start .= "<table border=\"1\">\n";
+		$datacenter_start .= "<tr><th>DVS NAME</th><th>SWITCH ADDRESS</th><th>MAX PORTS</th><th>STANDALONE PORTS</th><th>MTU</th><th>NIOC ENABLED</th><th>LDP OPERATION</th><th>LDP PROTOCOL</th><th>ACTIVE FLOW TIMEOUT</th><th>IDLE FLOW TIMEOUT</th><th>INTERNAL FLOW ONLY</th><th>SAMPLE RATE</th><th>EXT KEY</th><th>CONFIG VERSION</th><th>DESCRIPTION</th><th>CREATE TIME</th></tr>\n";
 
-                foreach my $dvSwitch (@$dvs) {
+		foreach my $dvSwitch (@$dvs) {
 			my ($mtu,$ldpOp,$ldpPro,$activeFlowTimeout,$idleFlowTimeout,$intFlowOnly,$sampleRate) = ("N/A","N/A","N/A","N/A","N/A","N/A");
 			if($dvSwitch->config->isa('VMwareDVSConfigInfo')) {
-                                $mtu = $dvSwitch->config->maxMtu;
+				$mtu = $dvSwitch->config->maxMtu;
 				$ldpOp = $dvSwitch->config->linkDiscoveryProtocolConfig->operation ? $dvSwitch->config->linkDiscoveryProtocolConfig->operation : "N/A";
 				$ldpPro = $dvSwitch->config->linkDiscoveryProtocolConfig->protocol ? $dvSwitch->config->linkDiscoveryProtocolConfig->protocol : "N/A";
 				$activeFlowTimeout = $dvSwitch->config->ipfixConfig->activeFlowTimeout ? $dvSwitch->config->ipfixConfig->activeFlowTimeout : "N/A";
@@ -4775,10 +4793,10 @@ sub printDatacenterSummary {
 				$intFlowOnly = $dvSwitch->config->ipfixConfig->internalFlowsOnly ? "YES" : "NO";
 				$sampleRate = $dvSwitch->config->ipfixConfig->samplingRate ? $dvSwitch->config->ipfixConfig->samplingRate : "N/A";
 
-                        }
+			}
 
-                        $datacenter_start .= "<tr>";
-                        $datacenter_start .= "<td>".$dvSwitch->summary->name."</td>";
+			$datacenter_start .= "<tr>";
+			$datacenter_start .= "<td>".$dvSwitch->summary->name."</td>";
 			$datacenter_start .= "<td>".($dvSwitch->config->switchIpAddress ? $dvSwitch->config->switchIpAddress : "N/A")."</td>";
 			$datacenter_start .= "<td>".$dvSwitch->config->maxPorts."</td>";
 			$datacenter_start .= "<td>".$dvSwitch->config->numStandalonePorts."</td>";
@@ -4794,10 +4812,10 @@ sub printDatacenterSummary {
 			$datacenter_start .= "<td>".$dvSwitch->config->configVersion."</td>";
 			$datacenter_start .= "<td>".($dvSwitch->config->description ? $dvSwitch->config->description : "N/A")."</td>";
 			$datacenter_start .= "<td>".$dvSwitch->config->createTime."</td>";
-                        $datacenter_start .= "</tr>\n";
-                }
-                $datacenter_start .= "</table>\n";
-        }
+			$datacenter_start .= "</tr>\n";
+		}
+		$datacenter_start .= "</table>\n";
+	}
 
 	print REPORT_OUTPUT "<br/>".$datacenter_start;
 }
@@ -4820,29 +4838,29 @@ sub processOptions {
 		$cluster_view = Vim::find_entity_view(view_type => 'ClusterComputeResource',filter => { name => $clusterInput });
 		unless($cluster_view) {
 			Util::disconnect();
-                        die "Error: Unable to find Cluster: \"$clusterInput\"!\n";
+			die "Error: Unable to find Cluster: \"$clusterInput\"!\n";
 			exit 1;
 		}
 	}elsif($type eq 'datacenter' && $hostType eq 'VirtualCenter') {
 		$datacenter_view = Vim::find_entity_view(view_type => 'Datacenter',filter => { name => $datacenterInput});
 		unless($datacenter_view) {
 			Util::disconnect();
-                        die "Error: Unable to find Datacenter: \"$datacenterInput\"!\n";
+			die "Error: Unable to find Datacenter: \"$datacenterInput\"!\n";
 			exit 1;
 		}
 		my $CCR = Vim::find_entity_views(view_type => 'ClusterComputeResource', begin_entity => $datacenter_view);
-                my $CR = Vim::find_entity_views(view_type => 'ComputeResource', begin_entity => $datacenter_view);
-                my @list = (@$CCR,@$CR);
-                my %seen = ();
-                my @unique = grep { ! $seen{$_->name} ++ } @list;
-                $cluster_views = \@unique;
+		my $CR = Vim::find_entity_views(view_type => 'ComputeResource', begin_entity => $datacenter_view);
+		my @list = (@$CCR,@$CR);
+		my %seen = ();
+		my @unique = grep { ! $seen{$_->name} ++ } @list;
+		$cluster_views = \@unique;
 	}elsif($type eq 'vcenter' && $hostType eq 'VirtualCenter') {
 		my $CCR = Vim::find_entity_views(view_type => 'ClusterComputeResource');
-                my $CR = Vim::find_entity_views(view_type => 'ComputeResource');
-                my @list = (@$CCR,@$CR);
-                my %seen = ();
-                my @unique = grep { ! $seen{$_->name} ++ } @list;
-                $cluster_views = \@unique;
+		my $CR = Vim::find_entity_views(view_type => 'ComputeResource');
+		my @list = (@$CCR,@$CR);
+		my %seen = ();
+		my @unique = grep { ! $seen{$_->name} ++ } @list;
+		$cluster_views = \@unique;
 	}
 }
 
@@ -4943,23 +4961,23 @@ VMW_APP
 );
 
 	open(CONFIG, "$conf") || die "Error: Couldn't open the $conf!";
-        while (<CONFIG>) {
-        	chomp;
-                s/#.*//; # Remove comments
-        	s/^\s+//; # Remove opening whitespace
-                s/\s+$//;  # Remove closing whitespace
-                next unless length;
-                my ($key, $value) = split(/\s*=\s*/, $_, 2);
-                if( grep $key eq $_,  @goodparams ) {
-                	$value =~ s/"//g;
+	while (<CONFIG>) {
+		chomp;
+		s/#.*//; # Remove comments
+		s/^\s+//; # Remove opening whitespace
+		s/\s+$//;  # Remove closing whitespace
+		next unless length;
+		my ($key, $value) = split(/\s*=\s*/, $_, 2);
+		if( grep $key eq $_,  @goodparams ) {
+			$value =~ s/"//g;
 			if($key eq "EMAIL_TO") {
 				@EMAIL_TO = ();
 				@EMAIL_TO = split(',',$value);
 			} else {
-                        	$configurations{$key} = $value;
+				$configurations{$key} = $value;
 			}
-               	}
-        }
+		}
+	}
 	close(CONFIG);
 }
 
@@ -4976,20 +4994,20 @@ sub processSubFiles {
 	my ($config_input) = @_;
 
 	open(CONFIG, "$config_input") || die "Error: Couldn't open the $config_input!";
-        while (<CONFIG>) {
-                chomp;
-                s/#.*//; # Remove comments
-                s/^\s+//; # Remove opening whitespace
-                s/\s+$//;  # Remove closing whitespace
-                next unless length;
+	while (<CONFIG>) {
+		chomp;
+		s/#.*//; # Remove comments
+		s/^\s+//; # Remove opening whitespace
+		s/\s+$//;  # Remove closing whitespace
+		next unless length;
 		if($hostlist) {
 			$hostlists{$_} = "yes";
 		}
 		if($vmlist) {
 			$vmlists{$_} = "yes";
 		}
-        }
-        close(CONFIG);
+	}
+	close(CONFIG);
 }
 
 sub setConf {
@@ -5084,148 +5102,148 @@ sub setConf {
 	$VM_NPIV=(($configurations{'VM_NPIV'}) ? $configurations{'VM_NPIV'} : "yes");
 	$VM_TOOL=(($configurations{'VM_TOOL'}) ? $configurations{'VM_TOOL'} : "yes");
 	$VMW_APP=(($configurations{'VMW_APP'}) ? $configurations{'VMW_APP'} : "yes");
-        $VPX_SETTING=(($configurations{'VPX_SETTING'}) ? $configurations{'VPX_SETTING'} : "yes");
+	$VPX_SETTING=(($configurations{'VPX_SETTING'}) ? $configurations{'VPX_SETTING'} : "yes");
 }
 
 sub getCpuAndMemPerf {
-        my ($entity_view) = @_;
+	my ($entity_view) = @_;
 	my $returnString = "";
 
-        my @metrics;
-        my %metricResults = ();
+	my @metrics;
+	my %metricResults = ();
 
-        if($entity_view->isa('ClusterComputeResource')) {
-                @metrics = qw(cpu.usage.average cpu.usagemhz.average mem.consumed.average mem.active.average);
-        }elsif($entity_view->isa('HostSystem')) {
-                @metrics = qw(cpu.usage.average cpu.usagemhz.average mem.usage.average mem.active.average);
-        }elsif($entity_view->isa('VirtualMachine')) {
-                @metrics = qw(cpu.usage.average cpu.usagemhz.average mem.usage.average mem.active.average cpu.ready.summation cpu.vmmemctl.average);
-        }
+	if($entity_view->isa('ClusterComputeResource')) {
+		@metrics = qw(cpu.usage.average cpu.usagemhz.average mem.consumed.average mem.active.average);
+	}elsif($entity_view->isa('HostSystem')) {
+		@metrics = qw(cpu.usage.average cpu.usagemhz.average mem.usage.average mem.active.average);
+	}elsif($entity_view->isa('VirtualMachine')) {
+		@metrics = qw(cpu.usage.average cpu.usagemhz.average mem.usage.average mem.active.average cpu.ready.summation cpu.vmmemctl.average);
+	}
 
-        my $entity_name = $entity_view->name;
+	my $entity_name = $entity_view->name;
 
-        #get performance manager
-        my $perfMgr = Vim::get_view(mo_ref => $service_content->perfManager);
+	#get performance manager
+	my $perfMgr = Vim::get_view(mo_ref => $service_content->perfManager);
 
-        #get performance counters
-        my $perfCounterInfo = $perfMgr->perfCounter;
+	#get performance counters
+	my $perfCounterInfo = $perfMgr->perfCounter;
 
-        #grab all counter defs
-        my %allCounterDefintions = ();
-        foreach(@$perfCounterInfo) {
-                $allCounterDefintions{$_->key} = $_;
-        }
+	#grab all counter defs
+	my %allCounterDefintions = ();
+	foreach(@$perfCounterInfo) {
+		$allCounterDefintions{$_->key} = $_;
+	}
 
-        my @metricIDs = ();
+	my @metricIDs = ();
 
-        #get available metrics from entity
-        my $availmetricid = $perfMgr->QueryAvailablePerfMetric(entity => $entity_view);
+	#get available metrics from entity
+	my $availmetricid = $perfMgr->QueryAvailablePerfMetric(entity => $entity_view);
 
-        foreach(sort {$a->counterId cmp $b->counterId} @$availmetricid) {
-                if($allCounterDefintions{$_->counterId}) {
-                        my $metric = $allCounterDefintions{$_->counterId};
-                        my $groupInfo = $metric->groupInfo->key;
-                        my $nameInfo = $metric->nameInfo->key;
-                        my $instance = $_->instance;
-                        my $key = $metric->key;
-                        my $rolluptype = $metric->rollupType->val;
-                        my $statstype = $metric->statsType->val;
-                        my $unitInfo = $metric->unitInfo->key;
+	foreach(sort {$a->counterId cmp $b->counterId} @$availmetricid) {
+		if($allCounterDefintions{$_->counterId}) {
+			my $metric = $allCounterDefintions{$_->counterId};
+			my $groupInfo = $metric->groupInfo->key;
+			my $nameInfo = $metric->nameInfo->key;
+			my $instance = $_->instance;
+			my $key = $metric->key;
+			my $rolluptype = $metric->rollupType->val;
+			my $statstype = $metric->statsType->val;
+			my $unitInfo = $metric->unitInfo->key;
 
-                        #e.g. cpu.usage.average
-                        my $vmwInternalName = $groupInfo . "." . $nameInfo . "." . $rolluptype;
+			#e.g. cpu.usage.average
+			my $vmwInternalName = $groupInfo . "." . $nameInfo . "." . $rolluptype;
 
-                        foreach(@metrics) {
-                                if($_ eq $vmwInternalName) {
-                                        #print $groupInfo . "\t" . $nameInfo . "\t" . $rolluptype . "\t" . $statstype . "\t" . $unitInfo . "\n";
-                                        my $metricId = PerfMetricId->new(counterId => $key, instance => '*');
-                                        if(! grep(/^$key/,@metricIDs)) {
-                                                push @metricIDs,$metricId;
-                                        }
-                                }
-                        }
-                }
-        }
-        my $intervalIds = &get_available_intervals(perfmgr_view => $perfMgr, entity => $entity_view);
+			foreach(@metrics) {
+				if($_ eq $vmwInternalName) {
+					#print $groupInfo . "\t" . $nameInfo . "\t" . $rolluptype . "\t" . $statstype . "\t" . $unitInfo . "\n";
+					my $metricId = PerfMetricId->new(counterId => $key, instance => '*');
+					if(! grep(/^$key/,@metricIDs)) {
+						push @metricIDs,$metricId;
+					}
+				}
+			}
+		}
+	}
+	my $intervalIds = &get_available_intervals(perfmgr_view => $perfMgr, entity => $entity_view);
 
-        my $perfQuerySpec = PerfQuerySpec->new(entity => $entity_view, maxSample => 10, intervalId => shift(@$intervalIds), metricId => \@metricIDs);
+	my $perfQuerySpec = PerfQuerySpec->new(entity => $entity_view, maxSample => 10, intervalId => shift(@$intervalIds), metricId => \@metricIDs);
 
-        my $metrics;
-        eval {
-                $metrics = $perfMgr->QueryPerf(querySpec => [$perfQuerySpec]);
-        };
-        if(!$@) {
-                my %uniqueInstances = ();
-                foreach(@$metrics) {
-                        my $perfValues = $_->value;
-                        foreach(@$perfValues) {
-                                my $object = $_->id->instance ? $_->id->instance : "TOTAL";
-                                #if($object eq "TOTAL") {
-                                        my ($numOfCounters,$sumOfCounters,$res) = (0,0,0);
-                                        my $values = $_->value;
-                                        my $metricRef = $allCounterDefintions{$_->id->counterId};
-                                        my $unitString = $metricRef->unitInfo->label;
-                                        my $unitInfo = $metricRef->unitInfo->key;
-                                        my $groupInfo = $metricRef->groupInfo->key;
-                                        my $nameInfo = $metricRef->nameInfo->key;
-                                        my $rollupType = $metricRef->rollupType->val;
-                                        my $factor = 1;
-                                        if($unitInfo eq 'percent') { $factor = 100; }
+	my $metrics;
+	eval {
+		$metrics = $perfMgr->QueryPerf(querySpec => [$perfQuerySpec]);
+	};
+	if(!$@) {
+		my %uniqueInstances = ();
+		foreach(@$metrics) {
+			my $perfValues = $_->value;
+			foreach(@$perfValues) {
+				my $object = $_->id->instance ? $_->id->instance : "TOTAL";
+				#if($object eq "TOTAL") {
+					my ($numOfCounters,$sumOfCounters,$res) = (0,0,0);
+					my $values = $_->value;
+					my $metricRef = $allCounterDefintions{$_->id->counterId};
+					my $unitString = $metricRef->unitInfo->label;
+					my $unitInfo = $metricRef->unitInfo->key;
+					my $groupInfo = $metricRef->groupInfo->key;
+					my $nameInfo = $metricRef->nameInfo->key;
+					my $rollupType = $metricRef->rollupType->val;
+					my $factor = 1;
+					if($unitInfo eq 'percent') { $factor = 100; }
 
-                                        foreach(@$values) {
-                                                #if($rollupType eq 'average') {
-                                                        $res = &average($_)/$factor;
-                                                        $res = &restrict_num_decimal_digits($res,3);
-                                                #}
-                                        }
-                                        my $internalID = $groupInfo . "." . $nameInfo . "." . $rollupType;
-                                        $metricResults{$internalID} = $res . "\t" . $unitString . "\n";
-                                #}
-                        }
-                }
-        }
+					foreach(@$values) {
+						#if($rollupType eq 'average') {
+							$res = &average($_)/$factor;
+							$res = &restrict_num_decimal_digits($res,3);
+						#}
+					}
+					my $internalID = $groupInfo . "." . $nameInfo . "." . $rollupType;
+					$metricResults{$internalID} = $res . "\t" . $unitString . "\n";
+				#}
+			}
+		}
+	}
 
-        my ($cpuAvg,$cpuAvgPer,$memAvg,$memAvgPer,$ballonAvg,$readyAvg) = (0,0,0,0,0,0);
+	my ($cpuAvg,$cpuAvgPer,$memAvg,$memAvgPer,$ballonAvg,$readyAvg) = (0,0,0,0,0,0);
 
-        for my $key ( sort keys %metricResults ) {
-                if($key eq 'cpu.usage.average') {
-                        $cpuAvgPer = $metricResults{$key};
-                }elsif($key eq 'cpu.usagemhz.average') {
-                        $cpuAvg = $metricResults{$key};
-                }elsif($key eq 'mem.usage.average' || $key eq 'mem.consumed.average') {
+	for my $key ( sort keys %metricResults ) {
+		if($key eq 'cpu.usage.average') {
+			$cpuAvgPer = $metricResults{$key};
+		}elsif($key eq 'cpu.usagemhz.average') {
+			$cpuAvg = $metricResults{$key};
+		}elsif($key eq 'mem.usage.average' || $key eq 'mem.consumed.average') {
 			if($entity_view->isa('ClusterComputeResource') && $key eq 'mem.consumed.average') {
-                        	$memAvgPer = $metricResults{$key};
+				$memAvgPer = $metricResults{$key};
 			}elsif(!$entity_view->isa('ClusterComputeResource') && $key eq 'mem.usage.average'){
 				$memAvgPer = $metricResults{$key};
 			}
-                }elsif($key eq 'mem.active.average') {
-                        $memAvg = $metricResults{$key};
-                }elsif($key eq 'cpu.ready.summation') {
-                        $readyAvg = $metricResults{$key};
-                }elsif($key eq 'cpu.vmmemctl.average') {
-                        $ballonAvg = $metricResults{$key};
-                }
-        }
+		}elsif($key eq 'mem.active.average') {
+			$memAvg = $metricResults{$key};
+		}elsif($key eq 'cpu.ready.summation') {
+			$readyAvg = $metricResults{$key};
+		}elsif($key eq 'cpu.vmmemctl.average') {
+			$ballonAvg = $metricResults{$key};
+		}
+	}
 
 	my ($perfString,$hostTag,$hostTagShort) = ("","","");
 
 	if($entity_view->isa('ClusterComputeResource')) {
-        	$perfString .= "<h3>Cluster Performance</h3>\n";
-        	$perfString .= "<table border=\"1\">\n";
+		$perfString .= "<h3>Cluster Performance</h3>\n";
+		$perfString .= "<table border=\"1\">\n";
 		$perfString .= "<tr><th>cpu.usagemhz.average</th><th>cpu.usage.average</th><th>mem.active.average</th><th>mem.consumed.average</th></tr>\n";
 
-               	$perfString .= "<td>" . $cpuAvg . "</td>\n";
+		$perfString .= "<td>" . $cpuAvg . "</td>\n";
 		$perfString .= "<td>" . $cpuAvgPer . "</td>\n";
 		$perfString .= "<td>" . $memAvg . "</td>\n";
 		$perfString .= "<td>" . $memAvgPer . "</td>\n";
 		$perfString .= "</table>\n";
-        } elsif($entity_view->isa('HostSystem')) {
+	} elsif($entity_view->isa('HostSystem')) {
 		my $hostsystem_name = $entity_view->name;
 		if($demo eq "yes") { $hostsystem_name = $host_name; }
-                $perfString .= "<tr><td>" . $hostsystem_name . "</td><td>" . $cpuAvg . "</td><td>" . $cpuAvgPer . "</td><td>" . $memAvg . "</td><td>" . $memAvgPer . "</tr>\n";
-        } else {
-                $perfString .= "<tr><td>" . $entity_view->name . "</td><td>" . $cpuAvg . "</td><td>" . $cpuAvgPer . "</td><td>" . $readyAvg . "</td><td>" . $memAvg . "</td><td>" . $memAvgPer . "</td><td>" . $ballonAvg . "</tr>\n";
-        }
+		$perfString .= "<tr><td>" . $hostsystem_name . "</td><td>" . $cpuAvg . "</td><td>" . $cpuAvgPer . "</td><td>" . $memAvg . "</td><td>" . $memAvgPer . "</tr>\n";
+	} else {
+		$perfString .= "<tr><td>" . $entity_view->name . "</td><td>" . $cpuAvg . "</td><td>" . $cpuAvgPer . "</td><td>" . $readyAvg . "</td><td>" . $memAvg . "</td><td>" . $memAvgPer . "</td><td>" . $ballonAvg . "</tr>\n";
+	}
 	return $perfString;
 }
 
@@ -5240,12 +5258,12 @@ sub get_available_intervals {
    my @intervals;
    if ($provider_summary->refreshRate) {
       if($provider_summary->refreshRate != -1) {
-        push @intervals, $provider_summary->refreshRate;
+	push @intervals, $provider_summary->refreshRate;
       }
    }
    foreach (@$historical_intervals) {
       if($_->samplingPeriod != -1) {
-        push @intervals, $_->samplingPeriod;
+	push @intervals, $_->samplingPeriod;
       }
    }
    return \@intervals;
@@ -5257,8 +5275,8 @@ sub average {
    my $avg = 0;
 
    foreach(@arr) {
-        $avg += $_;
-        $n += 1;
+	$avg += $_;
+	$n += 1;
    }
    return $avg ? $avg/$n : 0;
 }
@@ -5277,7 +5295,7 @@ sub find_by_key {
 
    foreach my $item (@$list) {
       if ($key eq $item->key) {
-         return $item;
+	 return $item;
       }
    }
 
@@ -5290,8 +5308,8 @@ sub get_pci_string {
    # defect 173631
    if ($pciString =~ /([a-fA-F0-9]+):([a-fA-F0-9]+)\.([a-fA-F0-9]+)$/) {
       $pciString = hexstr_to_int($1)
-                   . ":" . hexstr_to_int($2)
-                   . "." . hexstr_to_int($3);
+		   . ":" . hexstr_to_int($2)
+		   . "." . hexstr_to_int($3);
    }
    return $pciString
 }
@@ -5311,7 +5329,7 @@ sub getSnapshotTree {
 	foreach my $node (@$tree) {
 		$head = ($ref->value eq $node->snapshot->value) ? " " : " " if (defined $ref);
 		my $quiesced = ($node->quiesced) ? "YES" : "NO";
-                my $desc = $node->description;
+		my $desc = $node->description;
 		if($desc eq "" ) { $desc = "NO DESCRIPTION"; }
 		push @vmsnapshots,"<td>".$host."</td><td>".$vm."</td><td>".$node->name."</td><td>".$desc."</td><td>".$node->createTime."</td><td>".$node->state->val."</td><td>".$quiesced."</td>";
 
@@ -5325,11 +5343,11 @@ sub startReport {
 	print "This can take a few minutes depending on the size of your environment. \nGet a cup of coffee/tea/beer and check out http://www.virtuallyghetto.com\n\n";
 
 	if($demo eq "yes") {
-                $host_name = "DEMO-HOST.primp-industries.com";
-        }
+		$host_name = "DEMO-HOST.primp-industries.com";
+	}
 
 	$start_time = time();
-        open(REPORT_OUTPUT, ">$report");
+	open(REPORT_OUTPUT, ">encoding(UTF-8)", "$report") or die $!;
 
 	$my_time = "Date: ".giveMeDate('MDYHMS');
 	my $html_start = <<HTML_START;
@@ -5338,7 +5356,7 @@ sub startReport {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="author" content="William Lam"/>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>VMware vSphere Health Check Report v$version - $my_time ($system_name)</title>
 <style type="text/css">
 <!--
@@ -5419,7 +5437,7 @@ HTML_START
 
 if($printerfriendly eq "no") {
 	$html_start .= <<HTML_START;
-        height: 550px;
+	height: 550px;
 HTML_START
 }
 
@@ -5474,7 +5492,7 @@ function showHide(elementid,qstring){
     document.getElementById(elementid).style.display = '';
     if(visibleDiv != ""){
       if(visibleDiv != elementid){
-        document.getElementById(visibleDiv).style.display = 'none';
+	document.getElementById(visibleDiv).style.display = 'none';
       }
     }
     visibleDiv = elementid;
@@ -5503,140 +5521,140 @@ Primp Industries&#0153;
 </html>
 HTML_END
 
-        print REPORT_OUTPUT $html_end;
-        close(REPORT_OUTPUT);
+	print REPORT_OUTPUT $html_end;
+	close(REPORT_OUTPUT);
 
 	my @lines;
-        my ($datastore_cluster_jump_string,$cluster_jump_string,$host_jump_string,$vm_jump_string) = ("","","","");
-        tie @lines, 'Tie::File', $report or die;
-        for(@lines) {
-                if (/<!-- insert cluster jump -->/) {
-                        foreach (@cluster_jump_tags) {
-                                if( ($_ =~ /^CL/) ) {
-                                        my $tmp_cluster_string = substr($_,2);
-                                        $cluster_jump_string .= $tmp_cluster_string;
-                                }
-                                else {
-                                        $cluster_jump_string .= $_;
-                                }
-                        }
-                        $_ = "\n$cluster_jump_string";
-                        last;
-                }
-        }
+	my ($datastore_cluster_jump_string,$cluster_jump_string,$host_jump_string,$vm_jump_string) = ("","","","");
+	tie @lines, 'Tie::File', $report or die;
 	for(@lines) {
-                if (/<!-- insert datastore cluster jump -->/) {
-                        foreach (@datastore_cluster_jump_tags) {
-                                if( ($_ =~ /^CL/) ) {
-                                        my $tmp_datastore_cluster_string = substr($_,2);
-                                        $datastore_cluster_jump_string .= $tmp_datastore_cluster_string;
-                                }
-                                else {
-                                        $datastore_cluster_jump_string .= $_;
-                                }
-                        }
-                        $_ = "\n$datastore_cluster_jump_string";
-                        last;
-                }
-        }
-	for(@lines) {
-		if (/<!-- insert host jump -->/) {
-                        foreach (@host_jump_tags) {
-                                if( ($_ =~ /^CL/) ) {
-                                        my $tmp_host_string = substr($_,2);
-                                        $host_jump_string .= $tmp_host_string;
-                                }
-                                else {
-                                        $host_jump_string .= $_;
-                                }
-                        }
-                        $_ = "\n$host_jump_string";
-                        last;
-                }
+		if (/<!-- insert cluster jump -->/) {
+			foreach (@cluster_jump_tags) {
+				if( ($_ =~ /^CL/) ) {
+					my $tmp_cluster_string = substr($_,2);
+					$cluster_jump_string .= $tmp_cluster_string;
+				}
+				else {
+					$cluster_jump_string .= $_;
+				}
+			}
+			$_ = "\n$cluster_jump_string";
+			last;
+		}
 	}
 	for(@lines) {
-                if (/<!-- insert vm jump -->/) {
-                        foreach (@vm_jump_tags) {
-                                if( ($_ =~ /^CL/) ) {
-                                        my $tmp_host_string = substr($_,2);
-                                        $vm_jump_string .= $tmp_host_string;
-                                }
-                                else {
-                                        $vm_jump_string .= $_;
-                                }
-                        }
-                        $_ = "\n$vm_jump_string";
-                        last;
-                }
-        }
+		if (/<!-- insert datastore cluster jump -->/) {
+			foreach (@datastore_cluster_jump_tags) {
+				if( ($_ =~ /^CL/) ) {
+					my $tmp_datastore_cluster_string = substr($_,2);
+					$datastore_cluster_jump_string .= $tmp_datastore_cluster_string;
+				}
+				else {
+					$datastore_cluster_jump_string .= $_;
+				}
+			}
+			$_ = "\n$datastore_cluster_jump_string";
+			last;
+		}
+	}
+	for(@lines) {
+		if (/<!-- insert host jump -->/) {
+			foreach (@host_jump_tags) {
+				if( ($_ =~ /^CL/) ) {
+					my $tmp_host_string = substr($_,2);
+					$host_jump_string .= $tmp_host_string;
+				}
+				else {
+					$host_jump_string .= $_;
+				}
+			}
+			$_ = "\n$host_jump_string";
+			last;
+		}
+	}
+	for(@lines) {
+		if (/<!-- insert vm jump -->/) {
+			foreach (@vm_jump_tags) {
+				if( ($_ =~ /^CL/) ) {
+					my $tmp_host_string = substr($_,2);
+					$vm_jump_string .= $tmp_host_string;
+				}
+				else {
+					$vm_jump_string .= $_;
+				}
+			}
+			$_ = "\n$vm_jump_string";
+			last;
+		}
+	}
 
-        untie @lines;
+	untie @lines;
 
 
 	my $end_time = time();
-        my $run_time = $end_time - $start_time;
-        print "\nStart Time: ",&formatTime(str => scalar localtime($start_time)),"\n";
-        print "End   Time: ",&formatTime(str => scalar localtime($end_time)),"\n";
+	my $run_time = $end_time - $start_time;
+	print "\nStart Time: ",&formatTime(str => scalar localtime($start_time)),"\n";
+	print "End   Time: ",&formatTime(str => scalar localtime($end_time)),"\n";
 
-        if ($run_time < 60) {
-                print "Duration  : ",$run_time," Seconds\n\n";
-        }
-        else {
-                print "Duration  : ",&restrict_num_decimal_digits($run_time/60,2)," Minutes\n\n";
-        }
+	if ($run_time < 60) {
+		print "Duration  : ",$run_time," Seconds\n\n";
+	}
+	else {
+		print "Duration  : ",&restrict_num_decimal_digits($run_time/60,2)," Minutes\n\n";
+	}
 }
 
 sub startBody {
-        my ($type,$aversion) = @_;
+	my ($type,$aversion) = @_;
 
-        my $body_start = <<BODY_START;
+	my $body_start = <<BODY_START;
 
 <body>
 
 <div class="tabcontainer">
-        <h1>VMware vSphere Health Check Report v$version</h1>
-        <ul class="tabnav">
-                <li><a href="#tab1">System Summary</a></li>
+	<h1>VMware vSphere Health Check Report v$version</h1>
+	<ul class="tabnav">
+		<li><a href="#tab1">System Summary</a></li>
 BODY_START
-                if($type eq 'VirtualCenter' && $VPX_SETTING eq "yes") {
-                        $body_start .= <<BODY_START;
-                <li><a href="#tab5">vCenter Settings</a></li>
+		if($type eq 'VirtualCenter' && $VPX_SETTING eq "yes") {
+			$body_start .= <<BODY_START;
+		<li><a href="#tab5">vCenter Settings</a></li>
 BODY_START
-                }
-                if($type eq 'VirtualCenter' && $VMW_APP eq "yes") {
-                        $body_start .= <<BODY_START;
-                <li><a href="#tab6">VMware/3rd Party Applications</a></li>
+		}
+		if($type eq 'VirtualCenter' && $VMW_APP eq "yes") {
+			$body_start .= <<BODY_START;
+		<li><a href="#tab6">VMware/3rd Party Applications</a></li>
 BODY_START
-                }
-                if($type eq 'VirtualCenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq ' 6.0.0'|| $aversion eq '6.5.0')) {
-                        $body_start .= <<BODY_START;
-                <li><a href="#tab7">Datacenter</a></li>
+		}
+		if($type eq 'VirtualCenter' && ($aversion eq '5.0.0' || $aversion eq '5.1.0' || $aversion eq '5.5.0' || $aversion eq '6.0.0' || $aversion eq '6.5.0')) {
+			$body_start .= <<BODY_START;
+		<li><a href="#tab7">Datacenter</a></li>
 BODY_START
-                }
-                if($type eq 'VirtualCenter') {
-                        $body_start .= <<BODY_START;
-                <li><a href="#tab2">Cluster</a></li>
+		}
+		if($type eq 'VirtualCenter') {
+			$body_start .= <<BODY_START;
+		<li><a href="#tab2">Cluster</a></li>
 BODY_START
-                }
-                $body_start .= <<BODY_START;
-                <li><a href="#tab3">Hosts</a></li>
-                <li><a href="#tab4">Virtual Machines</a></li>
-        </ul>
-        <div class="tabcontents">
+		}
+		$body_start .= <<BODY_START;
+		<li><a href="#tab3">Hosts</a></li>
+		<li><a href="#tab4">Virtual Machines</a></li>
+	</ul>
+	<div class="tabcontents">
 BODY_START
 
-        print REPORT_OUTPUT $body_start;
+	print REPORT_OUTPUT $body_start;
 }
 
 sub endBody {
-        my $body_end = <<BODY_END;
+	my $body_end = <<BODY_END;
 
-        </div>
+	</div>
 </div>
 </body>
 BODY_END
 
-        print REPORT_OUTPUT $body_end;
+	print REPORT_OUTPUT $body_end;
 }
 
 sub validateSystem {
@@ -5644,7 +5662,7 @@ sub validateSystem {
 
 	if(!grep(/$ver/,@supportedVersion)) {
 		Util::disconnect();
-		print "Error: This script only supports vSphere \"@supportedVersion\" or greater!\n\n";
+		print "Error: This script only supports vSphere \"@supportedVersion\"! (found $ver)\n\n";
 		exit 1;
 	}
 }
@@ -5652,95 +5670,81 @@ sub validateSystem {
 # restrict the number of digits after the decimal point
 #http://guymal.com/mycode/perl_restrict_digits.shtml
 sub restrict_num_decimal_digits {
-        my $num=shift;#the number to work on
-        my $digs_to_cut=shift;# the number of digits after
+	my $num=shift;#the number to work on
+	my $digs_to_cut=shift;# the number of digits after
 
-        if ($num=~/\d+\.(\d){$digs_to_cut,}/) {
-                $num=sprintf("%.".($digs_to_cut-1)."f", $num);
-        }
-        return $num;
+	if ($num=~/\d+\.(\d){$digs_to_cut,}/) {
+		$num=sprintf("%.".($digs_to_cut-1)."f", $num);
+	}
+	return $num;
 }
 
 #http://www.infocopter.com/perl/format-time.html
 sub formatTime(%) {
-        my %args = @_;
-        $args{'str'} ||= ''; # e.g. Mon Jul 3 12:59:28 2006
+	my %args = @_;
+	$args{'str'} ||= ''; # e.g. Mon Jul 3 12:59:28 2006
 
-        my @elems = ();
-        foreach (split / /, $args{'str'}) {
-                next unless $_;
-                push(@elems, $_);
-        }
+	my @elems = ();
+	foreach (split / /, $args{'str'}) {
+		next unless $_;
+		push(@elems, $_);
+	}
 
-        my ($weekday, $month, $mday, $time, $yyyy) = split / /, join(' ', @elems);
+	my ($weekday, $month, $mday, $time, $yyyy) = split / /, join(' ', @elems);
 
-        my %months = (  Jan => 1, Feb => 2, Mar => 3, Apr =>  4, May =>  5, Jun =>  6,
-                        Jul => 7, Aug => 8, Sep => 9, Oct => 10, Nov => 11, Dec => 12 );
+	my %months = (  Jan => 1, Feb => 2, Mar => 3, Apr =>  4, May =>  5, Jun =>  6,
+			Jul => 7, Aug => 8, Sep => 9, Oct => 10, Nov => 11, Dec => 12 );
 
-        my $s  = substr($time, 6,2);
-        my $m  = substr($time, 3,2);
-        my $h  = substr($time, 0, 2);
-        my $dd = sprintf('%02d', $mday);
+	my $s  = substr($time, 6,2);
+	my $m  = substr($time, 3,2);
+	my $h  = substr($time, 0, 2);
+	my $dd = sprintf('%02d', $mday);
 
-        my $mm_num = sprintf('%02d', $months{$month});
+	my $mm_num = sprintf('%02d', $months{$month});
 
-        my $formatted = "$mm_num\-$dd\-$yyyy $h:$m:$s";
-        #my $formatted = "$yyyy$mm_num$dd$h$m$s";
+	my $formatted = "$mm_num\-$dd\-$yyyy $h:$m:$s";
+	#my $formatted = "$yyyy$mm_num$dd$h$m$s";
 
-        $formatted;
+	$formatted;
 }
 
 #http://www.bryantmcgill.com/Shazam_Perl_Module/Subroutines/utils_convert_bytes_to_optimal_unit.html
 sub prettyPrintData{
-        my($bytes,$type) = @_;
+	my($bytes,$type) = @_;
 
-        return '' if ($bytes eq '' || $type eq '');
-        return 0 if ($bytes <= 0);
+	return '' if ($bytes eq '' || $type eq '');
+	return 0 if ($bytes <= 0);
 
-        my($size);
+	my($size);
 
-        if($type eq 'B') {
-                $size = $bytes . ' Bytes' if ($bytes < 1024);
-                $size = sprintf("%.2f", ($bytes/1024)) . ' KB' if ($bytes >= 1024 && $bytes < 1048576);
-                $size = sprintf("%.2f", ($bytes/1048576)) . ' MB' if ($bytes >= 1048576 && $bytes < 1073741824);
-                $size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-                $size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
-        }
-	elsif($type eq 'K') {
-		$bytes = $bytes * (1024);
+	if(grep (/^$type$/, ('B', 'K', 'M', 'G'))) {
+		$bytes *= 1024 if ($type eq 'K');
+		$bytes *= 1048576 if ($type eq 'M');
+		$bytes *= 1073741824 if ($type eq 'G');
+
+		$size = $bytes . ' Bytes' if ($bytes < 1024);
+		$size = sprintf("%.2f", ($bytes/1024)) . ' KB' if ($bytes >= 1024 && $bytes < 1048576);
 		$size = sprintf("%.2f", ($bytes/1048576)) . ' MB' if ($bytes >= 1048576 && $bytes < 1073741824);
-                $size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-                $size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
+		$size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
+		$size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
 	}
-        elsif($type eq 'M') {
-                $bytes = $bytes * (1048576);
-                $size = sprintf("%.2f", ($bytes/1048576)) . ' MB' if ($bytes >= 1048576 && $bytes < 1073741824);
-                $size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-                $size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
-        }
+	elsif($type eq 'MHZ') {
+		$size = sprintf("%.2f", ($bytes/1e-06)) . ' MHz' if ($bytes >= 1e-06 && $bytes < 0.001);
+		$size = sprintf("%.2f", ($bytes*0.001)) . ' GHz' if ($bytes >= 0.001);
+	}
 
-        elsif($type eq 'G') {
-                $bytes = $bytes * (1073741824);
-                $size = sprintf("%.2f", ($bytes/1073741824)) . ' GB' if ($bytes >= 1073741824 && $bytes < 1099511627776);
-                $size = sprintf("%.2f", ($bytes/1099511627776)) . ' TB' if ($bytes >= 1099511627776);
-        }
-        elsif($type eq 'MHZ') {
-                $size = sprintf("%.2f", ($bytes/1e-06)) . ' MHz' if ($bytes >= 1e-06 && $bytes < 0.001);
-                $size = sprintf("%.2f", ($bytes*0.001)) . ' GHz' if ($bytes >= 0.001);
-        }
-
-        return $size;
+	return $size;
 }
 
 sub getColor {
-        my ($val) = @_;
-        my $color_string = "";
-        if($val < $RED_WARN) { $color_string = "<td bgcolor=\"$red\">".$val." %</td>"; }
-        elsif($val < $ORANGE_WARN) { $color_string = "<td bgcolor=\"$orange\">".$val." %</td>"; }
-        elsif($val < $YELLOW_WARN) { $color_string = "<td bgcolor=\"$yellow\">".$val." %</td>"; }
-        else { $color_string = "<td>".$val." %</td>"; }
+	my ($val) = @_;
+	my $color_string = "";
+	if($val < $RED_WARN) { $color_string = "<td bgcolor=\"$red\">".$val." %</td>"; }
+	elsif($val < $ORANGE_WARN) { $color_string = "<td bgcolor=\"$orange\">".$val." %</td>"; }
+	elsif($val < $YELLOW_WARN) { $color_string = "<td bgcolor=\"$yellow\">".$val." %</td>"; }
+	else { $color_string = "<td>".$val." %</td>"; }
 
-        return $color_string;
+	return $color_string;
 }
 
 # http://andrewcantino.com/class/l2.html
@@ -5749,7 +5753,7 @@ sub power {
      my ($n, $p) = @_;
      $t = $n;
      for(my $i = 1; $i < $p; $i++) {
-          $t = $t * $n;
+	  $t = $t * $n;
      }
      return $t;
 }
@@ -5772,26 +5776,26 @@ sub getUptime {
 }
 
 sub giveMeDate {
-        my ($date_format) = @_;
-        my %dttime = ();
-        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+	my ($date_format) = @_;
+	my %dttime = ();
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 
-        ### begin_: initialize DateTime number formats
-        $dttime{year }  = sprintf "%04d",($year + 1900);  ## four digits to specify the year
-        $dttime{mon  }  = sprintf "%02d",($mon + 1);      ## zeropad months
-        $dttime{mday }  = sprintf "%02d",$mday;           ## zeropad day of the month
-        $dttime{wday }  = sprintf "%02d",$wday + 1;       ## zeropad day of week; sunday = 1;
-        $dttime{yday }  = sprintf "%02d",$yday;           ## zeropad nth day of the year
-        $dttime{hour }  = sprintf "%02d",$hour;           ## zeropad hour
-        $dttime{min  }  = sprintf "%02d",$min;            ## zeropad minutes
-        $dttime{sec  }  = sprintf "%02d",$sec;            ## zeropad seconds
-        $dttime{isdst}  = $isdst;
+	### begin_: initialize DateTime number formats
+	$dttime{year }  = sprintf "%04d",($year + 1900);  ## four digits to specify the year
+	$dttime{mon  }  = sprintf "%02d",($mon + 1);      ## zeropad months
+	$dttime{mday }  = sprintf "%02d",$mday;           ## zeropad day of the month
+	$dttime{wday }  = sprintf "%02d",$wday + 1;       ## zeropad day of week; sunday = 1;
+	$dttime{yday }  = sprintf "%02d",$yday;           ## zeropad nth day of the year
+	$dttime{hour }  = sprintf "%02d",$hour;           ## zeropad hour
+	$dttime{min  }  = sprintf "%02d",$min;            ## zeropad minutes
+	$dttime{sec  }  = sprintf "%02d",$sec;            ## zeropad seconds
+	$dttime{isdst}  = $isdst;
 
-        if($date_format eq 'MDYHMS') {
-                $my_time = "$dttime{mon}-$dttime{mday}-$dttime{year} $dttime{hour}:$dttime{min}:$dttime{sec}";
-        }
-        elsif ($date_format eq 'YMD') {
-                $my_time = "$dttime{year}-$dttime{mon}-$dttime{mday}";
-        }
-        return $my_time;
+	if($date_format eq 'MDYHMS') {
+		$my_time = "$dttime{mon}-$dttime{mday}-$dttime{year} $dttime{hour}:$dttime{min}:$dttime{sec}";
+	}
+	elsif ($date_format eq 'YMD') {
+		$my_time = "$dttime{year}-$dttime{mon}-$dttime{mday}";
+	}
+	return $my_time;
 }

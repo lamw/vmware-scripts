@@ -52,21 +52,21 @@
         foreach ($line in $sfcbConf.Split("`n")) {
             if($line -match "enableTLSv1:") {
                 ($key,$value) = $line.Split(":")
-                if($value -match "true") {
+                if($value -match "false") {
                     $sfcbResults+="tlsv1"
                 }
                 $usingDefault = $false
             }
             if($line -match "enableTLSv1_1:") {
                 ($key,$value) = $line.Split(":")
-                if($value -match "true") {
+                if($value -match "false") {
                     $sfcbResults+="tlsv1.1"
                 }
                 $usingDefault = $false
             }
             if($line -match "enableTLSv1_2:") {
                 ($key,$value) = $line.Split(":")
-                if($value -match "true") {
+                if($value -match "false") {
                     $sfcbResults+="tlsv1.2"
                 }
                 $usingDefault = $false
@@ -172,9 +172,9 @@ Function Set-ESXiDPC {
         }
         
         # Append the TLS protocols based on user input to the configuration file
-        $sfcbResults+="enableTLSv1: " + $TLS1.ToString().ToLower() + "`n"
-        $sfcbResults+="enableTLSv1_1: " + $TLS1_1.ToString().ToLower() + "`n"
-        $sfcbResults+="enableTLSv1_2: " + $TLS1_2.ToString().ToLower() +"`n"
+        $sfcbResults+="enableTLSv1: " + (!$TLS1).ToString().ToLower() + "`n"
+        $sfcbResults+="enableTLSv1_1: " + (!$TLS1_1).ToString().ToLower() + "`n"
+        $sfcbResults+="enableTLSv1_2: " + (!$TLS1_2).ToString().ToLower() +"`n"
 
         # Create HTTP PUT spec
         $spec.Method = "httpPut"
@@ -204,8 +204,8 @@ Function Set-ESXiDPC {
 
     $tlsString = @()
     if($TLS1) { $tlsString += "tlsv1" }
-    if($TLS1_1) { $tlsString += "tlsv1_1" }
-    if($TLS1_2) { $tlsString += "tlsv1_2" }
+    if($TLS1_1) { $tlsString += "tlsv1.1" }
+    if($TLS1_2) { $tlsString += "tlsv1.2" }
     if($SSLV3) { $tlsString += "sslv3" }
     $tlsString = $tlsString -join ","
 

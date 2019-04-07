@@ -53,7 +53,7 @@ if( Opts::get_option('operation') eq 'ent_maint' ) {
 			print "Error: " . $@ . "\n\n";
 		}
 	}
-} elsif(Opts::get_option('operation') eq 'exi_maint' ) {
+} elsif(Opts::get_option('operation') eq 'ext_maint' ) {
 	foreach my $host_name( @host_list ) {
                 chomp($host_name);
 
