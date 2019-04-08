@@ -22,6 +22,10 @@
     )
 
     $debug = $false
+	if ( $global:DefaultVIServers.Count -ne 1 ) {
+		write-error "Need to be connected to exactly ONE vCenter. Please try again"
+		return
+	}
 
     Function Get-SFCBDConf {
         param(
@@ -139,6 +143,10 @@ Function Set-ESXiDPC {
         [Parameter(Mandatory=$true)][Boolean]$TLS1_2,
         [Parameter(Mandatory=$true)][Boolean]$SSLV3
     )
+	if ( $global:DefaultVIServers.Count -ne 1 ) {
+		write-error "Need to be connected to exactly ONE vCenter. Please try again"
+		return
+	}
 
     Function UpdateSFCBConfig {
         param(
