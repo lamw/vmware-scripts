@@ -3,7 +3,7 @@ Generates a library ready to be used as a VCSP endpoint for content library 2016
 """
 
 __author__ = 'VMware, Inc.'
-__copyright__ = 'Copyright 2018 VMware, Inc. All rights reserved.'
+__copyright__ = 'Copyright 2019 VMware, Inc. All rights reserved.'
 
 import argparse
 import boto3
@@ -68,18 +68,51 @@ def _make_lib(name, id=uuid.uuid4(), creation=datetime.datetime.now(), version=1
 
 
 def _make_item(directory, vcsp_type, name, files, description="", properties={},
-               identifier=uuid.uuid4(), creation=datetime.datetime.now(), version=2):
-    return {
-        "created": creation.strftime(ISO_FORMAT),
-        "description": description,
-        "version": str(version),
-        "files": files,
-        "id": "urn:uuid:%s" % identifier,
-        "name": name,
-        "properties": properties,
-        "selfHref": "%s/%s" % (directory, ITEM_FILE),
-        "type": vcsp_type
-    }
+               identifier=uuid.uuid4(), creation=datetime.datetime.now(), version=2,
+               library_id="", is_vapp_template="false"):
+    '''
+    add type adapter metadata for OVF template
+    '''
+    if "urn:uuid:" not in str(identifier):
+        item_id = "urn:uuid:%s" % identifier
+    else:
+        item_id = identifier
+    type_metadata = None 
+    if vcsp_type == VCSP_TYPE_OVF:
+        # generate sample type metadata for OVF template so that subscriber can show OVF VM type
+        type_metadata_value = "{\"id\":\"%s\",\"version\":\"%s\",\"libraryIdParent\":\"%s\",\"isVappTemplate\":\"%s\",\"vmTemplate\":null,\"vappTemplate\":null,\"networks\":[],\"storagePolicyGroups\":null}" % (item_id, str(version), library_id, is_vapp_template)
+        type_metadata = {
+                    "key": "type-metadata",
+                    "value": type_metadata_value,
+                    "type": "String",
+                    "domain": "SYSTEM",
+                    "visibility": "READONLY"
+        }
+    if type_metadata:
+        return {
+            "created": creation.strftime(ISO_FORMAT),
+            "description": description,
+            "version": str(version),
+            "files": files,
+            "id": item_id,
+            "name": name,
+            "metadata": [type_metadata],
+            "properties": properties,
+            "selfHref": "%s/%s" % (directory, ITEM_FILE),
+            "type": vcsp_type
+        }
+    else:
+        return {
+            "created": creation.strftime(ISO_FORMAT),
+            "description": description,
+            "version": str(version),
+            "files": files,
+            "id": item_id,
+            "name": name,
+            "properties": properties,
+            "selfHref": "%s/%s" % (directory, ITEM_FILE),
+            "type": vcsp_type
+        } 
 
 
 def _make_items(items, version=1):
@@ -88,7 +121,7 @@ def _make_items(items, version=1):
     }
 
 
-def _dir2item(path, directory, md5_enabled):
+def _dir2item(path, directory, md5_enabled, lib_id):
     files_items = []
     name = os.path.split(path)[-1]
     vcsp_type = VCSP_TYPE_OTHER
@@ -111,6 +144,8 @@ def _dir2item(path, directory, md5_enabled):
                 m.update(os.path.dirname(p).encode('utf-8'))
             if ".ovf" in p:
                 vcsp_type = VCSP_TYPE_OVF
+                # TODO: ready ovf descriptor for type metadata
+                is_vapp = "false"
             elif ".iso" in p:
                 vcsp_type = VCSP_TYPE_ISO
             size = os.path.getsize(p)
@@ -125,10 +160,10 @@ def _dir2item(path, directory, md5_enabled):
                 "etag": folder_md5,
                 "hrefs": [ href ]
             })
-    return _make_item(name, vcsp_type, name, files_items, identifier = uuid.uuid4())
+    return _make_item(name, vcsp_type, name, files_items, identifier = uuid.uuid4(), library_id=lib_id, is_vapp_template=is_vapp)
 
 
-def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
+def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert, lib_id, old_item=""):
     """
     Generate items jsons for the given item path on s3
 
@@ -142,15 +177,18 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
         path: item path on S3 bucket
         item_name: name of the item
         skip_cert: whether or not to skip cert file
+        lib_id: library id
+        old_item: old item json
 
     Returns:
         map of item name to item json
     """
-    items_jsons = {}
+    items_json = {}
     files_items = []
     vcsp_type = None
     response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=path, Delimiter="/")
 
+    is_vapp = "false" 
     for content in response['Contents']:
         file_path = content['Key']
         if file_path == path or file_path.endswith("item.json"):
@@ -158,6 +196,16 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
         file_name = file_path.split("/")[-1]
         if ".ovf" in file_name:
             vcsp_type = VCSP_TYPE_OVF
+            # check if the existing item json already contains "type-metadata" metadata, if not
+            # download the OVF file and parse the descriptor for metadata and search for "<VirtualSystemCollection"
+            if  "type-metadata" not in old_item:
+                try:
+                    s3_ovf_obj = s3_client.get_object(Bucket=bucket_name, Key=file_path)
+                    ovf_desc = s3_ovf_obj['Body'].read().decode('utf-8')
+                    if "<VirtualSystemCollection" in ovf_desc:
+                        is_vapp = "true"
+                except:
+                    logger.error("Failed to read ovf descriptor: %s" % file_path)
         if vcsp_type != VCSP_TYPE_OVF and ".iso" not in file_name:
             vcsp_type = VCSP_TYPE_OTHER
         if vcsp_type not in [VCSP_TYPE_OVF, VCSP_TYPE_OTHER] and ".iso" in file_name:
@@ -168,7 +216,7 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
         file_name = file_path.split("/")[-1]
         href = "%s/%s" % (item_name, file_name)
 
-        if  file_path == path or file_path.endswith("item.json"):
+        if file_path == path or file_path.endswith("item.json"):
             continue # skip the item folder and item.json meta data file
 
         size = content['Size']
@@ -186,7 +234,7 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
             child_item_name = file_name[:extension_index]
             # note: it is not necessary to create a child iso item folder if not exist
             item_path = item_name + "/" + child_item_name
-            items_jsons[child_item_name] = _make_item(item_path, vcsp_type, child_item_name, [file_json], identifier = uuid.uuid4())
+            items_json[child_item_name] = _make_item(item_path, vcsp_type, child_item_name, [file_json], identifier = uuid.uuid4())
         else:
             if vcsp_type == VCSP_TYPE_OVF and file_name.endswith(FILE_EXTENSION_CERT) and skip_cert:
                 # skip adding cert file if skip_cert is true
@@ -194,9 +242,15 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert):
             files_items.append(file_json)
     
     if vcsp_type != VCSP_TYPE_ISO:
-        items_jsons[item_name] = _make_item(item_name, vcsp_type, item_name, files_items, identifier = uuid.uuid4())
+        identifier = uuid.uuid4()
+        if old_item != "":
+            identifier = old_item["id"]
+        items_json[item_name] = _make_item(item_name, vcsp_type, item_name, files_items, identifier = identifier, library_id=lib_id, is_vapp_template=is_vapp)
+        if vcsp_type == VCSP_TYPE_OVF and "type-metadata" in old_item:
+            # TODO: avoid other item metadata update
+            items_json[item_name]["metadata"] = old_item["metadata"]
 
-    return items_jsons
+    return items_json
 
 
 def make_vcsp(lib_name, lib_path, md5_enabled):
@@ -241,21 +295,21 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
         p = os.path.join(lib_path, item_path)
         if not os.path.isdir(p):
             continue  # not interesting
-        items_json = _dir2item(p, item_path, md5_enabled)
+        item_json = _dir2item(p, item_path, md5_enabled, "urn:uuid:%s" % lib_id)
         if item_path not in old_items and updating_lib:
             changed = True
         elif item_path in old_items:
             file_changed = False
-            items_json["id"] = old_items[item_path]["id"]
-            items_json["created"] = old_items[item_path]["created"]
-            items_json["version"] = old_items[item_path]["version"]
-            file_names = set([i["name"] for i in items_json["files"]])
+            item_json["id"] = old_items[item_path]["id"]
+            item_json["created"] = old_items[item_path]["created"]
+            item_json["version"] = old_items[item_path]["version"]
+            file_names = set([i["name"] for i in item_json["files"]])
             old_file_names = set([i["name"] for i in old_items[item_path]["files"]])
             if file_names != old_file_names:
                 # files added or removed
                 changed = True
                 file_changed = True
-            for f in items_json["files"]:
+            for f in item_json["files"]:
                 if file_changed:
                     break
                 for old_f in old_items[item_path]["files"]:
@@ -264,13 +318,13 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
                         file_changed = True
                         break
             if file_changed:
-                item_version = int(items_json["version"])
-                items_json["version"] = str(item_version + 1)
+                item_version = int(item_json["version"])
+                item_json["version"] = str(item_version + 1)
             del old_items[item_path]
         json_item_file = ''.join((p, os.sep, ITEM_FILE))
         with open(json_item_file, "w") as f:
-            json.dump(items_json, f, indent=2)
-        items.append(items_json)
+            json.dump(item_json, f, indent=2)
+        items.append(item_json)
 
     if updating_lib and len(old_items) != 0:
         changed = True  # items were removed
@@ -361,6 +415,7 @@ def make_vcsp_s3(lib_name, lib_path, skip_cert):
 
     items = []
     changed = False
+    update_items_json = False
 
     response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=lib_folder_path, Delimiter="/")
     if response['CommonPrefixes']:
@@ -368,29 +423,35 @@ def make_vcsp_s3(lib_name, lib_path, skip_cert):
         for child in response['CommonPrefixes']:
             p = child['Prefix']
             item_path = p.split("/")[-2]
-            items_jsons = _dir2item_s3(s3_client, bucket_name, p, item_path, skip_cert)
+            old_item = ""
+            if item_path in old_items:
+                old_item = old_items[item_path]
+            items_json = _dir2item_s3(s3_client, bucket_name, p, item_path, skip_cert, "urn:uuid:%s" % lib_id, old_item)
             
-            for item_path, items_json in items_jsons.items():
-                items_json["contentVersion"] = '2'       # default to content version 2
+            for item_path, item_json in items_json.items():
+                item_json["contentVersion"] = '2'       # default to content version 2
                 if item_path not in old_items and updating_lib:
                     changed = True
                 elif item_path in old_items:
                     file_changed = False
-                    items_json["id"] = old_items[item_path]["id"]
-                    items_json["created"] = old_items[item_path]["created"]
-                    items_json["version"] = old_items[item_path]["version"]
+                    item_json["id"] = old_items[item_path]["id"]
+                    item_json["created"] = old_items[item_path]["created"]
+                    item_json["version"] = old_items[item_path]["version"]
                     if "contentVersion" in old_items[item_path]:
-                        items_json["contentVersion"] = old_items[item_path]["contentVersion"]
+                        item_json["contentVersion"] = old_items[item_path]["contentVersion"]
                     else:
                         changed = True
 
-                    file_names = set([i["name"] for i in items_json["files"]])
+                    if "type-metadata" not in str(old_items[item_path]) and "type-metadata" in str(item_json):
+                        update_items_json = True
+
+                    file_names = set([i["name"] for i in item_json["files"]])
                     old_file_names = set([i["name"] for i in old_items[item_path]["files"]])
                     if file_names != old_file_names:
                         # files added or removed
                         changed = True
                         file_changed = True
-                    for f in items_json["files"]:
+                    for f in item_json["files"]:
                         if file_changed:
                             break
                         for old_f in old_items[item_path]["files"]:
@@ -400,15 +461,15 @@ def make_vcsp_s3(lib_name, lib_path, skip_cert):
                                 break
                     if file_changed:
                         # bump up version and content version
-                        item_version = int(items_json["version"])
-                        items_json["version"] = str(item_version + 1)
-                        item_content_version = int(items_json["contentVersion"])
-                        items_json["contentVersion"] = str(item_content_version + 1)
+                        item_version = int(item_json["version"])
+                        item_json["version"] = str(item_version + 1)
+                        item_content_version = int(item_json["contentVersion"])
+                        item_json["contentVersion"] = str(item_content_version + 1)
                     del old_items[item_path]
-                json_item_file = lib_folder_path + items_json['selfHref']
+                json_item_file = lib_folder_path + item_json['selfHref']
                 obj = s3.Object(bucket_name, json_item_file)
-                obj.put(Body=json.dumps(items_json, indent=2))
-                items.append(items_json)
+                obj.put(Body=json.dumps(item_json, indent=2))
+                items.append(item_json)
 
     if updating_lib and len(old_items) != 0:
         changed = True  # items were removed, and delete old iso item folders
@@ -424,7 +485,11 @@ def make_vcsp_s3(lib_name, lib_path, skip_cert):
                     objects.delete()
 
     if updating_lib and not changed:
-        logger.info("Nothing to update, quitting")
+        logger.info("Nothing to update on the library")
+        if update_items_json:
+            logger.info("items json needs to be updated, updating items json...")
+            obj = s3.Object(bucket_name, lib_items_json_path)
+            obj.put(Body=json.dumps(_make_items(items, lib_version), indent=2))
         return
     if changed:
         lib_version = int(lib_version)
@@ -482,8 +547,8 @@ def usage():
     '''
     The usage message for the argument parser.
     '''
-    return """Usage: python make-vcsp-2018.py -n <library-name> -t <storage-type:local or s3, default local> -p <library-storage-path> --etag <true or false, default true> 
-                                              --skip-cert <true or fale, default true
+    return """Usage: python vcsp_maker.py -n <library-name> -t <storage-type:local or s3, default local> -p <library-storage-path> --etag <true or false, default true> 
+                                              --skip-cert <true or fale, default true>
 
     Note that s3 requires the following configurations:
     1. ~/.aws/config
