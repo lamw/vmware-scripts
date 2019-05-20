@@ -31,6 +31,7 @@ VPC_CIDR=$(cat SDDC_RESULTS|jq -r .resource_config.vpc_info.vpc_cidr)
 NSXT=$(cat SDDC_RESULTS|jq -r .resource_config.nsxt)
 EXPIRATION_DATE=$(cat SDDC_RESULTS|jq -r .expiration_date)
 POP_IPADDRESS=$(cat SDDC_RESULTS|jq -r .resource_config.agent.internal_ip)
+VPC_VGW=$(cat SDDC_RESULTS|jq -r .resource_config.vpc_info.vgw_id)
 
 cat << EOF
 
@@ -45,5 +46,6 @@ InstanceType: ${INSTANCE_TYPE}
 VpcCIDR: ${VPC_CIDR}
 PoPIP: ${POP_IPADDRESS}
 NSXT: ${NSXT}
+VPC_VGW: ${VPC_VGW}
 
 EOF
