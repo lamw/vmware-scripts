@@ -50,10 +50,10 @@
             $option.option = "/UserVars/ImageCachedSystem"
             try {
                 $optionValue = $esxcli.system.settings.advanced.list.Invoke($option)
+                $bootType = $optionValue.StringValue
             } catch {
                 $bootType = "stateless"
             }
-            $bootType = $optionValue.StringValue
         }
 
         # Loop through all storage devices to identify boot device
