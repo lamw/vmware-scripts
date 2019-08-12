@@ -201,7 +201,7 @@ $destVCConn = Connect-VIServer -Server $destVC -user $destVCUsername -password $
 xNew-VM -sourcevc $sourceVCConn -destvc $destVCConn -sourcevmname $sourcevmname -destvmname `
     $destvmname -switchtype $switchtype -datacenter $datacenter -cluster $cluster -vmhost `
     $vmhostname -datastore $datastorename -vmnetwork  $vmnetworkname -foldername `
-    $foldername -poweron $poweron -uppercaseuuid $UppercaseUUID -$snapshotname $snapshotname
+    $foldername -poweron $poweron -uppercaseuuid $UppercaseUUID -snapshotname $snapshotname
 
 # Disconnect from Source/Destination VC
 Disconnect-VIServer -Server $sourceVCConn -Confirm:$false
