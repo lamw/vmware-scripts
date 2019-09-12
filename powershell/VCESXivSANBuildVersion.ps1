@@ -21,7 +21,7 @@
     $vcenterBuildVersionMappings = @{
         "14389939"="vCenter Server 6.5 U3b,2019-08-27"
         "14368073"="vCenter Appliance 6.7 Update 3,2019-08-20"
-        "14367737"="vCenter Appliance / vCenter Windwos 6.7 Update 3,2019-08-20"
+        "14367737"="vCenter Appliance / vCenter Windows 6.7 Update 3,2019-08-20"
         "14156547"="vCenter Server 6.5 U3a,2019-07-25"
         "14070654"="vCenter Appliance 6.7 Update 2c (6.7.0.32000),2019-07-16"
         "14070457"="vCenter Appliance 6.7 Update 2c (6.7.0.32000),2019-07-16"
