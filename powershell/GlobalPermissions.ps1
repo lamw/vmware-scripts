@@ -17,7 +17,6 @@ Function New-GlobalPermission {
     .PARAMETER propagate
         Whether or not to propgate the permission assignment (true/false)
 #>
-    New-GlobalPermission -vc_server "192.168.1.51" -vc_username "administrator@vsphere.local" -vc_password "VMware1!" -vc_user "VGHETTO\lamw" -vc_role_id "-1" -propagate "true"
     param(
         [Parameter(Mandatory=$true)][string]$vc_server,
         [Parameter(Mandatory=$true)][String]$vc_username,
