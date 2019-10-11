@@ -1,4 +1,4 @@
-﻿Function Get-VCVersion {
+Function Get-VCVersion {
 <#
     .NOTES
     ===========================================================================
@@ -208,8 +208,14 @@ Function Get-ESXiVersion {
         Get-ESXiVersion -ClusterName VSAN-Cluster
 #>
     param(
-        [Parameter(Mandatory=$true)][String]$ClusterName
+        [Parameter(Mandatory=$false)][String]$ClusterName = "",
+        [Parameter(Mandatory=$false)][String]$DatacenterName = ""
     )
+
+    If (($ClusterName -eq "") -and ($DatacenterName -eq "")) {
+        Write-Host -ForegroundColor Red "Error: You have to specify a cluster (-ClusterName) or datacenter (-DatacenterName)"
+        break
+    }
 
     # Pulled from https://kb.vmware.com/kb/2143832
     $esxiBuildVersionMappings = @{
@@ -332,14 +338,34 @@ Function Get-ESXiVersion {
         "469512"="ESXi 5.0 GA,2011-08-24"
     }
 
-    $cluster = Get-Cluster -Name $ClusterName -ErrorAction SilentlyContinue
-    if($cluster -eq $null) {
-        Write-Host -ForegroundColor Red "Error: Unable to find vSAN Cluster $ClusterName ..."
-        break
+    $vmhosts = @()
+    If($ClusterName -ne "") {
+        
+        $cluster = Get-Cluster -Name $ClusterName -ErrorAction SilentlyContinue
+        
+        if($cluster -eq $null) {
+            Write-Host -ForegroundColor Red "Error: Unable to find vSAN Cluster $ClusterName ..."
+            break
+        } Else {
+            $vmhosts = $cluster.ExtensionData.Host
+        }
+    } Else {
+
+        If($DatacenterName -ne "") {
+    
+            $datacenter = Get-Datacenter -Name $DatacenterName -ErrorAction SilentlyContinue
+
+            If($datacenter -eq $null) {
+                Write-Host -ForegroundColor Red "Error: Unable to find Datacenter $DatacenterName ..."
+                break
+            } Else {
+                $vmhosts = $datacenter | Get-VMHost
+            }
+        }
     }
 
     $results = @()
-    foreach ($vmhost in $cluster.ExtensionData.Host) {
+    foreach ($vmhost in $vmhosts) {
         $vmhost_view = Get-View $vmhost -Property Name, Config, ConfigManager.ImageConfigManager
 
         $esxiName = $vmhost_view.name
