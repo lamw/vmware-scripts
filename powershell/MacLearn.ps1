@@ -23,7 +23,7 @@
     foreach ($dvpgname in $DVPortgroupName) {
         $dvpg = Get-VDPortgroup -Name $dvpgname -ErrorAction SilentlyContinue
         $switchVersion = ($dvpg | Get-VDSwitch).Version
-        if($dvpg -and $switchVersion -eq "6.6.0") {
+        if($dvpg -and $switchVersion -ge "6.6.0") {
             $securityPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.SecurityPolicy
             $macMgmtPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.MacManagementPolicy
 
@@ -41,7 +41,7 @@
             }
             $securityPolicyResults
         } else {
-            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running 6.6.0"
+            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running 6.6.0 or later"
             break
         }
     }
@@ -92,7 +92,7 @@ Function Set-MacLearn {
     foreach ($dvpgname in $DVPortgroupName) {
         $dvpg = Get-VDPortgroup -Name $dvpgname -ErrorAction SilentlyContinue
         $switchVersion = ($dvpg | Get-VDSwitch).Version
-        if($dvpg -and $switchVersion -eq "6.6.0") {
+        if($dvpg -and $switchVersion -ge "6.6.0") {
             $originalSecurityPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.SecurityPolicy
 
             $spec = New-Object VMware.Vim.DVPortgroupConfigSpec
@@ -129,7 +129,7 @@ Function Set-MacLearn {
                 $task1 | Wait-Task | Out-Null
             }
         } else {
-            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running 6.6.0"
+            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running 6.6.0 or later"
             break
         }
     }
