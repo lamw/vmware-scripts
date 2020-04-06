@@ -20,10 +20,12 @@
         [Parameter(Mandatory=$true)][String[]]$DVPortgroupName
     )
 
+    $minSwitchVersion = "6.6.0"
+
     foreach ($dvpgname in $DVPortgroupName) {
         $dvpg = Get-VDPortgroup -Name $dvpgname -ErrorAction SilentlyContinue
         $switchVersion = ($dvpg | Get-VDSwitch).Version
-        if($dvpg -and $switchVersion -ge "6.6.0") {
+        if($dvpg -and [version]$switchVersion -ge [version]$minSwitchVersion) {
             $securityPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.SecurityPolicy
             $macMgmtPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.MacManagementPolicy
 
@@ -41,7 +43,7 @@
             }
             $securityPolicyResults
         } else {
-            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running 6.6.0 or later"
+            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running $minSwitchVersion or later"
             break
         }
     }
@@ -88,11 +90,13 @@ Function Set-MacLearn {
         [Parameter(Mandatory=$false)][Int]$Limit=4096,
         [Parameter(Mandatory=$false)][String]$LimitPolicy="DROP"
     )
+    
+    $minSwitchVersion = "6.6.0"
 
     foreach ($dvpgname in $DVPortgroupName) {
         $dvpg = Get-VDPortgroup -Name $dvpgname -ErrorAction SilentlyContinue
         $switchVersion = ($dvpg | Get-VDSwitch).Version
-        if($dvpg -and $switchVersion -ge "6.6.0") {
+        if($dvpg -and [version]$switchVersion -ge [version]$minSwitchVersion) {
             $originalSecurityPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.SecurityPolicy
 
             $spec = New-Object VMware.Vim.DVPortgroupConfigSpec
@@ -129,7 +133,7 @@ Function Set-MacLearn {
                 $task1 | Wait-Task | Out-Null
             }
         } else {
-            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running 6.6.0 or later"
+            Write-Host -ForegroundColor Red "Unable to find DVPortgroup $dvpgname or VDS is not running $minSwitchVersion or later"
             break
         }
     }
