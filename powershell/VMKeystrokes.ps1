@@ -17,10 +17,16 @@
         Enable debugging which will output input charcaters and their mappings
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root"
+
+        Push "root" to VM $VM
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root" -ReturnCarriage $true
+
+        Push "root" with return line to VM $VM
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root" -DebugOn $true
+
+        Push "root" to VM $VM with some debug
     ===========================================================================
      Modified by:   David Rodriguez
      Organization:  Sysadmintutorials
@@ -39,6 +45,8 @@
         Keyboard Up, Down, Left Right
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -SpecialKeyInput "F2"
+
+        Push SpecialKeyInput F2 to VM $VM
 
 #>
     param(
