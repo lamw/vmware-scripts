@@ -10,11 +10,11 @@
     .DESCRIPTION
         This function sends a series of character keystrokse to a particular VM
     .PARAMETER VMName
-		The name of a VM to send keystrokes to
-	.PARAMETER StringInput
-		The string of characters to send to VM
-	.PARAMETER DebugOn
-		Enable debugging which will output input charcaters and their mappings
+        The name of a VM to send keystrokes to
+    .PARAMETER StringInput
+        The string of characters to send to VM
+    .PARAMETER DebugOn
+        Enable debugging which will output input charcaters and their mappings
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root"
     .EXAMPLE
@@ -32,79 +32,79 @@
     # Map subset of USB HID keyboard scancodes
     # https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2
     $hidCharacterMap = @{
-		"a"="0x04";
-		"b"="0x05";
-		"c"="0x06";
-		"d"="0x07";
-		"e"="0x08";
-		"f"="0x09";
-		"g"="0x0a";
-		"h"="0x0b";
-		"i"="0x0c";
-		"j"="0x0d";
-		"k"="0x0e";
-		"l"="0x0f";
-		"m"="0x10";
-		"n"="0x11";
-		"o"="0x12";
-		"p"="0x13";
-		"q"="0x14";
-		"r"="0x15";
-		"s"="0x16";
-		"t"="0x17";
-		"u"="0x18";
-		"v"="0x19";
-		"w"="0x1a";
-		"x"="0x1b";
-		"y"="0x1c";
-		"z"="0x1d";
-		"1"="0x1e";
-		"2"="0x1f";
-		"3"="0x20";
-		"4"="0x21";
-		"5"="0x22";
-		"6"="0x23";
-		"7"="0x24";
-		"8"="0x25";
-		"9"="0x26";
-		"0"="0x27";
-		"!"="0x1e";
-		"@"="0x1f";
-		"#"="0x20";
-		"$"="0x21";
-		"%"="0x22";
-		"^"="0x23";
-		"&"="0x24";
-		"*"="0x25";
-		"("="0x26";
-		")"="0x27";
-		"_"="0x2d";
-		"+"="0x2e";
-		"{"="0x2f";
-		"}"="0x30";
-		"|"="0x31";
-		":"="0x33";
-		"`""="0x34";
-		"~"="0x35";
-		"<"="0x36";
-		">"="0x37";
-		"?"="0x38";
-		"-"="0x2d";
-		"="="0x2e";
-		"["="0x2f";
-		"]"="0x30";
-		"\"="0x31";
-		"`;"="0x33";
-		"`'"="0x34";
-		","="0x36";
-		"."="0x37";
-		"/"="0x38";
-		" "="0x2c";
+        "a"="0x04";
+        "b"="0x05";
+        "c"="0x06";
+        "d"="0x07";
+        "e"="0x08";
+        "f"="0x09";
+        "g"="0x0a";
+        "h"="0x0b";
+        "i"="0x0c";
+        "j"="0x0d";
+        "k"="0x0e";
+        "l"="0x0f";
+        "m"="0x10";
+        "n"="0x11";
+        "o"="0x12";
+        "p"="0x13";
+        "q"="0x14";
+        "r"="0x15";
+        "s"="0x16";
+        "t"="0x17";
+        "u"="0x18";
+        "v"="0x19";
+        "w"="0x1a";
+        "x"="0x1b";
+        "y"="0x1c";
+        "z"="0x1d";
+        "1"="0x1e";
+        "2"="0x1f";
+        "3"="0x20";
+        "4"="0x21";
+        "5"="0x22";
+        "6"="0x23";
+        "7"="0x24";
+        "8"="0x25";
+        "9"="0x26";
+        "0"="0x27";
+        "!"="0x1e";
+        "@"="0x1f";
+        "#"="0x20";
+        "$"="0x21";
+        "%"="0x22";
+        "^"="0x23";
+        "&"="0x24";
+        "*"="0x25";
+        "("="0x26";
+        ")"="0x27";
+        "_"="0x2d";
+        "+"="0x2e";
+        "{"="0x2f";
+        "}"="0x30";
+        "|"="0x31";
+        ":"="0x33";
+        "`""="0x34";
+        "~"="0x35";
+        "<"="0x36";
+        ">"="0x37";
+        "?"="0x38";
+        "-"="0x2d";
+        "="="0x2e";
+        "["="0x2f";
+        "]"="0x30";
+        "\"="0x31";
+        "`;"="0x33";
+        "`'"="0x34";
+        ","="0x36";
+        "."="0x37";
+        "/"="0x38";
+        " "="0x2c";
     }
 
     $vm = Get-View -ViewType VirtualMachine -Filter @{"Name"="^$($VMName)$"}
 
-	# Verify we have a VM or fail
+    # Verify we have a VM or fail
     if(!$vm) {
         Write-host "Unable to find VM $VMName"
         return
