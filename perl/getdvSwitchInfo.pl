@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# Author: William Lam
+# Author: William Lam; Tim Lapawa
 # Website: www.virtuallyghetto.com
 # Reference: http://www.virtuallyghetto.com/2011/12/retrieving-information-from-distributed.html
 
@@ -12,7 +12,7 @@ use Term::ANSIColor;
 my %opts = (
         'list' => {
         type => "=s",
-        help => "Operation [all|summary|config|networkpool|portgroup|host|vm]",
+        help => "Operation [all|summary|config|networkpool|portgroup|host|vm|health]",
         required => 1,
         },
         'dvswitch' => {
@@ -27,21 +27,34 @@ Opts::add_options(%opts);
 # validate options, and connect to the server
 Opts::parse();
 Opts::validate();
-Util::connect();
+my $vim = Util::connect();
 
 my $list = Opts::get_option('list');
 my $dvswitch = Opts::get_option('dvswitch');
 my $dvSwitches;
-my $apiVersion = Vim::get_service_content()->about->version;
+my $sc = $vim->get_service_content();
+my $apiVersion = $sc->about->version;
+
+print ("vCenterServer: ".color("yellow"). $vim->{service_url}. color('reset').' - '. color('yellow'). $sc->about->fullName . color("reset"). "\n");
+
+my $dvSwitchProperties = {};
+if ($list eq 'health') {
+    $dvSwitchProperties = [ 'name', 'runtime', 'config.host', 'config.healthCheckConfig' ];
+}
 
 if($dvswitch) {
-	$dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch', filter => {'name' => $dvswitch});
+    $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
+                                        , filter => {'name' => $dvswitch}
+                                        , properties => $dvSwitchProperties
+                                        );
 } else {
-	$dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch');
+    $dvSwitches = Vim::find_entity_views(view_type => 'DistributedVirtualSwitch'
+                                        , properties => $dvSwitchProperties
+                                        );
 }
 
 foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
-	print color("yellow") . $dvs->name . "\n" . color("reset");
+	print 'dvSwitch: '.color("yellow") . $dvs->name . "\n" . color("reset");
 	if($list eq "all" || $list eq "summary") {
 		print "UUID: " . color("cyan") . $dvs->summary->uuid . "\n" . color("reset");
 		print "Description: " . color("cyan") . ($dvs->summary->description ? $dvs->summary->description : "N/A") . "\n" . color("reset");
@@ -289,9 +302,122 @@ foreach my $dvs (sort{$a->name cmp $b->name} @$dvSwitches) {
 			}
 		};
 		if($@) {
-			print "ERROR: Unable to query for entites connected to dvSwitch " . $@ . "\n";
+			print "ERROR: Unable to query for entities connected to dvSwitch " . $@ . "\n";
 		}
 	}
+	if($list eq "all" || $list eq "health") {
+    #  * dvSwitch->runtime->hostMemberRuntime[]
+    #    - lists all hosts of dvSwitch
+    #  *
+        my $hostMemberRuntimeInfo = $dvs->{runtime}->{hostMemberRuntime};
+        my %r = ();
+#        print "  Check NIC Infos for host: \t'".$host->name."'\n\n";
+        format STDOUT =
+ @<<<<<<<<<<<<<<<<<<<<<<<<<<< |@<<<<<< |@<<<<<<<<<<<<<<<<<<<<<<<<<... |@<<<<<<<<<<<<<<< |@<<<<<<<<<<<<<<<<<< |@*
+ $r{host},                     $r{pnic}, $r{switch},                   $r{address},     $r{port},             $r{missingvlans}
+.
+        my $foundHealthCheckResults = undef;
+        foreach my $hostMember (@{$hostMemberRuntimeInfo}) {
+            if ( exists $hostMember->{healthCheckResult}) {
+
+                my $hostRef = $hostMember->{host};
+                my $hostView =  Vim::get_view( mo_ref => $hostRef, properties => [ 'name', 'configManager'] );
+
+                if ($hostMember->status ne 'up') {
+                    print ("\n".$hostView->name.color("red") . 'DOWN'.color('reset'));
+                    next;
+                }
+                
+                if ($hostView->name eq 'ffm30vmwzst0112.mhs.msys.net') {
+                    print 'found it';
+                }
+                
+                
+                my $netMgr = undef;
+                my $checkResults = $hostMember->{healthCheckResult};
+                foreach my $checkResult (@{$checkResults}){
+                    if ( ref($checkResult) eq 'VMwareDVSVlanHealthCheckResult') {
+                        %r = (
+                            host         => $hostView->name,
+                            pnic         => '',
+                            switch       => '',
+                            address      => '',
+                            port         => '',
+                            missingvlans => '',
+                        );
+
+                        # find physical uplink for DVS uplinkPort
+                        #    dvs-83&doPath=config.host
+                        #
+                        my $dvsHostMembers = $dvs->{'config.host'};
+                        $netMgr ||= Vim::get_view(mo_ref => $hostView->configManager->networkSystem);
+                        foreach my $member (@{$dvsHostMembers}){
+                            my $dvsConfigHostrefValue = $member->{config}->{host}->{value};
+                            if ($hostRef->{value} eq $dvsConfigHostrefValue) {
+                                my $pnicSpecs = $member->{config}->{backing}->{pnicSpec};
+                                foreach my $pnic (@{$pnicSpecs}){
+                                    if ($pnic->{uplinkPortKey} eq $checkResult->{uplinkPortKey}) {
+                                        $r{pnic} = $pnic->{pnicDevice};
+                                    }
+                                }
+                            }
+                        }
+                        
+                        #
+                        # find CDP infos for pnic and host
+                        #
+                        my @physicalNicHintInfo = $netMgr->QueryNetworkHint();
+                        foreach (@physicalNicHintInfo) {
+                            foreach ( @{$_} ) {
+                                next if ($r{pnic} ne $_->device);  # skip wrong device
+                                if(defined($_->connectedSwitchPort)) {
+                                    $r{switch}  = $_->connectedSwitchPort->devId;
+                                    $r{address} = $_->connectedSwitchPort->address;
+                                    $r{port}    = $_->connectedSwitchPort->portId;
+                                }
+                            }
+                        }
+                        my $untrunkedVlans =  $checkResult->{untrunkedVlan};
+                        my %missingVlans = ();
+                        foreach my $untrunkedVlan (@{$untrunkedVlans}){
+                            my $start = int($untrunkedVlan->{start});
+                            my $end   = int($untrunkedVlan->{end});
+                            if ( $start eq $end ) {
+                                $missingVlans{$start} = 1;
+                            } else {
+                                for (my $i = $start; $i <= $end; $i++){ 
+                                    $missingVlans{$i} = 1;
+                                }
+                            }
+                        }
+                        my @sorted = sort {$a <=> $b} keys %missingVlans;;
+                        $r{missingvlans} = join (',', @sorted);
+                        if (!$foundHealthCheckResults) {
+                                                                                                       
+                            print "  Host                        | pnic   | switch                       | address         | port               | missing VLANs          \n";
+                            print " -----------------------------+--------+------------------------------+-----------------+--------------------+------------------------\n";
+                        }
+                        $foundHealthCheckResults ||= $hostMember;
+                        write;
+                    } # foreach VMwareDVSVlanHealthCheckResult
+                } # foreach healthCheckResult
+            } # if healthCheckResult 
+        } # foreach $hostMemberRuntimeInfo
+        
+        if ( ! $foundHealthCheckResults ) {
+            my $checkConfigs = $dvs->{'config.healthCheckConfig'};
+            if ( lc ($checkConfigs->[0]->{'enable'}) ) {
+                print '** Could not find any DVSwitch Health check results.'.color('red').' Please reconfigure health check to get new results.'.color('reset');
+            } else {
+                print '** DVSwitch Health check is deactivated. '.color('red').'Please enable and rerun script to collect results.'.color('reset');
+            }
+        }
+        print "\n";
+    } # if --list all|health
+} # foreach @$dvSwitches
+if (!scalar @{ $dvSwitches}) {
+    print "WARN: Could not find dvSwitch: '".$dvswitch."' with service url '".$vim->{service_url}."'. DONE!";
 }
+
 
 Util::disconnect();
