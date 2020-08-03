@@ -5,7 +5,7 @@ if [ ${#} -ne 1 ]; then
     exit 1
 fi
 
-type jq > /dev/null 2&>1
+type jq > /dev/null 2>&1
 if [ $? -eq 1 ]; then
     echo "It does not look like you have jq installed. This script uses jq to parse the JSON output"
     exit 1
