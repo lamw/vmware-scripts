@@ -11,13 +11,16 @@ Function Get-VMApplicationInfo {
     .EXAMPLE
         Get-VMApplicationInfo -VM (Get-VM "DC-01")
     .EXAMPLE
+        Get-VMApplicationInfo -VM (Get-VM "DC-01") -UniqueOnly
+    .EXAMPLE
         Get-VMApplicationInfo -VM (Get-VM "DC-01") -Output CSV
     .EXAMPLE
         Get-VMApplicationInfo -VM (Get-VM "DC-01") -Output JSON
 #>
     param(
         [Parameter(Mandatory=$true)]$VM,
-        [Parameter(Mandatory=$false)][ValidateSet("CSV","JSON")][String]$Output
+        [Parameter(Mandatory=$false)][ValidateSet("CSV","JSON")][String]$Output,
+        [Parameter(Mandatory=$false)][Switch]$UniqueOnly
     )
 
     $appInfoValue = (Get-AdvancedSetting -Entity $VM -Name "guestinfo.appInfo").Value
@@ -28,7 +31,11 @@ Function Get-VMApplicationInfo {
         $appInfo = $appInfoValue | ConvertFrom-Json
         $appUpdateVersion = $appInfo.updateCounter
 
-        $results = $appInfo.applications | Sort-Object -Property a | FT @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
+        if($UniqueOnly) {
+            $results = $appInfo.applications | Sort-Object -Property a -Unique| FT @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
+        } else {
+            $results = $appInfo.applications | Sort-Object -Property a | FT @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
+        }
 
         Write-host -ForegroundColor Green "Application Discovery Time: $($appInfo.publishTime)"
         if($Output -eq "CSV") {
