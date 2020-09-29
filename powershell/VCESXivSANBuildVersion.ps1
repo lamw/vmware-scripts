@@ -19,6 +19,21 @@
 
     # Pulled from https://kb.vmware.com/kb/2143838
     $vcenterBuildVersionMappings = @{
+        "16749653"="vCenter Server 7.0d,2020-08-25"
+        "16620007"="vCenter Server 7.0c,2020-07-30"
+        "16386292"="vCenter Server 7.0b,2020-06-23"
+        "16189094"="vCenter Server 7.0a,2020-05-19"
+        "15952498"="vCenter Server 7.0 GA,2020-04-02"
+        "16764584"="vCenter Server 6.5 U3l,2020-08-25"
+        "16613358"="vCenter Server 6.5 U3k,2020-07-30"
+        "16275158"="vCenter Server 6.5 U3j,2020-05-28"
+        "15808842"="vCenter Server 6.5 U3i,2020-03-26"
+        "15679215"="vCenter Server 6.5 U3h,2020-02-27"
+        "15505374"="vCenter Server 6.5 U3g,2020-01-30"
+        "15259038"="vCenter Server 6.5 U3f,2019-12-19"
+        "15127636"="vCenter Server 6.5 U3e,2019-11-26"
+        "14836121"="vCenter Server 6.5 U3d,2019-10-24"
+        "14690228"="vCenter Server 6.5 U3c,2019-09-24"
         "14389939"="vCenter Server 6.5 U3b,2019-08-27"
         "14368073"="vCenter Appliance 6.7 Update 3,2019-08-20"
         "14367737"="vCenter Appliance / vCenter Windows 6.7 Update 3,2019-08-20"
@@ -213,6 +228,14 @@ Function Get-ESXiVersion {
 
     # Pulled from https://kb.vmware.com/kb/2143832
     $esxiBuildVersionMappings = @{
+        "16324942"="ESXi 7.0b,2020-06-23"
+        "15843807"="ESXi 7.0 GA,2020-04-02"
+        "16713306"="ESXi 6.7 P03,2020-08-20"
+        "16316930"="ESXi 6.7 EP 15,2020-06-09"
+        "16075168"="ESXi 6.7 P02,2020-04-28"
+        "15820472"="ESXi 6.7 EP 14,2020-04-07"
+        "15160138"="ESXi 6.7 P01,2019-12-05"
+        "15018017"="ESXi 6.7 EP 13,2019-11-12"
         "14320388"="ESXi 6.7 Update 3,2019-08-20"
         "13981272"="ESXi 6.7 EP 10,2019-06-20"
         "13644319"="ESXi 6.7 EP 09,2019-05-14"
@@ -392,6 +415,14 @@ Function Get-VSANVersion {
 
     # Pulled from https://kb.vmware.com/kb/2150753
         $vsanBuildVersionMappings = @{
+            "16324942"="vSAN 7.0b,ESXi 7.0b,2020-06-23"
+            "15843807"="vSAN 7.0,ESXi 7.0,2020-04-02"
+            "16316930"="vSAN 6.7 Express Patch 15,ESXi 6.7 Express Patch 15,2020-06-09"
+            "16075168"="vSAN 6.7 Patch 02,ESXi 6.7 Patch 02,2020-04-28"
+            "15820472"="vSAN 6.7 Express Patch 14,ESXi 6.7 Express Patch 14,2020-04-07"
+            "15160138"="vSAN 6.7 Patch 01,ESXi 6.7 Patch 01,2019-12-05"
+            "15018017"="vSAN 6.7 Express Patch 13,ESXi 6.7 Express Patch 13,2019-11-12"
+            "14320388"="vSAN 6.7 Update 3,ESXi 6.7 Update 3,2019-08-20"
             "13981272"="vSAN 6.7 Update 3 / vSAN 6.7 Express Patch 10,ESXi 6.7 Update 3 / ESXi 6.7 Express Patch 10,2019-08-20 (Update 3) / 2019-06-20 (Express Patch 10)"
             "13644319"="vSAN 6.7 Express Patch 09,ESXi 6.7 Express Patch 09,2019-05-14"
             "13473784"="vSAN 6.7 Express Patch 08,ESXi 6.7 Express Patch 08,2019-04-30"
