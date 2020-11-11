@@ -127,6 +127,7 @@ def _dir2item(path, directory, md5_enabled, lib_id):
     vcsp_type = VCSP_TYPE_OTHER
     folder = ""
     folder_md5 = ""
+    is_vapp = ""
     for f in os.listdir(path):
         if f == ".DS_Store" or f == ''.join((directory, os.extsep, FORMAT)):
             continue
