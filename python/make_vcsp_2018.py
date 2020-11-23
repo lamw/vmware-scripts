@@ -419,7 +419,7 @@ def make_vcsp_s3(lib_name, lib_path, skip_cert):
     update_items_json = False
 
     response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=lib_folder_path, Delimiter="/")
-    if response['CommonPrefixes']:
+    if 'CommonPrefixes' in response:
         # skip items generation if no child folders
         for child in response['CommonPrefixes']:
             p = child['Prefix']
