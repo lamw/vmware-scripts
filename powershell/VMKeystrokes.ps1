@@ -1,4 +1,22 @@
-﻿Function Set-VMKeystrokes {
+<#PSScriptInfo
+.VERSION 1.0.0
+.GUID 4b78ccc0-dfb5-44bb-b550-1cfb0b194585
+.AUTHOR William Lam
+.COMPANYNAME VMware
+.COPYRIGHT Copyright 2020, William Lam
+.TAGS VMware ScanCode
+.LICENSEURI
+.PROJECTURI https://github.com/lamw/vghetto-scripts/blob/master/powershell/VMKeystrokes.ps1
+.ICONURI https://blogs.vmware.com/virtualblocks/files/2018/10/PowerCLI.png
+.EXTERNALMODULEDEPENDENCIES
+.REQUIREDSCRIPTS
+.EXTERNALSCRIPTDEPENDENCIES
+.RELEASENOTES
+    1.0.0 - Initial Release
+.PRIVATEDATA
+.DESCRIPTION This function sends a series of character keystrokse to a particular vSphere VM
+#>
+Function Set-VMKeystrokes {
 <#
     .NOTES
     ===========================================================================
@@ -7,8 +25,6 @@
      Blog:          www.virtuallyghetto.com
      Twitter:       @lamw
     ===========================================================================
-    .DESCRIPTION
-        This function sends a series of character keystrokse to a particular VM
     .PARAMETER VMName
         The name of a VM to send keystrokes to
     .PARAMETER StringInput
@@ -17,15 +33,12 @@
         Enable debugging which will output input charcaters and their mappings
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root"
-
         Push "root" to VM $VM
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root" -ReturnCarriage $true
-
         Push "root" with return line to VM $VM
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -StringInput "root" -DebugOn $true
-
         Push "root" to VM $VM with some debug
     ===========================================================================
      Modified by:   David Rodriguez
@@ -45,9 +58,7 @@
         Keyboard Up, Down, Left Right
     .EXAMPLE
         Set-VMKeystrokes -VMName $VM -SpecialKeyInput "F2"
-
         Push SpecialKeyInput F2 to VM $VM
-
 #>
     param(
         [Parameter(Mandatory = $true)][String]$VMName,
