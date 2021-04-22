@@ -32,12 +32,12 @@ Function Get-VMApplicationInfo {
         $appUpdateVersion = $appInfo.updateCounter
 
         if($UniqueOnly) {
-            $results = $appInfo.applications | Sort-Object -Property a -Unique| FT @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
+            $results = $appInfo.applications | Sort-Object -Property a -Unique| Select-Object @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
         } else {
-            $results = $appInfo.applications | Sort-Object -Property a | FT @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
+            $results = $appInfo.applications | Sort-Object -Property a | Select-Object @{Name="Application";e={$_.a}},@{Name="Version";e={$_.v}}
         }
 
-        Write-host -ForegroundColor Green "Application Discovery Time: $($appInfo.publishTime)"
+        Write-Verbose "Application Discovery Time: $($appInfo.publishTime)"
         if($Output -eq "CSV") {
             $fileOutputName = "$($VM.name)-version-$($appUpdateVersion)-apps.csv"
 
