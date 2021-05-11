@@ -1,9 +1,9 @@
 #!/bin/ash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware ESXi & vFRC
 # Description: Automating vFRC Configurations in ESXi
-# Reference: http://www.virtuallyghetto.com/2013/11/how-to-automate-configuration-of-vfrc.html
+# Reference: http://www.williamlam.com/2013/11/how-to-automate-configuration-of-vfrc.html
 
 IFS=$'\n'
 FIRST_VFFS_DEVICE=""

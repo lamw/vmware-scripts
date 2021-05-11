@@ -4,7 +4,7 @@ Function Verify-ESXiMicrocodePatchAndVM {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
@@ -98,7 +98,7 @@ Function Verify-ESXiMicrocodePatch {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION

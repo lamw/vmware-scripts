@@ -1,5 +1,5 @@
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 
 $NSXTEdgeOVA = "C:\Users\william\Desktop\Project-Pacific\nsx-edge-3.0.0.0.0.15946012.ova"
 

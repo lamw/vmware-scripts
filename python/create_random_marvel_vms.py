@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vSphere
 # Description: vSphere SDK for Python program for creating tiny VMs (1vCPU/128MB) with random names using the Marvel Commics API
-# Reference: http://www.virtuallyghetto.com/2014/02/having-some-fun-with-marvel-comics-api.html
+# Reference: http://www.williamlam.com/2014/02/having-some-fun-with-marvel-comics-api.html
 
 """
 vSphere SDK for Python program for creating tiny VMs (1vCPU/128MB) with random names using the Marvel Commics API

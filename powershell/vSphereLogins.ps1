@@ -2,8 +2,8 @@
     <#
     .SYNOPSIS Retrieve information for all currently logged in vSphere Sessions (excluding current session)
     .NOTES  Author:  William Lam
-    .NOTES  Site:    www.virtuallyghetto.com
-    .REFERENCE Blog: http://www.virtuallyghetto.com/2016/11/an-update-on-how-to-retrieve-useful-information-from-a-vsphere-login.html 
+    .NOTES  Site:    www.williamlam.com
+    .REFERENCE Blog: http://www.williamlam.com/2016/11/an-update-on-how-to-retrieve-useful-information-from-a-vsphere-login.html 
     .EXAMPLE
       Get-vSphereLogins
     #>

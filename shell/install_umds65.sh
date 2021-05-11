@@ -1,8 +1,8 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Description: Automate the installation of VUM UMDS in vSphere 6.5 for Linux
-# Reference: http://www.virtuallyghetto.com/2016/11/automating-the-installation-of-vum-update-manager-download-service-umds-for-linux-in-vsphere-6-5.html
+# Reference: http://www.williamlam.com/2016/11/automating-the-installation-of-vum-update-manager-download-service-umds-for-linux-in-vsphere-6-5.html
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root"

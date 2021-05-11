@@ -4,7 +4,7 @@
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
@@ -69,7 +69,7 @@ Function Remove-IntelSightingsWorkaround {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
@@ -171,7 +171,7 @@ Function Set-IntelSightingsWorkaround {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION

@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware ESXi
 # Description: New version of script to automate the deployment of CoreOS image w/VMware Tools onto ESXi
-# Reference: http://www.virtuallyghetto.com/2014/11/how-to-quickly-deploy-new-coreos-image-wvmware-tools-on-esxi.html
+# Reference: http://www.williamlam.com/2014/11/how-to-quickly-deploy-new-coreos-image-wvmware-tools-on-esxi.html
 
 # CoreOS VMX URL
 CORE_OS_VMX_URL=http://alpha.release.core-os.net/amd64-usr/current/coreos_production_vmware.vmx
@@ -154,7 +154,7 @@ echo "Creating script to convert and register CoreOS VM on ESXi ..."
 cat > ${CORE_OS_ESXI_SETUP_SCRIPT} << __CORE_OS_ON_ESXi__
 #!/bin/sh
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 # Auto Geneated script to automate the conversion of VMDK & regiration of CoreOS VM
 
 # Change to CoreOS directory

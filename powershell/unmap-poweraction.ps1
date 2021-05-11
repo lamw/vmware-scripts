@@ -2,7 +2,7 @@
 # Website: www.virtuallyghetto
 # Product: VMware vSphere
 # Description: Script to issue UNMAP command on specified VMFS datastore
-# Reference: http://www.virtuallyghetto.com/2014/09/want-to-issue-a-vaai-unmap-operation-using-the-vsphere-web-client.html
+# Reference: http://www.williamlam.com/2014/09/want-to-issue-a-vaai-unmap-operation-using-the-vsphere-web-client.html
 
 param
 (

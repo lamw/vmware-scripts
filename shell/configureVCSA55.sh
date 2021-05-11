@@ -1,6 +1,6 @@
 # Author: William Lam
-# Site: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2015/01/completely-automating-vcenter-server-appliance-vcsa-5-5-configurations.html
+# Site: www.williamlam.com
+# Reference: http://www.williamlam.com/2015/01/completely-automating-vcenter-server-appliance-vcsa-5-5-configurations.html
 
 # User Configurations
 

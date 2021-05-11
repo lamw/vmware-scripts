@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 # Script to download & install jmx4perl
 
 if [ $(id -u) -ne 0 ]; then

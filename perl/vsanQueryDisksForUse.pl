@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2014/03/exploring-vsan-apis-part-2-query-available-ssds.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2014/03/exploring-vsan-apis-part-2-query-available-ssds.html
 
 use strict;
 use warnings;

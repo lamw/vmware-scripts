@@ -1,8 +1,8 @@
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware ESXi
 # Description: Query MACs on internal vSwitch
-# Reference: http://www.virtuallyghetto.com/2011/05/how-to-query-for-macs-on-internal.html
+# Reference: http://www.williamlam.com/2011/05/how-to-query-for-macs-on-internal.html
 
 if [[ $# -ne 1 ]] && [[ $# -ne 4 ]]; then
         echo -e "Usage: $0 -l -v [vSWITCH] -p [PORT]\n"

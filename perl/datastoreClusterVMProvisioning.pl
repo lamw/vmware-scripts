@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2012/03/vm-provisioning-on-datastore-clusters.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2012/03/vm-provisioning-on-datastore-clusters.html
 #
 # 2017-06 Added Create VM functionality by Tim Lapawa  git@lapawa.de
 #
@@ -307,7 +307,7 @@ vSphere 5.0, vSphere 5.5, vSphere 6.0, vSphere 6.5
 
 =over 4
 
-=item William Lam, http://www.virtuallyghetto.com/
+=item William Lam, http://www.williamlam.com/
 
 =item 2017 Tim Lapawa
 

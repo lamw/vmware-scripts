@@ -2,8 +2,8 @@
     <#
         .SYNOPSIS This script demonstrates a Cross vCenter Clone Operation across two different vCenter Servers which can either be part of the same or different SSO Domain
         .NOTES  Author:  William Lam
-        .NOTES  Site:    www.virtuallyghetto.com
-        .REFERENCE Blog: http://www.virtuallyghetto.com/2018/01/cross-vcenter-clone-with-vsphere-6-0.html
+        .NOTES  Site:    www.williamlam.com
+        .REFERENCE Blog: http://www.williamlam.com/2018/01/cross-vcenter-clone-with-vsphere-6-0.html
     #>
 
     param(

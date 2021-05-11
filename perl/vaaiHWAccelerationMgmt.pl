@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2010/07/script-automate-vaai-configurations-in.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2010/07/script-automate-vaai-configurations-in.html
 
 use strict;
 use warnings;

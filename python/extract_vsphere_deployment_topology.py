@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # William Lam
-# www.virtuallyghetto.com
-# http://www.virtuallyghetto.com/2016/04/generating-vcenter-server-platform-services-controller-deployment-topology-diagrams.html
+# www.williamlam.com
+# http://www.williamlam.com/2016/04/generating-vcenter-server-platform-services-controller-deployment-topology-diagrams.html
 
 """
 Script to extract the deployment topology of your vSphere
@@ -313,8 +313,8 @@ def main():
     psc_replication_mapping = build_psc_replication_relationship(psc_servers)
 
     # Using lstool.py to extract all vCenter Servers within SSO Domain
-    # (http://www.virtuallyghetto.com/2015/04/vcenter-server-6-0-tidbits-part-2-what-is-my-sso-domain-name-site-name.html)
-    # (http://www.virtuallyghetto.com/2015/04/vcenter-server-6-0-tidbits-part-4-finding-all-deployed-vcenter-servers.html)
+    # (http://www.williamlam.com/2015/04/vcenter-server-6-0-tidbits-part-2-what-is-my-sso-domain-name-site-name.html)
+    # (http://www.williamlam.com/2015/04/vcenter-server-6-0-tidbits-part-4-finding-all-deployed-vcenter-servers.html)
     vcenter_servers = find_all_vcenter_servers()
 
     # Using pyvmomi to connect to vSphere API to extract PSC Server used by given vCenter Server

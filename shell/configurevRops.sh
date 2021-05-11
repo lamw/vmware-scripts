@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vRealize Operations Manager 6.0
 # Description: Automating Configuration of vRealize Operations Manager 6.0 via CLI
-# Reference: http://www.virtuallyghetto.com/2014/12/automating-deployment-configuration-of-vrealize-operations-manager-6-0-part-2.html
+# Reference: http://www.williamlam.com/2014/12/automating-deployment-configuration-of-vrealize-operations-manager-6-0-part-2.html
 
 VROPS_ADMIN_PASSWORD='VMware1!'
 

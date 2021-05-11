@@ -1,9 +1,9 @@
 # William Lam
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Director
 # Description: Exploring the vCloud Director API using Ruby
-# Reference: http://www.virtuallyghetto.com/2013/02/exploring-vcloud-api-using-ruby.html 
+# Reference: http://www.williamlam.com/2013/02/exploring-vcloud-api-using-ruby.html 
 
 require 'httparty'
 require 'yaml'

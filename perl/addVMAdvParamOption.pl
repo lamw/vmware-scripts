@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2011/01/how-to-extract-host-information-from.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2011/01/how-to-extract-host-information-from.html
 
 use strict;
 use warnings;

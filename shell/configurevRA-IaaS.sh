@@ -1,8 +1,8 @@
 #!/bin/bash
 # Author: William Lam
-# Site: www.virtuallyghetto.com
+# Site: www.williamlam.com
 # Description: Script to configure vRA IaaS Components on Windows system
-# Reference: http://www.virtuallyghetto.com/2016/02/automating-vrealize-automation-7-simple-minimal-part-4-vra-iaas-configuration.html
+# Reference: http://www.williamlam.com/2016/02/automating-vrealize-automation-7-simple-minimal-part-4-vra-iaas-configuration.html
 # Big thanks to Dora L. (vRA Engineering) for her assistance & credit to her for letting me borrow her code snippet samples
 
 # SSO Configurations

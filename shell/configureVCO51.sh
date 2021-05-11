@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCenter Orchestrator
 # Description: Script to automate the configuration of vCO 5.1
-# Reference: http://www.virtuallyghetto.com/2012/09/quickly-configuring-new-vcenter.html
+# Reference: http://www.williamlam.com/2012/09/quickly-configuring-new-vcenter.html
 
 VCO_IP_ADDRESS=172.30.0.203
 VCO_DEFAULT_USERNAME=vmware

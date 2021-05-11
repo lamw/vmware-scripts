@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2014/06/how-to-efficiently-transfer-files-to-datastore-in-vcenter-using-the-vsphere-api.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2014/06/how-to-efficiently-transfer-files-to-datastore-in-vcenter-using-the-vsphere-api.html
 
 use strict;
 use warnings;

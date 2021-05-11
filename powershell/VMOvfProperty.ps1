@@ -4,7 +4,7 @@
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
     ===========================================================================
     .DESCRIPTION
@@ -76,7 +76,7 @@ Function Get-VMOvfProperty {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
     ===========================================================================
     .DESCRIPTION

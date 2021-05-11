@@ -1,7 +1,7 @@
 # Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Script to disable/enable vMotion capability for a specific VM
-# Reference: http://www.virtuallyghetto.com/2016/07/how-to-easily-disable-vmotion-cross-vcenter-vmotion-for-a-particular-virtual-machine.html
+# Reference: http://www.williamlam.com/2016/07/how-to-easily-disable-vmotion-cross-vcenter-vmotion-for-a-particular-virtual-machine.html
 
 Function Enable-vSphereMethod {
     param(

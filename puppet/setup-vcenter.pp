@@ -1,8 +1,8 @@
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCenter Server
 # Description: Puppet Config for vCenter Server
-# Reference: http://www.virtuallyghetto.com/2013/03/how-to-quickly-getting-started-with-new.html
+# Reference: http://www.williamlam.com/2013/03/how-to-quickly-getting-started-with-new.html
 transport { 'vcenter':
   username => 'root',
   password => 'vmware',

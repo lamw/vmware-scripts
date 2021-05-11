@@ -2,8 +2,8 @@ Function Set-SlackNotification {
     <#
         .DESCRIPTION Enable or Disable @channel and @here notifications for Slack Channel
         .NOTES  Author:  William Lam
-        .NOTES  Site:    www.virtuallyghetto.com
-        .NOTES  Reference: http://www.virtuallyghetto.com/2019/10/automate-disabling-channel-here-notifications-using-private-slack-api.html
+        .NOTES  Site:    www.williamlam.com
+        .NOTES  Reference: http://www.williamlam.com/2019/10/automate-disabling-channel-here-notifications-using-private-slack-api.html
         .PARAMETER SlackAccessToken
             This is your OAuth Access Token that you will need to either provide or generate as part of the OAuth login workflow
         .PARAMETER SlackBrowserAccessToken

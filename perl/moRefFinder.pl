@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2011/11/vsphere-moref-managed-object-reference.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2011/11/vsphere-moref-managed-object-reference.html
 
 use strict;
 use warnings;

@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCenter Infrastructure Navigator
 # Description: Wrapper script to deploy VMware vIN Virtual Apppliance
-# Reference: http://www.virtuallyghetto.com/2012/02/unattended-deployment-of-vcenter.html
+# Reference: http://www.williamlam.com/2012/02/unattended-deployment-of-vcenter.html
 
 # Configurations 
 

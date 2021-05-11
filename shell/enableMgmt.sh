@@ -1,9 +1,9 @@
 #!/bin/ash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware ESXi
 # Description: Enabling management traffic type on ESXI
-# Reference: http://www.virtuallyghetto.com/2011/02/another-way-to-enable-management.html
+# Reference: http://www.williamlam.com/2011/02/another-way-to-enable-management.html
 
 if [ $# -ne 1 ]; then
         echo "Usage: $0 [VMK_INTERFACE]"

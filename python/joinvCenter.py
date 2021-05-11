@@ -1,9 +1,9 @@
 import sys,re,os,urllib,urllib2,base64,syslog,socket
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware ESXi
 # Description: Python script to call into vSphere MOB to add ESXi host to VC
-# Reference: http://www.virtuallyghetto.com/2011/03/how-to-automatically-add-esxi-host-to.html
+# Reference: http://www.williamlam.com/2011/03/how-to-automatically-add-esxi-host-to.html
 
 # vCenter server
 vcenter_server = "vcenter51-1.primp-industries.com"

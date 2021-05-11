@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 
 use strict;
 use warnings;

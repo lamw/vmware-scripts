@@ -3,7 +3,7 @@
 .DESCRIPTION The function will return the list of configuration changes
     for a given Virtual Machine
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .NOTES  Comment: Modified example from Lucd's blog post http://www.lucd.info/2009/12/18/events-part-3-auditing-vm-device-changes/
 .PARAMETER Vm
   Virtual Machine object to query configuration changes

@@ -2,7 +2,7 @@
 # Website: www.virtuallyghetto
 # Product: VMware vCloud Networking & Security 5.1
 # Description: YAML input for VCNS
-# Reference: http://www.virtuallyghetto.com/2013/02/exploring-vcloud-networking-security.html 
+# Reference: http://www.williamlam.com/2013/02/exploring-vcloud-networking-security.html 
 :username: admin
 :password: default
 :site: https://vcns.primp-industries.com

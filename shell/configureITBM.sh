@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware IT Business Management
 # Description: Script to automate the configuration of ITBM VA
-# Reference: http://www.virtuallyghetto.com/2014/01/automating-vmware-itbm-it-business.html
+# Reference: http://www.williamlam.com/2014/01/automating-vmware-itbm-it-business.html
 
 VCAC_VA_SERVER=vcac-va.primp-industries.com
 VCAC_SSO_PASSWORD=vmware

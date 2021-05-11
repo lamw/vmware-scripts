@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2012/09/how-to-create-se-sparse-space-efficient.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2012/09/how-to-create-se-sparse-space-efficient.html
 
 my @options = (
     ['createfs', 'blocksize', 'setfsname', '_default_'],

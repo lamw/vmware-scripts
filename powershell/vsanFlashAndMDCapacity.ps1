@@ -1,8 +1,8 @@
 ﻿# Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vSphere / VSAN
 # Description: VSAN Flash/MD capacity report
-# Reference: http://www.virtuallyghetto.com/2014/04/vsan-flashmd-capacity-reporting.html
+# Reference: http://www.williamlam.com/2014/04/vsan-flashmd-capacity-reporting.html
 
 $vcName = ""
 $vcenter = Connect-VIServer $vcname -WarningAction SilentlyContinue

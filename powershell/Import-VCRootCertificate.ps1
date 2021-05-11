@@ -1,7 +1,7 @@
 # Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Script to import vCenter Server 6.x root certificate to Mac OS X or NIX* system
-# Reference: http://www.virtuallyghetto.com/2016/07/automating-the-import-of-vcenter-server-6-x-root-certificate.html
+# Reference: http://www.williamlam.com/2016/07/automating-the-import-of-vcenter-server-6-x-root-certificate.html
 
 Function Import-VCRootCertificate ([string]$VC_HOSTNAME) {
     # Set the default download directory to current users desktop

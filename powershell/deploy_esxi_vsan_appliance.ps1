@@ -1,5 +1,5 @@
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 
 $vcname = "192.168.1.150"
 $vcuser = "administrator@vghetto.local"

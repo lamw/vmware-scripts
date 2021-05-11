@@ -3,7 +3,7 @@
     of VMs that do not contain a policy (None) or policies in which contains
     Thick Provisioning (e.g Object Space Reservation set to 100)
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .PARAMETER Vm
   Virtual Machine(s) object to query for VSAN VM Storage Policies
 .EXAMPLE

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Site: www.virtuallyghetto.com
+# Site: www.williamlam.com
 # Description: Script leveraging the new API for VDS Backup/Export feature
 # Reference: https://blogs.vmware.com/vsphere/2013/01/automate-backups-of-vds-distributed-portgroup-configurations-in-vsphere-5-1.html
 

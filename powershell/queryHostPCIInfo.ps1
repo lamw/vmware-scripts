@@ -2,7 +2,7 @@
 # Website: www.virtuallyghetto
 # Product: VMware vSphere
 # Description: Script to extract ESXi PCI Device details such as Name, Vendor, VID, DID & SVID
-# Reference: http://www.virtuallyghetto.com/2015/05/extracting-vid-did-svid-from-pci-devices-in-esxi-using-vsphere-api.html
+# Reference: http://www.williamlam.com/2015/05/extracting-vid-did-svid-from-pci-devices-in-esxi-using-vsphere-api.html
 
 $server = Connect-VIServer -Server 192.168.1.60 -User administrator@vghetto.local -Password VMware1!
 

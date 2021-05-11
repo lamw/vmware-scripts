@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2011/09/how-to-use-custom-vm-icons-in-vsphere-5.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2011/09/how-to-use-custom-vm-icons-in-vsphere-5.html
 
 use strict;
 use warnings;

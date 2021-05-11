@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCenter Orchestrator
 # Description: Automating vCO config backup
-# Reference: http://www.virtuallyghetto.com/2013/03/automate-vcenter-orchestrator.html
+# Reference: http://www.williamlam.com/2013/03/automate-vcenter-orchestrator.html
 
 VCO_IP_ADDRESS=vco.primp-industries.com
 VCO_USERNAME=vmware

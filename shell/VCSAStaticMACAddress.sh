@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 
 OVFTOOL_BIN_PATH="/Applications/VMware OVF Tool/ovftool"
 #VCSA_OVA="/Volumes/Storage/Software/VMware-VCSA-all-6.7.0-Update-3b-15132721/vcsa/VMware-vCenter-Server-Appliance-6.7.0.42000-15132721_OVF10.ova"

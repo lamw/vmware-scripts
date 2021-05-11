@@ -1,8 +1,8 @@
 #!/bin/bash
 # # Author: William Lam
-# Site: www.virtuallyghetto.com
+# Site: www.williamlam.com
 # Description: Script to query Config + SEAT Data usage for vPostgres based VCDB
-# Reference: http://www.virtuallyghetto.com/2016/10/how-to-check-the-size-of-your-config-seat-data-in-the-vcdb-in-vpostgres.html
+# Reference: http://www.williamlam.com/2016/10/how-to-check-the-size-of-your-config-seat-data-in-the-vcdb-in-vpostgres.html
 
 VCDB_SQL_QUERY="
 SELECT   tabletype,

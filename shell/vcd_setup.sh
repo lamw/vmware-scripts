@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Director
 # Description: vCloud Director Installation Script
-# Reference: http://www.virtuallyghetto.com/2011/09/automating-vcloud-director-15-oracle-db.html
+# Reference: http://www.williamlam.com/2011/09/automating-vcloud-director-15-oracle-db.html
 
 cyan='\E[36;40m'
 green='\E[32;40m'
@@ -58,7 +58,7 @@ verify() {
 }
 
 usage() {
-	cecho "vCloud Director Installation Script by William Lam (www.virtuallyghetto.com)" $cyan
+	cecho "vCloud Director Installation Script by William Lam (www.williamlam.com)" $cyan
 	cecho "Invalid input, please supply vcd response file!" $red
 	cecho "$0 [vcd.resp]" $green
 	exit 1

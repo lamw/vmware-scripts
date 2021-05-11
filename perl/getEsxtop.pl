@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2013/01/retrieving-esxtop-performance-data.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2013/01/retrieving-esxtop-performance-data.html
 
 use strict;
 use warnings;

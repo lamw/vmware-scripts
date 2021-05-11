@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS Retrieve the installation date of an ESXi host
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/10/super-easy-way-of-getting-esxi-installation-date-in-vsphere-6-5.html
+.NOTES  Site:    www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/10/super-easy-way-of-getting-esxi-installation-date-in-vsphere-6-5.html
 .PARAMETER Vmhost
   ESXi host to query installation date
 .EXAMPLE

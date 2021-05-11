@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 
 VSPHERE_WITH_TANZU_CONTROL_PLANE_IP=10.10.0.64
 VSPHERE_WITH_TANZU_USERNAME=administrator@vsphere.local

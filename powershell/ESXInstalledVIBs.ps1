@@ -1,7 +1,7 @@
 ﻿<#
 .SYNOPSIS Retrieve the installation date of an ESXi host
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .PARAMETER Vmhost
   ESXi host to query installed ESXi VIBs
 .EXAMPLE

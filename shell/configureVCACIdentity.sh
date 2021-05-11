@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Automation Center
 # Description: Script to automatically configure the VCAC Identity VA (SSO)
-# Reference: http://www.virtuallyghetto.com/2013/12/automating-vcac-vcloud-automation.html
+# Reference: http://www.williamlam.com/2013/12/automating-vcac-vcloud-automation.html
 
 VCAC_SSO_PASSWORD=VMware123!
 VCAC_SSO_HOSTNAME=vcac-id.primp-industries.com

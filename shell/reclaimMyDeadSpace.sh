@@ -1,9 +1,9 @@
 #!/bin/ash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware ESXi
 # Description: Automate space reclaimation on ESXi
-# Reference: http://www.virtuallyghetto.com/2012/03/automating-dead-space-reclamation-in.html
+# Reference: http://www.williamlam.com/2012/03/automating-dead-space-reclamation-in.html
 
 if [[ $# -ne 1 ]] && [[ $# -ne 2 ]]; then
 	echo -e "\nUsage: $0 PERCENTAGE_RECLAIM [DATASTORE_LIST]"

@@ -2,8 +2,8 @@ Function New-GlobalPermission {
 <#
     .DESCRIPTION Script to add/remove vSphere Global Permission
     .NOTES  Author:  William Lam
-    .NOTES  Site:    www.virtuallyghetto.com
-    .NOTES  Reference: http://www.virtuallyghetto.com/2017/02/automating-vsphere-global-permissions-with-powercli.html
+    .NOTES  Site:    www.williamlam.com
+    .NOTES  Reference: http://www.williamlam.com/2017/02/automating-vsphere-global-permissions-with-powercli.html
     .PARAMETER vc_server
         vCenter Server Hostname or IP Address
     .PARAMETER vc_username
@@ -79,8 +79,8 @@ Function Remove-GlobalPermission {
 <#
     .DESCRIPTION Script to add/remove vSphere Global Permission
     .NOTES  Author:  William Lam
-    .NOTES  Site:    www.virtuallyghetto.com
-    .NOTES  Reference: http://www.virtuallyghetto.com/2017/02/automating-vsphere-global-permissions-with-powercli.html
+    .NOTES  Site:    www.williamlam.com
+    .NOTES  Reference: http://www.williamlam.com/2017/02/automating-vsphere-global-permissions-with-powercli.html
     .PARAMETER vc_server
         vCenter Server Hostname or IP Address
     .PARAMETER vc_username

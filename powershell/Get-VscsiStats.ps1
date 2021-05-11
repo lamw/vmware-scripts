@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS Using the vSphere API in vCenter Server to collect ESXTOP & vscsiStats metrics
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2017/02/using-the-vsphere-api-in-vcenter-server-to-collect-esxtop-vscsistats-metrics.html
+.NOTES  Site:    www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2017/02/using-the-vsphere-api-in-vcenter-server-to-collect-esxtop-vscsistats-metrics.html
 .PARAMETER Vmhost
   ESXi host
 .EXAMPLE

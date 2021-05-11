@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2014/03/required-esxi-advanced-setting-to-support-16-node-vsan-cluster.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2014/03/required-esxi-advanced-setting-to-support-16-node-vsan-cluster.html
 
 use strict;
 use warnings;

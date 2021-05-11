@@ -1,7 +1,7 @@
 # Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Script to enable MultiWriter Flag for existing VMDK in vSphere 6.x
-# Reference: http://www.virtuallyghetto.com/2015/10/new-method-of-enabling-multiwriter-vmdk-flag-in-vsphere-6-0-update-1.html
+# Reference: http://www.williamlam.com/2015/10/new-method-of-enabling-multiwriter-vmdk-flag-in-vsphere-6-0-update-1.html
 
 $vcname = "192.168.1.150"
 $vcuser = "administrator@vghetto.local"

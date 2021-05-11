@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 # Script to automatically replace AppCatalyst's default PhotonOS VMDK w/VMDK that includes Docker 1.9
 
 COLOR_ON="\x1b[36;01m"

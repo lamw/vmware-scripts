@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Reference: http://communities.vmware.com/docs/DOC-9852
 
 use strict;
@@ -4335,7 +4335,7 @@ sub startReportCreation {
 	$start_time = time();
 
 	print "Generating $report_name \"$reportname\" ...\n\n";
-	print "This can take a few minutes depending on environment size. \nGet a cup of coffee/tea and check out http://www.virtuallyghetto.com\n\n";
+	print "This can take a few minutes depending on environment size. \nGet a cup of coffee/tea and check out http://www.williamlam.com\n\n";
 	open(REPORT_OUTPUT, ">$reportname");
 	
 	my $date = " --- Date: ".giveMeDate('MDYHMS');
@@ -4453,9 +4453,9 @@ sub endReportCreation {
 </html>
 <br><hr>
 <center>Author: <b><a href="http://www.linkedin.com/in/lamwilliam">William Lam</a></b></center>
-<center> <b><a href="http://www.virtuallyghetto.com/">http://www.virtuallyghetto.com</a></b></center>
+<center> <b><a href="http://www.williamlam.com/">http://www.williamlam.com</a></b></center>
 <center>Generated using: <b><a href="http://communities.vmware.com/docs/DOC-11901">vmwarevSphereSecurityHardeningReportCheck.pl</a></b></center>
-<center>Support us by donating <b><a href="http://www.virtuallyghetto.com/p/how-you-can-help.html">here</a></b></center>
+<center>Support us by donating <b><a href="http://www.williamlam.com/p/how-you-can-help.html">here</a></b></center>
 <center>Primp Industries&#0153;</center>
 HTML_END
 	print REPORT_OUTPUT $html_end;

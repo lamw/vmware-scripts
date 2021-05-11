@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2012/11/extracting-information-from-vin-vsphere_8.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2012/11/extracting-information-from-vin-vsphere_8.html
 
 use strict;
 use JSON;

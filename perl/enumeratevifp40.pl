@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2010/08/why-you-should-upgrade-from-vma-40-to.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2010/08/why-you-should-upgrade-from-vma-40-to.html
 
 use strict;
 use VMware::VIFPLib;

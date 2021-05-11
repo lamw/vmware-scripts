@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2012/03/automating-ssl-certificate-expiry.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2012/03/automating-ssl-certificate-expiry.html
 
 use strict;
 use warnings;

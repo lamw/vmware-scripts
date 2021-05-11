@@ -2,8 +2,8 @@ Function Get-VMApplicationInfo {
 <#
     .DESCRIPTION Retrieves discovered applications running inside of a VM
     .NOTES  Author:  William Lam
-    .NOTES  Site:    www.virtuallyghetto.com
-    .NOTES  Reference: http://www.virtuallyghetto.com/2019/12/application-discovery-in-vsphere-with-vmware-tools-11.html
+    .NOTES  Site:    www.williamlam.com
+    .NOTES  Reference: http://www.williamlam.com/2019/12/application-discovery-in-vsphere-with-vmware-tools-11.html
     .PARAMETER VM
         VM Object
     .PARAMETER Output

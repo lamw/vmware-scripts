@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2010/09/how-to-add-splash-of-color-to-esxi-dcui.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2010/09/how-to-add-splash-of-color-to-esxi-dcui.html
 
 #example inputfile
 #
@@ -15,7 +15,7 @@
 #bgcolor:dark-grey
 #color:white
 #        Primp Industries
-#        www.virtuallyghetto.com
+#        www.williamlam.com
 #        =space=
 #color:end
 

@@ -2,7 +2,7 @@
     <#
     .SYNOPSIS Query Seure Boot setting for a VM in vSphere 6.5
     .NOTES  Author:  William Lam
-    .NOTES  Site:    www.virtuallyghetto.com
+    .NOTES  Site:    www.williamlam.com
     .PARAMETER Vm
       VM to query Secure Boot setting
     .EXAMPLE
@@ -25,7 +25,7 @@ Function Set-SecureBoot {
     <#
     .SYNOPSIS Enable/Disable Seure Boot setting for a VM in vSphere 6.5
     .NOTES  Author:  William Lam
-    .NOTES  Site:    www.virtuallyghetto.com
+    .NOTES  Site:    www.williamlam.com
     .PARAMETER Vm
       VM to enable/disable Secure Boot
     .EXAMPLE

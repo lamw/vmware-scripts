@@ -3,7 +3,7 @@
 # Website: N/A
 # Product: VMware ESXi
 # Description: Python script to configure power management policy on ESXi host
-# Reference: http://www.virtuallyghetto.com/2012/08/configuring-esxi-power-management.html
+# Reference: http://www.williamlam.com/2012/08/configuring-esxi-power-management.html
 
 import sys
 from pyVim.connect import Connect

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2015/05/quick-tip-how-to-upload-files-to-vcloud-air-on-demand-using-ovftool.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2015/05/quick-tip-how-to-upload-files-to-vcloud-air-on-demand-using-ovftool.html
 
 # Path to ovftool binary
 OVFTOOL='/Applications/VMware OVF Tool/ovftool'

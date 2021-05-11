@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware Infrastructure Navigator
 # Description: Extracting information from VIN
-# Reference: http://www.virtuallyghetto.com/2012/11/alternative-way-of-extracting-vin.html
+# Reference: http://www.williamlam.com/2012/11/alternative-way-of-extracting-vin.html
 
 VIN_RESULTS_DIR=/var/log/vadm/results
 VIN_LOG=/var/log/vadm/engine.log

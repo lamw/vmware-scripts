@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2013/11/exploring-vsphere-flash-read-cache-vfrc_18.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2013/11/exploring-vsphere-flash-read-cache-vfrc_18.html
 
 use strict;
 use warnings;

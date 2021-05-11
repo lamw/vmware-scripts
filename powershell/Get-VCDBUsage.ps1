@@ -8,8 +8,8 @@
              can also calculate the estimated downtime required for either
              migration Option 1 or 2.
 .NOTES  Author:    William Lam - @lamw
-.NOTES  Site:      www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/09/how-to-check-the-size-of-your-config-stats-events-alarms-tasks-seat-data-in-the-vcdb.html
+.NOTES  Site:      www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/09/how-to-check-the-size-of-your-config-stats-events-alarms-tasks-seat-data-in-the-vcdb.html
 .PARAMETER dbType
   mssql or oracle
 .PARAMETER connectionType

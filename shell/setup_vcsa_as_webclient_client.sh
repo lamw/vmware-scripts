@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: William Lam
-# Site: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2015/04/configuring-vcsa-6-0-as-vsphere-web-client-server-for-vsphere-5-5.html 
+# Site: www.williamlam.com
+# Reference: http://www.williamlam.com/2015/04/configuring-vcsa-6-0-as-vsphere-web-client-server-for-vsphere-5-5.html 
 
 # External SSO Server
 PSC_SERVER=sso.primp-industries.com

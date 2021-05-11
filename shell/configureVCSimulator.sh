@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Director
 # Description: Setting up VCD Simulator 
-# Reference: http://www.virtuallyghetto.com/2013/01/vcloud-director-simulator.html
+# Reference: http://www.williamlam.com/2013/01/vcloud-director-simulator.html
 
 ESXI_MAJOR_VERSION=5.1
 ESXI_FULL_VERSION=5.1.0

@@ -1,7 +1,7 @@
 # Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Script querying remote ESXi host without adding to vCenter Server
-# Reference: http://www.virtuallyghetto.com/2016/07/remotely-query-an-esxi-host-without-adding-to-vcenter-server.html
+# Reference: http://www.williamlam.com/2016/07/remotely-query-an-esxi-host-without-adding-to-vcenter-server.html
 
 Function Get-RemoteESXi {
     param(

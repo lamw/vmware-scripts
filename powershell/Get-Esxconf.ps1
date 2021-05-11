@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS Remoting collecting ESXi configuration files using vCenter Server
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/06/using-the-vsphere-api-to-remotely-collect-esxi-configuration-files.html
+.NOTES  Site:    www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/06/using-the-vsphere-api-to-remotely-collect-esxi-configuration-files.html
 .PARAMETER Vmhost
   ESXi host
 .EXAMPLE

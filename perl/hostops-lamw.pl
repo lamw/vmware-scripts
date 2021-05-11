@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2010/06/script-hostops-lamwpl.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2010/06/script-hostops-lamwpl.html
 
 use strict;
 use warnings;

@@ -2,7 +2,7 @@
 :: # Website: www.virtuallyghetto
 :: # Product: VMware Site Recovery Manager 5.8
 :: # Description: Script to automate install SRM 5.8 w/embedded vPostgres DB
-:: # Reference: http://www.virtuallyghetto.com/2014/10/automating-the-silent-installation-of-site-recovery-manager-5-8-wembedded-vpostgres-db.html
+:: # Reference: http://www.williamlam.com/2014/10/automating-the-silent-installation-of-site-recovery-manager-5-8-wembedded-vpostgres-db.html
 
 @ECHO off
 

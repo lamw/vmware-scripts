@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Director
 # Description: Shell script to enable promiscuous & forged transmit mode for VDS in VCNS
-# Reference: http://www.virtuallyghetto.com/2013/05/how-to-enable-nested-esxi-using-vxlan.html
+# Reference: http://www.williamlam.com/2013/05/how-to-enable-nested-esxi-using-vxlan.html
 
 if [ $# -ne 3 ] ;then
 	echo -e "\nUsage: $0 VCNS_IP VDS_MOREF VDS_MTU"

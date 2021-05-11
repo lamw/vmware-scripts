@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 # Script to build ghettoVCB VIB using VIB Author (can use with lamw/vibauthor Docker Container)
 
 GVCB_REPO=https://github.com/lamw/ghettoVCB.git

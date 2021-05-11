@@ -1,7 +1,7 @@
 # Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Script demonstrating vSphere MOB Automation using PowerShell
-# Reference: http://www.virtuallyghetto.com/2016/07/how-to-automate-vsphere-mob-operations-using-powershell.html
+# Reference: http://www.williamlam.com/2016/07/how-to-automate-vsphere-mob-operations-using-powershell.html
 
 $vc_server = "192.168.1.51"
 $vc_username = "administrator@vghetto.local"

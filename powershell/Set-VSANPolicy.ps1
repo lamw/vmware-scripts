@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS  Applies a VSAN VM Storage Policy across a list of Virtual Machines
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .EXAMPLE
   PS> Set-VSANPolicy -listofvms $arrayofvmnames -policy $vsanpolicyname
 #>

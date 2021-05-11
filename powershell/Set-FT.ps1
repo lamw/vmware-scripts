@@ -1,13 +1,13 @@
 ﻿# Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Configure SMP-FT for a Virtual Machine in vSphere 6.0
-# Reference: http://www.virtuallyghetto.com/2016/02/new-vsphere-6-0-api-for-configuring-smp-ft.html
+# Reference: http://www.williamlam.com/2016/02/new-vsphere-6-0-api-for-configuring-smp-ft.html
 
 <#
 .SYNOPSIS  Configure SMP-FT for a Virtual Machine
 .DESCRIPTION The function will allow you to enable/disable SMP-FT for a Virtual Machine
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .PARAMETER Vmname
   Virtual Machine object to perform SMP-FT operation
 .PARAMETER Operation

@@ -28,9 +28,9 @@
 # SUCH DAMAGE.
 
 # William Lam
-# http://www.virtuallyghetto.com/
+# http://www.williamlam.com/
 # Product: VMware vCloud Director
-# Reference  http://www.virtuallyghetto.com/2012/01/vcloud-director-report-100.html
+# Reference  http://www.williamlam.com/2012/01/vcloud-director-report-100.html
 */
 require_once dirname(__FILE__) . '/config.php';
 
@@ -144,7 +144,7 @@ buildHtmlHeader($reportTitle,$serverName);
 echo "\nGenerating " . $reportTitle . " " . $report . "\" ...\n";
 echo "Report User Type: \"" . $type . "\"\n";
 echo "\nThis can take up to a few minutes depending on the size of your environment.\n";
-echo "Get a cup of coffee/tea/beer and check out http://www.virtuallyghetto.com\n\n";
+echo "Get a cup of coffee/tea/beer and check out http://www.williamlam.com\n\n";
 
 if($type == "system") {
 	getOrganizationSummary();
@@ -2131,9 +2131,9 @@ function buildHtmlFooter() {
 </div>
 </div>
 <div class="author"><span class="author"Author: <b><a href="http://www.linkedin.com/in/lamwilliam">William Lam</a></b><br/>
-<a href="http://www.virtuallyghetto.com">http://www.virtuallyghetto.com</a><br/>
-Generated using: <b><a href="http://www.virtuallyghetto.com/2012/01/vcloud-director-report-100.html">vmwarevCloudReport.php</a></b><br/>
-Support us by donating <b><a href="http://www.virtuallyghetto.com/p/how-you-can-help.html">here</a></b><br/>
+<a href="http://www.williamlam.com">http://www.williamlam.com</a><br/>
+Generated using: <b><a href="http://www.williamlam.com/2012/01/vcloud-director-report-100.html">vmwarevCloudReport.php</a></b><br/>
+Support us by donating <b><a href="http://www.williamlam.com/p/how-you-can-help.html">here</a></b><br/>
 Primp Industries&#0153;
 </span>
 </div>

@@ -1,7 +1,7 @@
 # Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Script to configure per-VMDK IOPS Reservations on a VM in vSphere 6.0
-# Reference: http://www.virtuallyghetto.com/2015/05/configuring-per-vmdk-iops-reservations-in-vsphere-6-0
+# Reference: http://www.williamlam.com/2015/05/configuring-per-vmdk-iops-reservations-in-vsphere-6-0
 
 $server = Connect-VIServer -Server 192.168.1.60 -User administrator@vghetto.local -Password VMware1!
 

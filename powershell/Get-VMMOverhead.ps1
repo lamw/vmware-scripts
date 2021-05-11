@@ -1,14 +1,14 @@
 ﻿# Author: William Lam
-# Blog: www.virtuallyghetto.com
+# Blog: www.williamlam.com
 # Description: Retrieves the VM memory overhead for given VM
-# Reference: http://www.virtuallyghetto.com/2015/12/easily-retrieve-vm-memory-overhead-using-the-vsphere-6-0-api.html
+# Reference: http://www.williamlam.com/2015/12/easily-retrieve-vm-memory-overhead-using-the-vsphere-6-0-api.html
 
 <#
 .SYNOPSIS  Returns VM Ovehead a VM
 .DESCRIPTION The function will return VM memory overhead
     for a given Virtual Machine
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .PARAMETER Vm
   Virtual Machine object to query VM memory overhead
 .EXAMPLE

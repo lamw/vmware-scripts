@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vSphere
 # Description: pyvmomi script that generates ESXi support bundles running from VCSA using vCenter Alarm
-# Reference: http://www.virtuallyghetto.com/2016/06/how-to-run-a-script-from-a-vcenter-alarm-action-in-the-vcsa.html
+# Reference: http://www.williamlam.com/2016/06/how-to-run-a-script-from-a-vcenter-alarm-action-in-the-vcsa.html
 
 import atexit
 import argparse

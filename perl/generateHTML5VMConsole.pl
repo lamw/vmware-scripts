@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2013/09/how-to-generate-pre-authenticated-html5.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2013/09/how-to-generate-pre-authenticated-html5.html
 
 use strict;
 use warnings;

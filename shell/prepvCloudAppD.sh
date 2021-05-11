@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Application Director
 # Description: Script to disable firstboot configs to allow for unattended installs & configures AppD license
-# Reference: http://www.virtuallyghetto.com/2014/01/automating-vcloud-application-director.html
+# Reference: http://www.williamlam.com/2014/01/automating-vcloud-application-director.html
 
 APPD_LICENSE=1234567
 APPD_VMDK_MOUNT_HOME=/mnt

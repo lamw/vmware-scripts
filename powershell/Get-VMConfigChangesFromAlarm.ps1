@@ -4,7 +4,7 @@
     for a given Virtual Machine trigged by vCenter Server Alarm based on
     VmReconfigureEvent
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
+.NOTES  Site:    www.williamlam.com
 .NOTES  Comment: Modified example from Lucd's blog post http://www.lucd.info/2009/12/18/events-part-3-auditing-vm-device-changes/
 .PARAMETER Moref
   Virtual Machine MoRef ID that generated vCenter Server Alarm

@@ -1,6 +1,6 @@
 #!/bin/ash
 # Author: William Lam
-# Site: www.virtuallyghetto.com
+# Site: www.williamlam.com
 # Description: Check the health of the installed media for ESXi
 
 ESXI_BOOT_DEVICE_OUTPUT=/tmp/esxi_boot_device

@@ -1,7 +1,7 @@
 # Author: William Lam
-# Site: www.virtuallyghetto.com
+# Site: www.williamlam.com
 # Description: Script to automate the installation of vRA 7 IaaS Mgmt Agent
-# Reference: http://www.virtuallyghetto.com/2016/02/automating-vrealize-automation-7-simple-minimal-part-2-vra-iaas-agent-deployment.html
+# Reference: http://www.williamlam.com/2016/02/automating-vrealize-automation-7-simple-minimal-part-2-vra-iaas-agent-deployment.html
 
 # Hostname or IP of vRA Appliance
 $VRA_APPLIANCE_HOSTNAME = "vra-appliance.primp-industries.com"

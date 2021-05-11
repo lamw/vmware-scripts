@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 
 use 5.10.0;
 use strict;
@@ -5340,7 +5340,7 @@ sub getSnapshotTree {
 
 sub startReport {
 	print "Generating VMware vSphere Health Report v$version \"$report\" ...\n\n";
-	print "This can take a few minutes depending on the size of your environment. \nGet a cup of coffee/tea/beer and check out http://www.virtuallyghetto.com\n\n";
+	print "This can take a few minutes depending on the size of your environment. \nGet a cup of coffee/tea/beer and check out http://www.williamlam.com\n\n";
 
 	if($demo eq "yes") {
 		$host_name = "DEMO-HOST.primp-industries.com";
@@ -5512,9 +5512,9 @@ HTML_START
 sub endReport {
 	my $html_end = <<HTML_END;
 <div class="author"><span class="author"Author: <b><a href="http://www.linkedin.com/in/lamwilliam">William Lam</a></b><br/>
-<a href="http://www.virtuallyghetto.com">http://www.virtuallyghetto.com</a><br/>
+<a href="http://www.williamlam.com">http://www.williamlam.com</a><br/>
 Generated using: <b><a href="http://communities.vmware.com/docs/DOC-9842">vmwarevSphereHealthCheck.pl</a></b><br/>
-Support us by donating <b><a href="http://www.virtuallyghetto.com/p/how-you-can-help.html">here</a></b><br/>
+Support us by donating <b><a href="http://www.williamlam.com/p/how-you-can-help.html">here</a></b><br/>
 Primp Industries&#0153;
 </span>
 </div>

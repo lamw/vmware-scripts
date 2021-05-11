@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2013/08/automate-enabling-vm-storage-profiles.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2013/08/automate-enabling-vm-storage-profiles.html
 
 use strict;
 use warnings;

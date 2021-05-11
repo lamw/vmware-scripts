@@ -1,7 +1,7 @@
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 # Ansible playbook to setup Kubernetes Cluster running on a 2-Node VMware Photon OS
-# http://www.virtuallyghetto.com/2015/11/using-ansible-to-provision-a-kubernetes-cluster-on-vmware-photon.html
+# http://www.williamlam.com/2015/11/using-ansible-to-provision-a-kubernetes-cluster-on-vmware-photon.html
 
 # Tasks for both Master & Minon nodes
 - hosts: all

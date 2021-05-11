@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# www.virtuallyghetto.com
+# www.williamlam.com
 # Script to backup VCSA's vPostgres DB to Amazon S3 
 
 # Path to vPostgres backup script (download from http://kb.vmware.com/kb/2091961)

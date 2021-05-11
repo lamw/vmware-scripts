@@ -4,7 +4,7 @@
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
 	===========================================================================
     .SYNOPSIS
@@ -44,7 +44,7 @@ Function Remove-VMGuestInfo {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
 	===========================================================================
     .SYNOPSIS

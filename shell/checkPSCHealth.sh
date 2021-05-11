@@ -1,8 +1,8 @@
 #!/bin/bash
 # Author: William Lam
-# Site: www.virtuallyghetto.com
+# Site: www.williamlam.com
 # Description: Poor man's script to check PSC connectivity /websso & perform automatic failover to secondary PSC
-# Reference: http://www.virtuallyghetto.com/2015/12/how-to-automatically-repoint-failover-vcsa-to-another-replicated-platform-services-controller-psc.html
+# Reference: http://www.williamlam.com/2015/12/how-to-automatically-repoint-failover-vcsa-to-another-replicated-platform-services-controller-psc.html
 
 # IP/Hostname of Primary PSC
 PRIMARY_PSC=psc-01.primp-industries.com
@@ -17,7 +17,7 @@ NUMBER_CHECKS=3
 SLEEP_TIME=30
 
 # Email when failover occurs
-EMAIL_ADDRESS=lamw@virtuallyghetto.com
+EMAIL_ADDRESS=lamw@williamlam.com
 
 ### DO NOT MODIFY BEYOND HERE ###
 

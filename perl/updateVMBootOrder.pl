@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 # Author: William Lam
-# Website: www.virtuallyghetto.com
-# Reference: http://www.virtuallyghetto.com/2011/07/2-hidden-virtual-machine-gems-in.html
+# Website: www.williamlam.com
+# Reference: http://www.williamlam.com/2011/07/2-hidden-virtual-machine-gems-in.html
 
 use strict;
 use warnings;
@@ -179,6 +179,6 @@ vSphere 5.0
 
 =head1 AUTHORS
 
-William Lam, http://www.virtuallyghetto.com/
+William Lam, http://www.williamlam.com/
 
 =cut

@@ -1,9 +1,9 @@
 # William Lam
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware VSAN
 # RVC script for automating the configuration of a VSAN Stretched Cluster
-# Reference: http://www.virtuallyghetto.com/2015/10/automating-full-configuration-of-a-vsan-stretched-cluster-using-rvc.html
+# Reference: http://www.williamlam.com/2015/10/automating-full-configuration-of-a-vsan-stretched-cluster-using-rvc.html
 
 datacenter_name = "vGhetto-Datacenter"
 vsan_cluster_name = "vGhetto-VSAN-Cluster"

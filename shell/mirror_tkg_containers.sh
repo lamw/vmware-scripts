@@ -1,7 +1,7 @@
 #!/bin/bash
 # Modified script from (@fabiorapposelli) to mirror TKG 1.0 (GA) containers into local Harbor Registry
 
-REGISTRY_URL=registry.virtuallyghetto.com
+REGISTRY_URL=registry.williamlam.com
 TKG_CLI_PATH=/usr/local/bin/tkg
 
 if [ ! -e ${TKG_CLI_PATH} ]; then

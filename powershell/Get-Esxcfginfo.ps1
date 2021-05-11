@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS Remoting collecting esxcfg-info from an ESXi host using vCenter Server
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/06/using-the-vsphere-api-to-remotely-collect-esxi-esxcfg-info.html
+.NOTES  Site:    www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/06/using-the-vsphere-api-to-remotely-collect-esxi-esxcfg-info.html
 .PARAMETER Vmhost
   ESXi host
 .EXAMPLE

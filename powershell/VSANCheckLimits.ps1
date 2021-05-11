@@ -3,13 +3,13 @@
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
         This function demonstrates the use of vSAN Management API to retrieve
         the exact same information provided by the RVC command "vsan.check_limits"
-        Please see http://www.virtuallyghetto.com/2017/06/how-to-convert-vsan-rvc-commands-into-powercli-andor-other-vsphere-sdks.html for more details
+        Please see http://www.williamlam.com/2017/06/how-to-convert-vsan-rvc-commands-into-powercli-andor-other-vsphere-sdks.html for more details
     .PARAMETER Cluster
         The name of a vSAN Cluster
     .EXAMPLE

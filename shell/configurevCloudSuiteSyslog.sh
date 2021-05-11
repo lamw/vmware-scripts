@@ -1,16 +1,16 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Suite
 # Description: Forwarding logs from vCloud Suite
-# Reference: http://www.virtuallyghetto.com/2013/06/forwarding-logs-from-vcloud-suite-to.html
+# Reference: http://www.williamlam.com/2013/06/forwarding-logs-from-vcloud-suite-to.html
 
 UNIQUE_CONFIGURE_STRING="# Configured using vCloud Suite Syslog Configuration Script by William Lam"
 SYSLOG_NG_CONF=/etc/syslog-ng/syslog-ng.conf
 ALREADY_CONFIGURE_STRING="This host has already been configured before, please take a look at ${SYSLOG_NG_CONF}"
 
 usage() {
-	echo -e "\nvCloud Suite Syslog Configuration Script by William Lam (www.virtuallyghetto.com)"
+	echo -e "\nvCloud Suite Syslog Configuration Script by William Lam (www.williamlam.com)"
 	echo -e "\n\t$0 [VMWARE-SOLUTION] [REMOTE-SYSLOG]\n"
 	echo -e "\tVMware Solutions"
 	echo -e "\t\tvin"

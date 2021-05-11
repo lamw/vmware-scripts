@@ -1,6 +1,6 @@
 #!/bin/bash
 # William Lam
-# http://www.virtuallyghetto.com/
+# http://www.williamlam.com/
 # Script leveraging vifs to download .vmx configuration files
 
 if [[ $# -ne 5 ]] && [[ $# -ne 6 ]]; then

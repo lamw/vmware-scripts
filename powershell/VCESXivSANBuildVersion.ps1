@@ -4,7 +4,7 @@ Function Get-VCVersion {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
@@ -222,7 +222,7 @@ Function Get-ESXiVersion {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION
@@ -422,7 +422,7 @@ Function Get-VSANVersion {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
         ===========================================================================
     .DESCRIPTION

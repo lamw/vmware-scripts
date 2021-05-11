@@ -22,7 +22,7 @@ Function Set-VMKeystrokes {
     ===========================================================================
      Created by:    William Lam
      Organization:  VMware
-     Blog:          www.virtuallyghetto.com
+     Blog:          www.williamlam.com
      Twitter:       @lamw
     ===========================================================================
     .PARAMETER VMName

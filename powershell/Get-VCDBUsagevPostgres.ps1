@@ -4,8 +4,8 @@
 .DESCRIPTION Script that performs SQL Query against a VCDB running
             on a vPostgres DB
 .NOTES  Author:    William Lam - @lamw
-.NOTES  Site:      www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/10/how-to-check-the-size-of-your-config-seat-data-in-the-vcdb-in-vpostgres.html
+.NOTES  Site:      www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/10/how-to-check-the-size-of-your-config-seat-data-in-the-vcdb-in-vpostgres.html
 .PARAMETER dbServer
    VCDB Server
 .PARAMETER dbName

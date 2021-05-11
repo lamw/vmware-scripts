@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vMA
 # Description: Script to install RVC
-# Reference: http://www.virtuallyghetto.com/2011/04/how-to-install-ruby-vsphere-console-on.html
+# Reference: http://www.williamlam.com/2011/04/how-to-install-ruby-vsphere-console-on.html
 
 RUBY_REPO=ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7.tar.gz
 RUBY_GEM_REPO=http://rubyforge.org/frs/download.php/74619/rubygems-1.7.2.tgz

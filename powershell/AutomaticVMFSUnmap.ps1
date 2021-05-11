@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS Retrieve the current VMFS Unmap priority for VMFS 6 datastore
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/10/configure-new-automatic-space-reclamation-vmfs-unmap-using-vsphere-6-5-apis.html
+.NOTES  Site:    www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/10/configure-new-automatic-space-reclamation-vmfs-unmap-using-vsphere-6-5-apis.html
 .PARAMETER Datastore
   VMFS 6 Datastore to enable or disable VMFS Unamp
 .EXAMPLE
@@ -31,8 +31,8 @@ Function Get-VMFSUnmap {
 <#
 .SYNOPSIS Configure the VMFS Unmap priority for VMFS 6 datastore
 .NOTES  Author:  William Lam
-.NOTES  Site:    www.virtuallyghetto.com
-.NOTES  Reference: http://www.virtuallyghetto.com/2016/10/configure-new-automatic-space-reclamation-vmfs-unmap-using-vsphere-6-5-apis.html
+.NOTES  Site:    www.williamlam.com
+.NOTES  Reference: http://www.williamlam.com/2016/10/configure-new-automatic-space-reclamation-vmfs-unmap-using-vsphere-6-5-apis.html
 .PARAMETER Datastore
   VMFS 6 Datastore to enable or disable VMFS Unamp
 .EXAMPLE

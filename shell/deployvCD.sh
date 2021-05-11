@@ -1,9 +1,9 @@
 #!/bin/bash
 # Author: William Lam
-# Website: www.virtuallyghetto.com
+# Website: www.williamlam.com
 # Product: VMware vCloud Director
 # Description: Wrapper script to deploy VMware vCloud Director Virtual Apppliance
-# Reference: http://www.virtuallyghetto.com/2011/11/unattended-deployment-of-vcloud_18.html
+# Reference: http://www.williamlam.com/2011/11/unattended-deployment-of-vcloud_18.html
 
 # Configurations 
 
