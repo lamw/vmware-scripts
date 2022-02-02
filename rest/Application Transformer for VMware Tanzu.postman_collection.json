@@ -1,0 +1,301 @@
+{
+	"info": {
+		"_postman_id": "d08565c9-e8fb-4ae4-83aa-16c798bec254",
+		"name": "Application Transformer for VMware Tanzu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Login Session",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"// pm.globals.set(\"access_token\", jsonData.access_token);",
+							"postman.setEnvironmentVariable(\"app_transformer_session_token\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{app_transformer_username}}\",\n    \"password\": \"{{app_transformer_password}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/session",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all vCenter Servers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/vcenters",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"vcenters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all Credentials",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/serviceaccounts",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"serviceaccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new Credential",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"alias\": \"super-secure-password\",\n  \"username\": \"foo\",\n  \"password\": \"bar\"\n}"
+				},
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/serviceaccounts",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"serviceaccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all Virtual Machines",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/virtualmachines",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"virtualmachines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Associate credential with a Virtual Machine",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/serviceaccounts//virtualmachines",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"serviceaccounts",
+						"",
+						"virtualmachines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all Applications",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/applications",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all Components",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/components",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"components"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all Component Signatures",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{app_transformer_session_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{app_transformer_fqdn}}/discovery/component-list",
+					"protocol": "https",
+					"host": [
+						"{{app_transformer_fqdn}}"
+					],
+					"path": [
+						"discovery",
+						"component-list"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
