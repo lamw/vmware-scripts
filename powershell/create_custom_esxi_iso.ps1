@@ -43,6 +43,8 @@ $spec | ConvertTo-Json | Set-Content -NoNewline -Path $ESXICustomIsoSpec
 
 # Build Depo List
 $ESXIDepots = '"' + $(($ESXIDriverPaths+=$ESXIBaseImagePath) -join '","') + '"'
+$ESXICustomIsoSpec = '"' + $ESXICustomIsoSpec + '"'
+$ESXICustomIsoPath = '"' + $ESXICustomIsoPath + '"'
 
 # Create New Custom ISO
 Write-Host -Foreground green "`nCreating Custom ESXi ISO and saving to ${ESXICustomIsoPath} ...`n"
