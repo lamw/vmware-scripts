@@ -352,7 +352,7 @@ def make_vcsp(lib_name, lib_path, md5_enabled):
         json.dump(_make_items(items, lib_version), f, indent=2)
 
 
-def make_vcsp_s3(lib_name, lib_path, skip_cert):
+def make_vcsp_s3(lib_name, lib_path, skip_cert, aws_default_region = None):
     """
     lib_path is the library folder path on the bucket with pattern: [bucket-name]/[object-folder-path]
 
@@ -379,7 +379,10 @@ def make_vcsp_s3(lib_name, lib_path, skip_cert):
     lib_folder_path = paths[1]
 
     s3 = boto3.resource("s3")
-    s3_client = boto3.client('s3')
+    if aws_default_region is None:
+        s3_client = boto3.client('s3')
+    else:
+        s3_client = boto3.client('s3',region_name=aws_default_region)
 
     # check if the given s3 bucket exists
     try:
