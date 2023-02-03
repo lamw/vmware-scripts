@@ -11,19 +11,52 @@ $mob_url = "https://$vc_server/mob/?moid=VpxSettings&method=queryView"
 $secpasswd = ConvertTo-SecureString $vc_password -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential($vc_username, $secpasswd)
 
-# Ingore SSL Warnings
-add-type -TypeDefinition  @"
-        using System.Net;
-        using System.Security.Cryptography.X509Certificates;
-        public class TrustAllCertsPolicy : ICertificatePolicy {
-            public bool CheckValidationResult(
-                ServicePoint srvPoint, X509Certificate certificate,
-                WebRequest request, int certificateProblem) {
+$Code = @'
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+
+namespace CertificateCapture
+{
+    public class Utility
+    {
+        public static Func<HttpRequestMessage,X509Certificate2,X509Chain,SslPolicyErrors,Boolean> ValidationCallback =
+            (message, cert, chain, errors) => {
+                var newCert = new X509Certificate2(cert);
+                var newChain = new X509Chain();
+                newChain.Build(newCert);
+                CapturedCertificates.Add(new CapturedCertificate(){
+                    Certificate =  newCert,
+                    CertificateChain = newChain,
+                    PolicyErrors = errors,
+                    URI = message.RequestUri
+                });
                 return true;
-            }
-        }
-"@
-[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+            };
+        public static List<CapturedCertificate> CapturedCertificates = new List<CapturedCertificate>();
+    }
+
+    public class CapturedCertificate
+    {
+        public X509Certificate2 Certificate { get; set; }
+        public X509Chain CertificateChain { get; set; }
+        public SslPolicyErrors PolicyErrors { get; set; }
+        public Uri URI { get; set; }
+    }
+}
+'@
+if ($PSEdition -ne 'Core'){
+    Add-Type -AssemblyName System.Net.Http
+    if (-not ("CertificateCapture" -as [type])) {
+        Add-Type $Code -ReferencedAssemblies System.Net.Http
+    }
+} else {
+    if (-not ("CertificateCapture" -as [type])) {
+        Add-Type $Code
+    }
+}
 
 # Initial login to vSphere MOB using GET and store session using $vmware variable
 $results = Invoke-WebRequest -Uri $mob_url -SessionVariable vmware -Credential $credential -Method GET
