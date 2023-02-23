@@ -1,0 +1,93 @@
+{
+	"domainName": "sfo-w01",
+	"orgName": "WilliamLam",
+	"clusterSpec": [{
+		"clusterName": "sfo-w01-cl01",
+		"datastoreSpec": {
+			"vsanDatastoreSpec": {
+				"ftt": 0,
+				"license": "FILL_ME_IN_VCF_VSAN_LICENSE_KEY",
+				"name": "sfo-w01-cl01-ds-vsan01",
+				"dedupAndCompressionEnabled": false
+			}
+		},
+		"highAvailabilitySpec": {
+			"enabled": false
+		},
+		"nsxTClusterSpec": {
+			"geneveVlanId": "0",
+			"ipAddressPoolSpec": null
+		},
+		"hostSpec": {
+			"hostSystemSpec": [
+				{
+				"id": "FILL_ME_IN_COMMISSION_HOST_ID",
+				"vmnicToVdsNameMap": {
+					"vmnic0": "sfo-w01-vcenter-sfo-w01-cl01-vds01",
+					"vmnic1": "sfo-w01-vcenter-sfo-w01-cl01-vds01"
+				},
+				"license": "FILL_ME_IN_VCF_ESXI_LICENSE_KEY"
+			}]
+		},
+		"vdsSpec": [{
+			"name": "sfo-w01-vcenter-sfo-w01-cl01-vds01",
+			"portGroupSpec": [
+				{
+					"name": "sfo-w01-vcenter-sfo-w01-cl01-vds01-management",
+					"transportType": "MANAGEMENT"
+				},
+				{
+					"name": "sfo-w01-vcenter-sfo-w01-cl01-vds01-vmotion",
+					"transportType": "VMOTION"
+				},
+				{
+					"name": "sfo-w01-vcenter-sfo-w01-cl01-vds01-vsan",
+					"transportType": "VSAN"
+				}
+			]
+		}]
+	}],
+	"nsxVConfigurationSpec": null,
+	"nsxTConfigurationSpec": {
+		"nsxtManagerSize": "small",
+		"nsxtLicense": "FILL_ME_IN_VCF_NSX_LICENSE_KEY",
+		"nsxtManagerSpec": {
+			"name": "vcf-w01-nsx01a",
+			"ipAddress": "192.168.30.189",
+			"dnsName": "vcf-w01-nsx01a.primp-industries.local",
+			"gateway": "192.168.30.1",
+			"subnetMask": "255.255.255.0"
+		},
+		"nsxtManagerAdminPassword": "VMware123!VMware123!",
+		"vip": "192.168.30.188",
+		"vipFqdn": "vcf-w01-nsx01.primp-industries.local",
+		"additionalManagerNodesSpec": [
+			{
+				"name": "vcf-w01-nsx01b",
+				"ipAddress": "192.168.30.190",
+				"dnsName": "vcf-w01-nsx01b.primp-industries.local",
+				"gateway": "192.168.30.1",
+				"subnetMask": "255.255.255.0"
+			},
+			{
+				"name": "vcf-w01-nsx01c",
+				"ipAddress": "192.168.30.191",
+				"dnsName": "vcf-w01-nsx01c.primp-industries.local",
+				"gateway": "192.168.30.1",
+				"subnetMask": "255.255.255.0"
+			}
+		]
+	},
+	"subscriptionLicense": null,
+	"vcenterSpec": {
+		"vcenterConfigurationSpec": {
+			"name": "vcf-w01-vc01",
+			"ipAddress": "192.168.30.187",
+			"dnsName": "vcf-w01-vc01.primp-industries.local",
+			"gateway": "192.168.30.1",
+			"subnetMask": "255.255.255.0"
+		},
+		"rootPassword": "VMware1!",
+		"datacenterName": "sfo-w01"
+	}
+}
