@@ -1,0 +1,96 @@
+{
+  "timestamp": 1700034248,
+  "jsonUpdatedTime": "November 14, 2023, 11:44 PM PST",
+  "totalCount": 2,
+  "supportedReleases": [
+    "ESXi 8.0 U2"
+  ],
+  "eula": {},
+  "data": {
+    "controller": [
+      {
+        "id": 40493,
+        "releases": {
+          "ESXi 8.0 U2": {
+            "nvme_pcie": {
+              "1.2.4.11-1vmw.802.0.0.22380479": {
+                "type": "inbox",
+                "queueDepth": 85,
+                "firmwares": [
+                  {
+                    "firmware": "1.0",
+                    "vsanSupport": [
+                      "Hybrid:Pass-Through",
+                      "All Flash:Pass-Through",
+                      "vSAN ESA"
+                    ]
+                  }
+                ]
+              }
+            },
+            "vsanSupport": [
+              "Hybrid:Pass-Through",
+              "All Flash:Pass-Through"
+            ]
+          }
+        }
+      }
+    ],
+    "ssd": [
+      {
+        "id": 7711,
+        "did": "7f0",
+        "vid": "15ad",
+        "ssid": "7f0",
+        "svid": "15ad",
+        "vendor": "NVMe",
+        "model": "VMware Virtual NVMe Disk",
+        "devicetype": "NVMe",
+        "partnername": "NVMe",
+        "productid": "VMware Virtual NVMe Disk",
+        "partnumber": "NVMe____VMware_Virtual_NVMe_Disk________________VMWare_NVME_0000____00000001",
+        "capacity": 16384,
+        "vcglink": "https://williamlam.com/homelab",
+        "releases": {
+          "ESXi 8.0 U2": {
+            "vsanSupport": [
+              "All Flash:",
+              "vSANESA-SingleTier"
+            ],
+            "nvme_pcie": {
+              "1.2.4.11-1vmw.802.0.0.22380479": {
+                "firmwares": [
+                  {
+                    "firmware": "1.0",
+                    "vsanSupport": {
+                      "tier": [
+                        "AF-Cache",
+                        "vSANESA-Singletier"
+                      ],
+                      "mode": [
+                        "vSAN",
+                        "vSAN ESA"
+                      ]
+                    }
+                  }
+                ],
+                "type": "inbox"
+              }
+            }
+          }
+        },
+        "vsanSupport": {
+          "mode": [
+            "vSAN",
+            "vSAN ESA"
+          ],
+          "tier": [
+            "vSANESA-Singletier",
+            "AF-Cache"
+          ]
+        }
+      }
+    ],
+    "hdd": []
+  }
+}
