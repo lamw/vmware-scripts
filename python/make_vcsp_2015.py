@@ -101,7 +101,7 @@ def _dir2item(path, directory, md5_enabled):
                 folder = new_folder
             if md5_enabled:
                 m.update(os.path.dirname(p).encode('utf-8'))
-            if ".ovf" in p:
+            if ".ovf" in p or ".ova" in p:
                 vcsp_type = "vcsp.ovf"
             size = os.path.getsize(p)
             href = "%s/%s" % (directory, f)

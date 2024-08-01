@@ -151,7 +151,7 @@ def _dir2item(path, directory, md5_enabled, lib_id):
                 folder = new_folder
             if md5_enabled:
                 m.update(os.path.dirname(p).encode('utf-8'))
-            if ".ovf" in p:
+            if ".ovf" in p or ".ova" in p:
                 vcsp_type = VCSP_TYPE_OVF
                 # TODO: ready ovf descriptor for type metadata
                 is_vapp = "false"
@@ -203,7 +203,7 @@ def _dir2item_s3(s3_client, bucket_name, path, item_name, skip_cert, lib_id, old
         if file_path == path or file_path.endswith("item.json"):
             continue
         file_name = file_path.split("/")[-1]
-        if ".ovf" in file_name:
+        if ".ovf" in file_name or ".ova" in file_name:
             vcsp_type = VCSP_TYPE_OVF
             # check if the existing item json already contains "type-metadata" metadata, if not
             # download the OVF file and parse the descriptor for metadata and search for "<VirtualSystemCollection"
