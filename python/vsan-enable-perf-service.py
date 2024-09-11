@@ -33,7 +33,7 @@ def GetArgs():
     """
 
     parser = argparse.ArgumentParser(
-        description='Process args for VSAN SDK sample application')
+        description='Process args for VSAN vSAN Performance Service Enabler')
     parser.add_argument('-s', '--host', required=True, action='store',
                         help='Remote host to connect to')
     parser.add_argument('-o', '--port', type=int, default=443, action='store',
@@ -80,12 +80,14 @@ def main():
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
 
+    # Connect to VC/ESXi
     si = SmartConnect(host=args.host,
                     user=args.user,
                     pwd=password,
                     port=int(args.port),
                     sslContext=context)
 
+    # Disconnect upon script exit
     atexit.register(Disconnect, si)
 
     # for detecting whether the host is VC or ESXi
@@ -104,6 +106,7 @@ def main():
         vcMos = vsanapiutils.GetVsanVcMos(si._stub, context=context, version=apiVersion)
         vccs = vcMos['vsan-cluster-config-system']
 
+        # Get cluster and check its existence
         cluster = get_obj(si.content,
                         [vim.ClusterComputeResource], args.clusterName)
 
@@ -112,12 +115,25 @@ def main():
                 args.host))
             return -1
 
-        profileSpec = vim.vm.DefaultProfileSpec()
-        perfSpec = vim.cluster.VsanPerfsvcConfig(enabled=True,profile=profileSpec)
+        # Prepare specifications for how to configure the cluster
+        perfSpec = vim.cluster.VsanPerfsvcConfig(enabled=True)
         vsanReconfigSpec = vim.vsan.ReconfigSpec(perfsvcConfig=perfSpec)
 
-        results = vccs.VsanClusterReconfig(cluster=cluster,vsanReconfigSpec=vsanReconfigSpec)
-        print(results)
+        # Reconfigure the vSAN cluster
+        vsanTask = vccs.VsanClusterReconfig(cluster=cluster, vsanReconfigSpec=vsanReconfigSpec)
+        print('Task ID: %s' % vsanTask)
+
+        # Wait for task completion
+        print('Waiting for task to complete...')
+        vsanapiutils.WaitForTasks([vsanTask], si)
+
+        # Check if task was successful
+        print('Enabling vSAN PerfService task finished with status: %s' % vsanTask.info.state)
+        if vsanTask.info.state == 'success':
+            sys.exit(0)
+        else:
+            sys.exit(1)
+
 
 # Start program
 if __name__ == "__main__":
