@@ -130,7 +130,7 @@ foreach ($storageDevice in $storageDevices) {
 }
 
 # Retrieve the latest vSAN HCL jsonUpdatedTime
-$results = Invoke-WebRequest -Uri 'https://vsanhealth.vmware.com/products/v1/bundles/lastupdatedtime' -Headers @{'x-vmw-esp-clientid'='vsan-hcl-vcf-2023'}
+$results = Invoke-WebRequest -Uri 'https://partnerweb.vmware.com/service/vsan/all.json?lastupdatedtime' -Headers @{'x-vmw-esp-clientid'='vsan-hcl-vcf-2023'}
 # Parse out content between '{...}'
 $pattern = '\{(.+?)\}'
 $matched = ([regex]::Matches($results, $pattern)).Value
