@@ -28,10 +28,10 @@ foreach ($storageDevice in $storageDevices) {
                 $pciDevice = $pciDevices | where {$_.Id -eq $storageAdapter.Pci}
 
                 # Convert from Dec to Hex
-                $vid = ('{0:x}' -f $pciDevice.VendorId).ToLower()
-                $did = ('{0:x}' -f $pciDevice.DeviceId).ToLower()
-                $svid = ('{0:x}' -f $pciDevice.SubVendorId).ToLower()
-                $ssid = ('{0:x}' -f $pciDevice.SubDeviceId).ToLower()
+                $vid = ('{0:x4}' -f $pciDevice.VendorId).ToLower()
+                $did = ('{0:x4}' -f $pciDevice.DeviceId).ToLower()
+                $svid = ('{0:x4}' -f $pciDevice.SubVendorId).ToLower()
+                $ssid = ('{0:x4}' -f $pciDevice.SubDeviceId).ToLower()
                 $combined = "${vid}:${did}:${svid}:${ssid}"
 
                 if($storageAdapter.Driver -eq "nvme_pcie" -or $storageAdapter.Driver -eq "pvscsi") {
