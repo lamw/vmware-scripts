@@ -1,7 +1,7 @@
 <#
-    .DESCRIPTION Sizing calculator for VMware Cloud Foundation (VCF) and VMware vSphere Foundation (VVF)
+    .DESCRIPTION Retrieves vLCM vSphere Lifecycle Management (vLCM) Image details for a vSphere Cluster
     .NOTES  Author: William Lam, Broadcom
-    .NOTES  Last Updated: 01/29/2024
+    .NOTES  Last Updated: 02/06/2025
     .PARAMETER ClusterName
         Name of a vLCM enabled vSphere Cluster
     .PARAMETER ShowBaseImagDetails
@@ -78,6 +78,25 @@ Function Get-vLCMClusterImageInformation {
     }
 
     $solutionResults | ft
+
+    Write-Host -ForegroundColor Green "FirmwareAddOns: "
+
+    $firmwareResults = @()
+    $firmwareAddOns = $clusterSoftware.hardware_support.packages
+
+    if($firmwareAddOns) {
+        $firmwareAddOnsHsm = ($firmwareAddOns | Get-Member -MemberType NoteProperty).Name
+        $firmwareAddOnsName = ($firmwareAddOns).$firmwareAddOnsHsm.pkg
+        $firmwareAddOnsVersion = ($firmwareAddOns.$firmwareAddOnsHsm).version
+
+        $firmwareResults = [PSCustomObject] [ordered] @{
+            "HSM Name" = "$firmwareAddOnsHsm"
+            "FirmwareAddOn Name" = "$firmwareAddOnsName"
+            "Version" = "$firmwareAddOnsVersion"
+        }
+
+        $firmwareResults | ft
+    }
 
     Write-Host -ForegroundColor Magenta "Components: "
 
