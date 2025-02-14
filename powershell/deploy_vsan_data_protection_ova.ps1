@@ -24,41 +24,21 @@ $vsanDPvCenterServerSSODomain = "vsphere.local"
 #### DO NOT EDIT BEYOND HERE
 
 # https://gist.github.com/jstangroome/5945820
-Function Get-VCCertificate {
-    [CmdletBinding()]
+function  Get-VCCertificate {
     param (
-        [Parameter(Mandatory=$true)]
-        [string]
-        $ComputerName,
-        [int]
-        $Port = 443
+        [string]$Server,
+        [int]$Port
     )
 
-    $Certificate = $null
-    $TcpClient = New-Object -TypeName System.Net.Sockets.TcpClient
     try {
-
-        $TcpClient.Connect($ComputerName, $Port)
-        $TcpStream = $TcpClient.GetStream()
-
-        $Callback = { param($sender, $cert, $chain, $errors) return $true }
-
-        $SslStream = New-Object -TypeName System.Net.Security.SslStream -ArgumentList @($TcpStream, $true, $Callback)
-        try {
-            $SslStream.AuthenticateAsClient('')
-            $Certificate = $SslStream.RemoteCertificate
-        } finally {
-            $SslStream.Dispose()
-        }
-    } finally {
-        $TcpClient.Dispose()
-    }
-
-    if ($Certificate) {
-        if ($Certificate -isnot [System.Security.Cryptography.X509Certificates.X509Certificate2]) {
-            $Certificate = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $Certificate
-        }
-        return $Certificate
+        $tcpClient = New-Object System.Net.Sockets.TcpClient($Server, $Port)
+        $sslStream = New-Object System.Net.Security.SslStream($tcpClient.GetStream(), $false, ({ $true }))
+        $sslStream.AuthenticateAsClient($Server, $null, [System.Security.Authentication.SslProtocols]::Tls12, $false)
+        $cert = $sslStream.RemoteCertificate
+        $tcpClient.Close()
+        return $cert
+    } catch {
+        Write-Error "Failed to retrieve SSL certificate: $_"
     }
 }
 
