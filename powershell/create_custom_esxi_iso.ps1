@@ -22,7 +22,7 @@ if($PSVersionTable.PSEdition -ne "Desktop") {
 }
 
 Write-Host -Foreground cyan "Processing ESXi Base Image $ESXIDriver ..."
-$ESXIBaseImageVersion = (Get-DepotBaseImages -Depot $ESXIBaseImagePath).Version
+$ESXIBaseImageVersion = (Get-DepotBaseImages -Depot $ESXIBaseImagePath)[0].Version
 
 # Build list of Components from ESXi Drivers
 $components = @{}
