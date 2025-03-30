@@ -12,11 +12,12 @@ foreach ($i in $cryptoManager.KmipServers) {
 $vms = Get-View -ViewType VirtualMachine -Property Name, Config
 
 $kmsVms = @()
-foreach ($vm in $vms) {
+foreach ($vm in $vms | Sort-Object -Property Name) {
     if($vm.Config.KeyId -ne $null) {
         $tmp = [pscustomobject]@{
             Name = $vm.Name
             KMS = $vm.Config.KeyId.ProviderId.id
+            KeyId = $vm.Config.KeyId.keyId
         }
         $kmsVms+=$tmp
     }
