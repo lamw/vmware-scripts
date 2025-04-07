@@ -1,4 +1,4 @@
-# Courtesy of ChatGPT 4o ... after 25 iterations
+# Courtesy of ChatGPT 4o ... after 25+ iterations
 Function Get-GlobalPermissionFromMOB {
     param (
         [Parameter(Mandatory)]
@@ -21,12 +21,13 @@ Function Get-GlobalPermissionFromMOB {
         $block = $entry.Groups[1].Value
         $name = $null
         $roles = @()
+        $document = $null
 
         # Extract nested principal name
         $principalMatch = [regex]::Match($block, '(?s)<td class="c2">principal</td>.*?<table summary="Table of properties for this Data Object">(.*?)</table>', 'Singleline')
         if ($principalMatch.Success) {
             $nested = $principalMatch.Groups[1].Value
-            $nameMatch = [regex]::Match($nested, '<td class="c2">name</td>.*?<td>(VSPHERE\.LOCAL\\[^<]+)</td>', 'Singleline')
+            $nameMatch = [regex]::Match($nested, 'name.*?([A-Z.]+\\[^<]+)', 'Singleline')
             if ($nameMatch.Success) {
                 $name = $nameMatch.Groups[1].Value.Trim()
             }
@@ -41,11 +42,18 @@ Function Get-GlobalPermissionFromMOB {
             }
         }
 
+        # Extract the associated document value (correctly matching the 3rd <td>)
+        $docMatch = [regex]::Match($html, [regex]::Escape($entry.Value) + '.*?<td class="c2">document</td>\s*<td class="c1">[^<]*</td>\s*<td>(.*?)</td>', 'Singleline')
+        if ($docMatch.Success) {
+            $document = $docMatch.Groups[1].Value.Trim()
+        }
+
         # Add result
         if ($name) {
             $results += [pscustomobject]@{
-                Name  = $name
-                Role = if ($roles.Count -eq 1) { $vcRoles[$roles[0]] } else { $vcRoles[$roles] }
+                Name     = $name
+                Role     = if ($roles.Count -eq 1) { $vcRoles[$roles[0]] } else { $vcRoles[$roles] }
+                Definition = $document
             }
         }
     }
@@ -385,7 +393,7 @@ $vc_user = "WILLIAMLAM.LOCAL\lamw"
 $propagate = "true"
 
 # Connect to vCenter Server
-$server = Connect-VIServer -Server $vc_server -User $vc_username -Password $vc_password
+#$server = Connect-VIServer -Server $vc_server -User $vc_username -Password $vc_password
 
 #New-GlobalPermission -vc_server $vc_server -vc_username $vc_username -vc_password $vc_password -vc_user $vc_user -vc_role_id $vc_role_id -propagate $propagate
 
@@ -394,4 +402,4 @@ $server = Connect-VIServer -Server $vc_server -User $vc_username -Password $vc_p
 #Get-GlobalPermission -vc_server $vc_server -vc_username $vc_username -vc_password $vc_password
 
 # Disconnect from vCenter Server
-Disconnect-viserver $server -confirm:$false
+#Disconnect-viserver $server -confirm:$false
