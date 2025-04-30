@@ -13,6 +13,10 @@ Function Get-VCenterPrivileges {
         Array of vSphere Operation Ids to filter from privilege checks
     .PARAMETER Sessions
         Array of vSphere Session IDs to filter from privilege checks
+    .PARAMETER Marker
+        String of an opaque token which determines where the returned page should begin. If unset or empty, privilege checks will be returned from the first record.
+    .PARAMETER Size
+        Integer specifies the maximum number of results to return. If unset defaults to default page size, which is controlled by config.vpxd.privilegeChecks.pageSize advanced option.
     .EXAMPLE
         # Filter privileges for Object of type VirtualMachine with MoRef ID vm-121005
         Get-VCenterPrivileges -SessionToken $sessionToken -Troubleshoot -Objects @(@{"type"="VirtualMachine";"id"="vm-121005"})
@@ -36,6 +40,7 @@ Function Get-VCenterPrivileges {
         [Parameter(Mandatory=$false)][string[]]$OpIds,
         [Parameter(Mandatory=$false)][string[]]$Sessions,
         [Parameter(Mandatory=$false)][string]$Marker,
+        [Parameter(Mandatory=$false)][int]$Size,
         [Switch]$Troubleshoot
     )
 
@@ -77,6 +82,11 @@ Function Get-VCenterPrivileges {
     # Include Marker
     if($Marker) {
         $privCheckURL = "${privCheckURL}&marker=${Marker}"
+    }
+
+    # Include Size
+    if($Size) {
+        $privCheckURL = "${privCheckURL}&size=${Size}"
     }
 
     if($Troubleshoot) {
