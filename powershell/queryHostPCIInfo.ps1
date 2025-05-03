@@ -11,9 +11,9 @@ $excludeDevices = @("<class> System peripheral","<class> Performance counters","
 
 $deviceResults = @()
 foreach ($pciDevice in $pciDevices) {
-        $vid = [String]::Format("{0:x}", $pciDevice.VendorId)
-        $did = [String]::Format("{0:x}", $pciDevice.DeviceId)
-        $svid = [String]::Format("{0:x}", $pciDevice.SubVendorId)
+        $vid = [String]::Format("{0:x4}", $pciDevice.VendorId)
+        $did = [String]::Format("{0:x4}", $pciDevice.DeviceId)
+        $svid = [String]::Format("{0:x4}", $pciDevice.SubVendorId)
 
     if(-not ($excludeDevices | Where-Object { $pciDevice.DeviceName -like "*$_*" }) -and $svid -ne 0) {
         $tmp = [pscustomobject] [ordered]@{
