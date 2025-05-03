@@ -1,33 +1,30 @@
 # Author: William Lam
-# Website: www.virtuallyghetto
-# Product: VMware vSphere
+# Website: www.williamlam.com
 # Description: Script to extract ESXi PCI Device details such as Name, Vendor, VID, DID & SVID
 # Reference: http://www.williamlam.com/2015/05/extracting-vid-did-svid-from-pci-devices-in-esxi-using-vsphere-api.html
 
-$server = Connect-VIServer -Server 192.168.1.60 -User administrator@vghetto.local -Password VMware1!
+$vmhost = Get-View -ViewType HostSystem -Property Name,Hardware.PciDevice -Filter @{"name"="mgmt-esx01.vcf.lab"}
+$pciDevices = $vmhost.Hardware.PciDevice
 
-$vihosts = Get-View -Server $server -ViewType HostSystem -Property Name,Hardware.PciDevice
+# Exclude any devices you do not wish to see, partial or full match supported
+$excludeDevices = @("<class> System peripheral","<class> Performance counters","<class> PCI bridge","<class> ISA bridge","Series Chipset Family","Ice Lake RAS","Ice Lake IEH","MSM","UPI","Memory Map/VT-d","Mesh 2 PCIe")
 
-$devices_results = @()
+$deviceResults = @()
+foreach ($pciDevice in $pciDevices) {
+        $vid = [String]::Format("{0:x}", $pciDevice.VendorId)
+        $did = [String]::Format("{0:x}", $pciDevice.DeviceId)
+        $svid = [String]::Format("{0:x}", $pciDevice.SubVendorId)
 
-foreach ($vihost in $vihosts) {
-	$pciDevices = $vihost.Hardware.PciDevice
-	foreach ($pciDevice in $pciDevices) {
-		$details = "" | select HOST, DEVICE, VENDOR, VID, DID, SVID
-		$vid = [String]::Format("{0:x}", $pciDevice.VendorId)
-		$did = [String]::Format("{0:x}", $pciDevice.DeviceId)
-		$svid = [String]::Format("{0:x}", $pciDevice.SubVendorId)		
-
-		$details.HOST = $vihost.Name
-		$details.DEVICE = $pciDevice.DeviceName
-		$details.VENDOR = $pciDevice.VendorName
-		$details.VID = $vid
-		$details.DID = $did
-		$details.SVID = $svid
-		$devices_results += $details
-	}
+    if(-not ($excludeDevices | Where-Object { $pciDevice.DeviceName -like "*$_*" }) -and $svid -ne 0) {
+        $tmp = [pscustomobject] [ordered]@{
+            Vendor = $pciDevice.VendorName
+            Device = $pciDevice.DeviceName
+            VID = $vid
+            DID = $did
+            SVID = $svid
+        }
+        $deviceResults+=$tmp
+    }
 }
 
-$devices_results
-
-Disconnect-VIServer $server -Confirm:$false
+$deviceResults | FT
