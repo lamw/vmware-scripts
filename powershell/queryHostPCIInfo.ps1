@@ -15,7 +15,7 @@ foreach ($pciDevice in $pciDevices) {
         $did = [String]::Format("{0:x4}", $pciDevice.DeviceId)
         $svid = [String]::Format("{0:x4}", $pciDevice.SubVendorId)
 
-    if(-not ($excludeDevices | Where-Object { $pciDevice.DeviceName -like "*$_*" }) -and $svid -ne 0) {
+    if(-not ($excludeDevices | Where-Object { $pciDevice.DeviceName -like "*$_*" }) -and $svid -ne "0000") {
         $tmp = [pscustomobject] [ordered]@{
             Vendor = $pciDevice.VendorName
             Device = $pciDevice.DeviceName
