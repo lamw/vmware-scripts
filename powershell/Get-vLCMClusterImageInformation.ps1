@@ -4,17 +4,17 @@
     .NOTES  Last Updated: 02/06/2025
     .PARAMETER ClusterName
         Name of a vLCM enabled vSphere Cluster
-    .PARAMETER ShowBaseImagDetails
+    .PARAMETER ShowBaseImageDetails
         Output the component details for ESXi base image
     .EXAMPLE
         Get-vLCMClusterImageInformation -ClusterName "ML Cluster"
     .EXAMPLE
-        Get-vLCMClusterImageInformation -ClusterName "ML Cluster" -ShowBaseImagDetails
+        Get-vLCMClusterImageInformation -ClusterName "ML Cluster" -ShowBaseImageDetails
 #>
 Function Get-vLCMClusterImageInformation {
     param(
         [Parameter(Mandatory=$true)]$ClusterName,
-        [Switch]$ShowBaseImagDetails=$false
+        [Switch]$ShowBaseImageDetails=$false
     )
 
     Write-host -ForegroundColor Yellow "`nvSphere Lifecycle Management (vLCM) Image for vSphere Cluster: ${clusterName}"
@@ -38,7 +38,7 @@ Function Get-vLCMClusterImageInformation {
 
     $tmp | ft
 
-    if($ShowBaseImagDetails) {
+    if($ShowBaseImageDetails) {
         $baseImageComponentsResults = @()
         Write-host -ForegroundColor Cyan "Base Image Details: "
 
