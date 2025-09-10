@@ -25,7 +25,7 @@ foreach ($vmhost in Get-Cluster -Name $clusterName | Get-VMhost | Sort-Object -P
     }
 
     $tmp = [pscustomobject] @{
-        VMHost = $vmhostName
+        VMHost = $vmhost.Name
         TieringEnabled = $tieringEnabled
         TieringRatio = $tieringRatio
         DRAMMemory = $dramTotal
