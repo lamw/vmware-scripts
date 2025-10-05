@@ -1,3 +1,6 @@
+#!/bin/bash
+# VI JSON API example for Listing VM Advanced Setting
+
 VC='vcsa.primp-industries.local'
 VC_USERNAME='administrator@vsphere.local'
 VC_PASSWORD='VMware1!'
