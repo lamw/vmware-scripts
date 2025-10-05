@@ -22,7 +22,7 @@ cat > snapshot_spec.json <<EOF
 EOF
 
 # Create Snapshot
-curl -s -H "vmware-api-session-id: ${VIJSON_API_SESSION_ID}" -H "Content-Type: application/json" -X POST "https://$VC/sdk/vim25/${VC_API_RELEASE}/VirtualMachine/${VM_MOREF}/CreateSnapshotEx_Task" -d@snapshot_spec.json
+curl -k -s -H "vmware-api-session-id: ${VIJSON_API_SESSION_ID}" -H "Content-Type: application/json" -X POST "https://$VC/sdk/vim25/${VC_API_RELEASE}/VirtualMachine/${VM_MOREF}/CreateSnapshotEx_Task" -d@snapshot_spec.json
 
 # List Snapshots
-curl -s -H "vmware-api-session-id: ${VIJSON_API_SESSION_ID}" -H "Content-Type: application/json" -X GET "https://$VC/sdk/vim25/${VC_API_RELEASE}/VirtualMachine/${VM_MOREF}/snapshot"
+curl -k -s -H "vmware-api-session-id: ${VIJSON_API_SESSION_ID}" -H "Content-Type: application/json" -X GET "https://$VC/sdk/vim25/${VC_API_RELEASE}/VirtualMachine/${VM_MOREF}/snapshot"
