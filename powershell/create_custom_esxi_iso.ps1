@@ -1,23 +1,19 @@
 # Author: William Lam
 # Website: www.williamlam.com
 
-# Path to ESXi Base Offline Image
-$ESXIBaseImagePath = "C:\Users\william\Desktop\custom-esxi-image\VMware-ESXi-7.0U3c-19193900-depot.zip"
+# ESXi Offline Depot
+$ESXIBaseImagePath = "VMware-ESXi-9.0.1.0.24957456-depot.zip"
 
-# List of ESXi Offline Bundle Paths
-$ESXIDriverPaths = @(
-"C:\Users\william\Desktop\custom-esxi-image\Net-Community-Driver_1.2.2.0-1vmw.700.1.0.15843807_18835109.zip",
-"C:\Users\william\Desktop\custom-esxi-image\nvme-community-driver_1.0.1.0-3vmw.700.1.0.15843807-component-18902434.zip"
-)
+# List of ESXi Offline Bundle Drivers
+$ESXIDriverPaths = @("VMware-Re-Driver_1.101.01-5vmw.800.1.0.20613240.zip")
 
-$ESXICustomIsoSpec = "C:\Users\william\Desktop\custom-esxi-image\spec.json"
-
-$ESXICustomIsoPath = "C:\Users\william\Desktop\custom-esxi-image\custom.iso"
+$ESXICustomIsoSpec = "esx-9.0.1.0-realtek.spec"
+$ESXICustomIsoPath = "esx-9.0.1.0-realtek.iso"
 
 ##### DO NOT EDIT BEYOND HERE #####
 
-if($PSVersionTable.PSEdition -ne "Desktop") {
-    Write-Error "This script is only supported with PowerShell on Windows`n"
+if((Get-PowerCLIVersion).Major -lt "9") {
+    Write-Error "This script requires VCF.PowerCLI 9.x or greater`n"
     exit
 }
 
