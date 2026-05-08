@@ -18,7 +18,7 @@ if((Get-PowerCLIVersion).Major -lt "9") {
 }
 
 Write-Host -Foreground cyan "Processing ESXi Base Image $ESXIDriver ..."
-$ESXIBaseImageVersion = (Get-DepotBaseImages -Depot $ESXIBaseImagePath).Version
+$ESXIBaseImageVersion = (Get-DepotBaseImages -Depot $ESXIBaseImagePath)[0].Version
 
 # Build list of Components from ESXi Drivers
 $components = @{}
