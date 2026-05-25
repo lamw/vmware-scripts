@@ -129,9 +129,21 @@ if($acceptCiep) {
 if($updateUserPref) {
     My-Logger "Updating NSX User Preferences ..."
     $requests = Invoke-WebRequest -Uri "https://${NSX_FQDN}/api/v1/user-preferences" -Method GET -Headers $headers -SkipCertificateCheck
+
     if($requests.StatusCode -eq 200) {
+        # Build spec from API response body (example: { "user_id": "admin" })
+        try {
+            $spec = $requests.Content | ConvertFrom-Json
+        } catch {
+            $spec = [pscustomobject]@{}
+        }
+
+        if ($null -eq $spec) {
+            $spec = [pscustomobject]@{}
+        }
+
         # Ensure property exists
-        if (-not ($spec.PSObject.Properties.Name -contains 'other_preferences')) {
+        if (-not ($spec.PSObject.Properties.Name -contains "other_preferences")) {
             $spec | Add-Member -MemberType NoteProperty -Name "other_preferences" -Value @()
         }
 
@@ -149,7 +161,7 @@ if($updateUserPref) {
             $pref.value = $true
         }
 
-        $body = $spec | ConvertTo-Json
+        $body = $spec | ConvertTo-Json -Depth 10
         $requests = Invoke-WebRequest -Uri "https://${NSX_FQDN}/api/v1/user-preferences" -Method PUT -Headers $headers -Body $body -SkipCertificateCheck
     }
 }
