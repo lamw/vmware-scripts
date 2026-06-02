@@ -9,6 +9,8 @@ $aviAdminPassword = "VMware1!VMware1!"
 $aviFQDN = "lb01.vcf.lab"
 $aviNodeIP = "172.30.0.51"
 
+$vcf91 = $true # VCF 9.1 or later
+
 ### DO NOT EDIT BEYOND HERE ###
 
 $payload = @{
@@ -55,6 +57,10 @@ $payload = [ordered]@{
     "nodes" = @(@{"ipAddress" = $aviNodeIP})
     "nsxIds" = @($nsxClusterId)
     "bundleId" = $aviBundleId
+}
+
+if($vcf91) {
+    $payload["vcfopsAdminPassword"] = $aviAdminPassword
 }
 
 $body = $payload | ConvertTo-Json
