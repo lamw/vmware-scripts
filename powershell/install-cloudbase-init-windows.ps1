@@ -1,12 +1,18 @@
 # Installs 64-bit Cloudbase-init on Microsoft Windows system
 
-$cloudbaseInitVersion = "1.1.2"
+
 
 ### DO NOT EDIT BEYOND HERE ###
 
-$cloudbaseInitVersionUnderscore = $cloudbaseInitVersion.replace(".","_")
-$cloudbaseInitInstallerUri = "https://github.com/cloudbase/cloudbase-init/releases/download/${cloudbaseInitVersion}/CloudbaseInitSetup_${cloudbaseInitVersionUnderscore}_x64.msi"
-$cloudbaseInitInstaller = Split-Path $cloudbaseInitInstallerUri -Leaf
+$githubLatestReleases = 'https://api.github.com/repos/cloudbase/cloudbase-init/releases/latest' 
+
+$releases = Invoke-WebRequest $githubLatestReleases | ConvertFrom-Json 
+
+$latestx64release = $releases.assets | ? {$_.name -like '*x64.msi'}
+
+$cloudbaseInitInstallerUri = $latestx64release.browser_download_url
+
+$cloudbaseInitInstaller = $latestx64release.name
 
 $cloudbaseInitInstallPath = "C:\Program Files\Cloudbase Solutions\Cloudbase-Init\conf\"
 $cloudbaseInitConfigFile = "cloudbase-init.conf"
