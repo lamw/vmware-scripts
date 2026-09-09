@@ -1,0 +1,33 @@
+apiVersion: pais.vmware.com/v1alpha1
+kind: PAISConfiguration
+metadata:
+  annotations:
+    pais.vmware.com/default-failure-domain: vz-01
+    paisconfigurations.pais.vmware.com/cname: model.vcf.lab
+    ui.pais.vmware.com/pais-enablement-environment-connectivity: connected
+  name: default
+  namespace: pais
+spec:
+  auth:
+    providers:
+    - name: sc
+      staticCredentials:
+        apiTokens:
+          expirationDefault: 720h
+          expirationMax: 8760h
+        credentialsSecretRef:
+          key: credentials.json
+          name: pais-static-credentials-1788563157731
+        issuerBaseUrl: https://model.vcf.lab
+  defaultStorageClassName: vcf-mgmt-cluster-optimal-datastore-default-policy-autoraid
+  ingress:
+    serviceType: LoadBalancer
+  nvidiaConfig:
+    gpuDriverType: OSS
+    gpuOperatorVersion: 26.3.1
+  runtimeConfig:
+    disableAgentBuilder: true
+    disableIndexing: true
+  vksControlPlane:
+    storageClassName: vcf-mgmt-cluster-optimal-datastore-default-policy-autoraid
+    virtualMachineClassName: best-effort-medium

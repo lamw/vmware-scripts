@@ -1,0 +1,19 @@
+atapiVersion: pais.vmware.com/v1alpha1
+kind: ModelEndpoint
+metadata:
+  namespace: pais
+  annotations:
+    ui.pais.vmware.com/model-info-secret: pais-pais-reg-creds-ebccdf1b-7923-4f40-b7c7-2fafa33f0437
+    pais.vmware.com/displayName: qwen2.5-14b
+  generateName: qwen2.5-14b
+spec:
+  model:
+    ociRef: vis.vcf.lab:9443/models/qwen/qwen2.5-14b-instruct-awq:v1.0
+    pullSecrets:
+      - name: pais-pais-reg-creds-ebccdf1b-7923-4f40-b7c7-2fafa33f0437
+  routingName: qwen2.5-14b
+  type: Completions
+  engine: vLLM
+  virtualMachineClassName: nvidia-a2000-rtx
+  storageClassName: vcf-mgmt-cluster-optimal-datastore-default-policy-autoraid
+  replicas: 1

@@ -1,0 +1,26 @@
+apiVersion: pais.vmware.com/v1alpha1
+kind: ModelEndpoint
+metadata:
+  namespace: pais
+  annotations:
+    ui.pais.vmware.com/model-info-secret: pais-pais-reg-creds-ebccdf1b-7923-4f40-b7c7-2fafa33f0437
+    pais.vmware.com/displayName: gemma4-26b
+  generateName: gemma4-26b
+spec:
+  model:
+    ociRef: vis.vcf.lab:9443/models/bartowski/gemma4-26b-gguf:v1.0
+    pullSecrets:
+      - name: pais-pais-reg-creds-ebccdf1b-7923-4f40-b7c7-2fafa33f0437
+  routingName: gemma4-26b
+  type: Completions
+  engine: LlamaCPP
+  inferenceServerCustomization:
+    cliArgs:
+      - '-ngl'
+      - '99'
+      - '--ctx-size'
+      - '60000'
+    engineImage: ghcr.io/ggml-org/llama.cpp:server-cuda
+  virtualMachineClassName: nvidia-a2000-rtx
+  storageClassName: vcf-mgmt-cluster-optimal-datastore-default-policy-autoraid
+  replicas: 1
