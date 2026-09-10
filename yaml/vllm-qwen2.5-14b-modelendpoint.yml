@@ -1,4 +1,4 @@
-atapiVersion: pais.vmware.com/v1alpha1
+apiVersion: pais.vmware.com/v1alpha1
 kind: ModelEndpoint
 metadata:
   namespace: pais
