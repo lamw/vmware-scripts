@@ -24,7 +24,7 @@ spec:
     serviceType: LoadBalancer
   nvidiaConfig:
     gpuDriverType: OSS
-    gpuOperatorVersion: 26.3.1
+    gpuOperatorVersion: 25.10.1
   runtimeConfig:
     disableAgentBuilder: true
     disableIndexing: true
