@@ -13,6 +13,15 @@ spec:
       - '99'
       - '--ctx-size'
       - '60000'
+      - '--cache-type-k'
+      - 'q8_0'
+      - '--cache-type-v'
+      - 'q8_0'
+      - '--jinja'
+      - '-b'
+      - '2048'
+      - '-ub'
+      - '512'
     engineImage: ghcr.io/ggml-org/llama.cpp:server-cuda
   model:
     ociRef: vis.vcf.lab:9443/models/unsloth/qwen3.8-27b-gguf:v1.0
