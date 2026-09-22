@@ -30,6 +30,10 @@ spec:
       - '--metrics'
       - '-lv'
       - '4'
+      - '--spec-type'
+      - 'draft-mtp'
+      - '--spec-draft-n-max'
+      - '2'
     engineImage: ghcr.io/ggml-org/llama.cpp:server-cuda
   model:
     ociRef: vis.vcf.lab:9443/models/unsloth/qwen3.8-27b-gguf:v1.0
