@@ -14,6 +14,6 @@ spec:
   routingName: qwen2.5-14b
   type: Completions
   engine: vLLM
-  virtualMachineClassName: nvidia-a2000-rtx
+  virtualMachineClassName: nvidia-a4000-rtx
   storageClassName: vcf-mgmt-cluster-optimal-datastore-default-policy-autoraid
   replicas: 1

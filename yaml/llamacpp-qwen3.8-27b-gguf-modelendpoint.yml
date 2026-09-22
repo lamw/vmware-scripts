@@ -39,4 +39,4 @@ spec:
   routingName: qwen3.8-27b
   storageClassName: vcf-mgmt-cluster-optimal-datastore-default-policy-autoraid
   type: Completions
-  virtualMachineClassName: nvidia-a2000-rtx
+  virtualMachineClassName: nvidia-a4000-rtx
