@@ -1,7 +1,7 @@
 # Author: William Lam
 # Description: Deploy VMware Security Services Platform Installer 5.2 OVA
 
-$SSP_INSTALLER_OVA = "/Volumes/Storage/Software/Security-Services-Platform-Installer-for-vDefend-and-Avi-5.2.0.0.0.25669671.ova"
+$SSP_INSTALLER_OVA = "/Users/lamw/Software/Security-Services-Platform-Installer-for-vDefend-and-Avi-5.2.1.0.0.25947819.ova"
 
 $VCENTER_HOST = "vc01.vcf.lab"
 $VCENTER_USERNAME = "administrator@vsphere.local"
